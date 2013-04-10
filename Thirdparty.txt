@@ -1,0 +1,6 @@
+This product contains following third-party components:
+
+ADO.NET adapter fo SQLite by Robert Simpson (http://system.data.sqlite.org)
+SQLite wrapper by Evgeniy Potrebenko (http://krez0n.org.ua)
+CommandLink button by Microsoft Corp. (http://archive.msdn.microsoft.com/VistaBridge)
+Information icon by Yusuke Kamiyamane (http://yusukekamiyamane.com)
