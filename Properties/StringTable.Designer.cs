@@ -133,6 +133,24 @@ namespace ListPlayers.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Экспорт завершен..
+        /// </summary>
+        internal static string ExportCompleted {
+            get {
+                return ResourceManager.GetString("ExportCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Экспорт....
+        /// </summary>
+        internal static string ExportEtc {
+            get {
+                return ResourceManager.GetString("ExportEtc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  файл успешно обработан..
         /// </summary>
         internal static string FilesProcessedX1 {
@@ -184,6 +202,15 @@ namespace ListPlayers.Properties {
         internal static string OpeningTransaction {
             get {
                 return ResourceManager.GetString("OpeningTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Операция отменена..
+        /// </summary>
+        internal static string OperationCancelled {
+            get {
+                return ResourceManager.GetString("OperationCancelled", resourceCulture);
             }
         }
         

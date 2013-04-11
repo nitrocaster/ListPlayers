@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 using ListPlayers.PcdbModel;
+using ListPlayers.Properties;
 
 
 namespace ListPlayers.PcdbExport
@@ -66,9 +67,8 @@ namespace ListPlayers.PcdbExport
                 Dialog.ProgressMin   = 0;
                 Dialog.ProgressMax   = MaximumProgress;
                 Dialog.ProgressValue = 0;
-                Dialog.StatusText    = "Экспорт...";
+                Dialog.StatusText    = StringTable.ExportEtc;
             });
-
             Worker.RunWorkerAsync();
         }
 
@@ -88,8 +88,8 @@ namespace ListPlayers.PcdbExport
             Dialog.InvokeAsync(() =>
             {
                 Dialog.IsBusy = false;
-                Dialog.StatusText = Dialog.Cancelled ? "Операция отменена." : "Экспорт завершен.";
-                Dialog.CancelButtonText = "Закрыть";
+                Dialog.StatusText = Dialog.Cancelled ? StringTable.OperationCancelled : StringTable.ExportCompleted;
+                Dialog.CancelButtonText = StringTable.Close;
                 if (Dialog.Cancelled && Dialog.UserClose)
                 {
                     Dialog.Close();

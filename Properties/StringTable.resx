@@ -190,4 +190,13 @@
   <data name="CorruptedDatabase" xml:space="preserve">
     <value>База данных повреждена.</value>
   </data>
+  <data name="ExportEtc" xml:space="preserve">
+    <value>Экспорт...</value>
+  </data>
+  <data name="OperationCancelled" xml:space="preserve">
+    <value>Операция отменена.</value>
+  </data>
+  <data name="ExportCompleted" xml:space="preserve">
+    <value>Экспорт завершен.</value>
+  </data>
 </root>
