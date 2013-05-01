@@ -107,7 +107,7 @@ namespace ListPlayers.Parsers
             {
                 builder.Append(dateparts[i]);
             }
-            var result = DateTime.ParseExact(src, "ddMMyyyyHHmmss", CultureInfo.InvariantCulture);
+            var result = DateTime.ParseExact(builder.ToString(), "ddMMyyyyHHmmss", CultureInfo.InvariantCulture); // bug: StrToDateTime 
             return result;
         }
     }

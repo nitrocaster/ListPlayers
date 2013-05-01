@@ -18,28 +18,29 @@ using System.Text;
 namespace FileSystem
 {
     /// <summary>
-    /// Represents a scanner that uses the Boyer-Moore algorithm to find an arbitrary sequences in the Stream.
+    ///     Represents a scanner that uses the Boyer-Moore algorithm to find an arbitrary sequence in the Stream.
     /// </summary>
     public static class StreamScanner
     {
-        private static int[] BuildShiftArray(byte[] byteSequence)
-        {
-            var shifts = new int[byteSequence.Length];
-            var shiftCount = 0;
-            var end = byteSequence[byteSequence.Length - 1];
-            var index = byteSequence.Length - 1;
-            var shift = 1;
+        private const int defaultBufferSize = 1024;
 
+        private static int[] BuildShiftArray(byte[] needle)
+        {
+            var shifts = new int[needle.Length];
+            var shiftCount = 0;
+            var end = needle[needle.Length - 1];
+            var index = needle.Length - 1;
+            var shift = 1;
             while (--index >= 0)
             {
-                if (byteSequence[index] == end)
+                if (needle[index] == end)
                 {
                     shifts[shiftCount++] = shift;
                     shift = 1;
                 }
                 else
                 {
-                    shift++;
+                    ++shift;
                 }
             }
             var ret = new int[shiftCount];
@@ -78,7 +79,7 @@ namespace FileSystem
                     {
                         break;
                     }
-                    index++;
+                    ++index;
                 }
                 var searchIndex = index;
                 needleIndex = needle.Length - 1;
@@ -97,31 +98,41 @@ namespace FileSystem
                     index += shiftArray[0];
                     currentShiftIndex = 1;
                 }
-                else if (currentShiftIndex >= shiftArray.Length)
+                else if (currentShiftIndex > 0 && currentShiftIndex >= shiftArray.Length)
                 {
                     shiftFlag = true;
                     ++index;
                 }
                 else
                 {
-                    index += shiftArray[currentShiftIndex++];
+                    if (shiftArray.Length == 0)
+                    {
+                        ++index;
+                    }
+                    else
+                    {
+                        index += shiftArray[currentShiftIndex++];
+                    }
                 }
             }
         }
-        
-        public static int FindString(Stream stream, Encoding encoding, string needle, int bufferSize = 32)
+
+        public static int FindString(Stream stream, Encoding encoding, string needle, int bufferSize = defaultBufferSize)
         {
             var bytes = encoding.GetBytes(needle);
             return FindBytes(stream, bytes, bufferSize);
         }
 
-        public static int FindBytes(Stream stream, byte[] needle, int bufferSize = 32)
+        public static int FindBytes(Stream stream, byte[] needle, int bufferSize = defaultBufferSize)
         {
+            if (needle.Length > bufferSize)
+            {
+                bufferSize = needle.Length;
+            }
             var buffer = new byte[bufferSize];
             var shiftArray = BuildShiftArray(needle);
             var offset = 0;
             var init = needle.Length;
-
             while (true)
             {
                 var bytesRead = stream.Read(buffer, needle.Length - init, buffer.Length - needle.Length + init);

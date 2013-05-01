@@ -35,7 +35,7 @@ namespace ListPlayers.Common
             }
         }
 
-        private IList<string> files;
+        private readonly IList<string> files;
         private readonly string databasePath;
         
         private HostParser host;
@@ -108,7 +108,6 @@ namespace ListPlayers.Common
                 db.Compress();
             }
 
-            files.Clear();
             Completed = true;
             OnUpdateCompleted(count, !Cancelled);
         }

@@ -27,11 +27,10 @@ namespace ListPlayers
 {
     public static class Root
     {
-        private const string buildDate = "Apr 11 2013";
+        private const string buildDate = "May 01 2013";
         public static readonly Version Version = Assembly.GetExecutingAssembly().GetName().Version;
         public static readonly string BuildString = String.Format("v. {0}.{1}.{2}, {3}", Version.Major, Version.Minor, Version.Build, buildDate);
         public static string SelfPath = "null";
-
 
         [STAThread]
         private static void Main(string[] args)
