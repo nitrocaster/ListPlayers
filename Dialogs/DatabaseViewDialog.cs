@@ -244,7 +244,7 @@ namespace ListPlayers.Dialogs
             {
                 if (tbDbPath.Items.Count >= Settings.LastPathesCapacity)
                 {
-                    tbDbPath.Items.RemoveAt(Settings.LastPathesCapacity);
+                    tbDbPath.Items.RemoveAt(Settings.LastPathesCapacity - 1);
                 }
                 tbDbPath.Items.Insert(0, path);
             }
