@@ -35,14 +35,16 @@ namespace ListPlayers
         [STAThread]
         private static void Main(string[] args)
         {
+#if !DEBUG
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-
+#endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+#if !DEBUG
             try
             {
+#endif
                 if (args.Length == 2)
                 {
                     switch (args[0])
@@ -66,11 +68,13 @@ namespace ListPlayers
                 Application.Run(mainDialog);
 
                 Settings.Save();
+#if !DEBUG
             }
             catch (Exception e)
             {
                 MsgBox.Error("Fatal error:\n" + e.Message);
             }
+#endif
         }
 
         private static void CleanDatabase(string path)
