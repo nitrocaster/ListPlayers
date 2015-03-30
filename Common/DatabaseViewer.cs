@@ -18,6 +18,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Data;
 using ListPlayers.Parsers;
 using ListPlayers.PcdbExport;
 using ListPlayers.PcdbModel;
@@ -169,7 +170,7 @@ namespace ListPlayers.Common
             }
             database.CommitTransaction();
         }
-
+        
         private void SearchProc()
         {
             while (!shutdown)
@@ -187,34 +188,33 @@ namespace ListPlayers.Common
                 if (chunk != null)
                 {
                     var haveTs = database.Revision >= (int)PcdbRevision.Rev1;
-                    var rowCount = chunk.Hashes.Rows.Count;
-                    for (var i = 0; i < rowCount; ++i)
+                    foreach (DataRow hashRow in chunk.Hashes.Rows)
                     {
                         if (cancel || shutdown)
                             break;
-                        var entry = new PcdbEntry(chunk.Hashes.Rows[i][1].ToString());
-                        var currentId = Convert.ToInt32(chunk.Hashes.Rows[i][0]);
-                        for (var j = 0; j < chunk.Names.Rows.Count; ++j)
+                        var entry = new PcdbEntry(hashRow[1].ToString());
+                        var currentId = Convert.ToInt32(hashRow[0]);
+                        foreach (DataRow row in chunk.Names.Rows)
                         {
-                            if (Convert.ToInt32(chunk.Names.Rows[j][0]) == currentId)
+                            if (Convert.ToInt32(row[0]) == currentId)
                             {
                                 var name = new PcdbName();
-                                name.Name = chunk.Names.Rows[j][1].ToString();
+                                name.Name = row[1].ToString();
                                 if (haveTs)
-                                    name.Timestamp = (DateTime)chunk.Names.Rows[j][2];
+                                    name.Timestamp = (DateTime)row[2];
                                 entry.Names.Add(name);
                             }
                         }
                         if (cancel || shutdown)
                             break;
-                        for (var j = 0; j < chunk.Ips.Rows.Count; ++j)
+                        foreach (DataRow row in chunk.Ips.Rows)
                         {
-                            if (Convert.ToInt32(chunk.Ips.Rows[j][0]) == currentId)
+                            if (Convert.ToInt32(row[0]) == currentId)
                             {
                                 var ip = new PcdbIp();
-                                ip.Ip = chunk.Ips.Rows[j][1].ToString();
+                                ip.Ip = row[1].ToString();
                                 if (haveTs)
-                                    ip.Timestamp = (DateTime)chunk.Ips.Rows[j][2];
+                                    ip.Timestamp = (DateTime)row[2];
                                 entry.Ips.Add(ip);
                             }
                         }
@@ -222,19 +222,19 @@ namespace ListPlayers.Common
                             break;
                         if (dbGameVersion == PcdbGameVersion.COP && chunk.Gsids != null)
                         {
-                            for (var j = 0; j < chunk.Gsids.Rows.Count; ++j)
+                            foreach (DataRow row in chunk.Gsids.Rows)
                             {
-                                if (Convert.ToInt32(chunk.Gsids.Rows[j][0]) == currentId)
+                                if (Convert.ToInt32(row[0]) == currentId)
                                 {
                                     var gsid = new PcdbGsid();
-                                    gsid.Gsid = (uint)chunk.Gsids.Rows[j][1];
+                                    gsid.Gsid = (uint)row[1];
                                     if (haveTs)
-                                        gsid.Timestamp = (DateTime)chunk.Gsids.Rows[j][2];
+                                        gsid.Timestamp = (DateTime)row[2];
                                     entry.Gsids.Add(gsid);
                                 }
                             }
                         }
-                        entry.Info.Item = chunk.Hashes.Rows[i][2].ToString();
+                        entry.Info.Item = hashRow[2].ToString();
                         sample.Add(entry);
                     }
                 }
