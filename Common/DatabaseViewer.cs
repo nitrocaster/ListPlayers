@@ -186,6 +186,7 @@ namespace ListPlayers.Common
                 var chunk = lastChunk;
                 if (chunk != null)
                 {
+                    var haveTs = database.Revision >= (int)PcdbRevision.Rev1;
                     var rowCount = chunk.Hashes.Rows.Count;
                     for (var i = 0; i < rowCount; ++i)
                     {
@@ -198,9 +199,7 @@ namespace ListPlayers.Common
                             if (Convert.ToInt32(chunk.Names.Rows[j][0]) == currentId)
                             {
                                 var name = new PcdbName();
-                                name.Name = chunk.Names.Rows[j][1].ToString();
-                                // XXX: check version once
-                                var haveTs = database.Revision >= (int)PcdbRevision.Rev1;
+                                name.Name = chunk.Names.Rows[j][1].ToString();           
                                 name.Timestamp = haveTs ? (DateTime)chunk.Names.Rows[j][2] : PcdbFile.InvalidDateTime;
                                 entry.Names.Add(name);
                             }
@@ -213,8 +212,6 @@ namespace ListPlayers.Common
                             {
                                 var ip = new PcdbIp();
                                 ip.Ip = chunk.Ips.Rows[j][1].ToString();
-                                // XXX: check version once
-                                var haveTs = database.Revision >= (int)PcdbRevision.Rev1;
                                 ip.Timestamp = haveTs ? (DateTime)chunk.Ips.Rows[j][2] : PcdbFile.InvalidDateTime;
                                 entry.Ips.Add(ip);
                             }
@@ -229,8 +226,6 @@ namespace ListPlayers.Common
                                 {
                                     var gsid = new PcdbGsid();
                                     gsid.Gsid = (uint)chunk.Gsids.Rows[j][1];
-                                    // XXX: check version once
-                                    var haveTs = database.Revision >= (int)PcdbRevision.Rev1;
                                     gsid.Timestamp = haveTs ? (DateTime)chunk.Gsids.Rows[j][2] : PcdbFile.InvalidDateTime;
                                     entry.Gsids.Add(gsid);
                                 }
