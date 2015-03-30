@@ -20,7 +20,7 @@ namespace ListPlayers.PcdbModel
     {
         public uint Gsid;
 
-        public DateTime Timestamp;
+        public DateTime Timestamp = PcdbFile.InvalidDateTime;
 
         public PcdbFieldId Id
         {

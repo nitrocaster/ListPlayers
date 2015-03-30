@@ -199,8 +199,9 @@ namespace ListPlayers.Common
                             if (Convert.ToInt32(chunk.Names.Rows[j][0]) == currentId)
                             {
                                 var name = new PcdbName();
-                                name.Name = chunk.Names.Rows[j][1].ToString();           
-                                name.Timestamp = haveTs ? (DateTime)chunk.Names.Rows[j][2] : PcdbFile.InvalidDateTime;
+                                name.Name = chunk.Names.Rows[j][1].ToString();
+                                if (haveTs)
+                                    name.Timestamp = (DateTime)chunk.Names.Rows[j][2];
                                 entry.Names.Add(name);
                             }
                         }
@@ -212,7 +213,8 @@ namespace ListPlayers.Common
                             {
                                 var ip = new PcdbIp();
                                 ip.Ip = chunk.Ips.Rows[j][1].ToString();
-                                ip.Timestamp = haveTs ? (DateTime)chunk.Ips.Rows[j][2] : PcdbFile.InvalidDateTime;
+                                if (haveTs)
+                                    ip.Timestamp = (DateTime)chunk.Ips.Rows[j][2];
                                 entry.Ips.Add(ip);
                             }
                         }
@@ -226,7 +228,8 @@ namespace ListPlayers.Common
                                 {
                                     var gsid = new PcdbGsid();
                                     gsid.Gsid = (uint)chunk.Gsids.Rows[j][1];
-                                    gsid.Timestamp = haveTs ? (DateTime)chunk.Gsids.Rows[j][2] : PcdbFile.InvalidDateTime;
+                                    if (haveTs)
+                                        gsid.Timestamp = (DateTime)chunk.Gsids.Rows[j][2];
                                     entry.Gsids.Add(gsid);
                                 }
                             }
