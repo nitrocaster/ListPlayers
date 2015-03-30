@@ -19,7 +19,6 @@ using System.Text;
 using ListPlayers.PcdbModel;
 using ListPlayers.Properties;
 
-
 namespace ListPlayers.PcdbExport
 {
     public abstract class ExporterBase : IDisposable
@@ -30,8 +29,7 @@ namespace ListPlayers.PcdbExport
         protected ITextExporterView Dialog;
         protected int MaximumProgress;
         protected StreamWriter Writer;
-
-
+        
         protected ExporterBase()
         {
             Worker = new BackgroundWorker
@@ -52,14 +50,10 @@ namespace ListPlayers.PcdbExport
         public void RunExport(ITextExporterView dialog, string destination, PcdbChunk chunk)
         {
             if (Worker.IsBusy)
-            {
                 throw new InvalidOperationException("Export has been already started.");
-            }
-
             Dialog = dialog;
             Chunk = chunk;
             Writer = new StreamWriter(destination, false, Encoding.Default);
-
             Dialog.InvokeAsync(() =>
             {
                 MaximumProgress      = Chunk.Hashes.Rows.Count;
@@ -91,9 +85,7 @@ namespace ListPlayers.PcdbExport
                 Dialog.StatusText = Dialog.Cancelled ? StringTable.OperationCancelled : StringTable.ExportCompleted;
                 Dialog.CancelButtonText = StringTable.Close;
                 if (Dialog.Cancelled && Dialog.UserClose)
-                {
                     Dialog.Close();
-                }
             });
         }
     }

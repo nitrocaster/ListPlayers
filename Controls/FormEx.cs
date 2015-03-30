@@ -48,19 +48,13 @@ namespace System.Windows.Forms
         {
             switch (unchecked((uint)m.Msg))
             {
-                case WinAPI.WM.WM_NCACTIVATE:
-                {
-                    IsActive = (m.WParam != IntPtr.Zero);
-                    break;
-                }
+            case WinAPI.WM.WM_NCACTIVATE:
+                IsActive = (m.WParam != IntPtr.Zero);
+                break;
             }
-
             Action callback;
             while (messageQueue.Count > 0 && messageQueue.TryDequeue(out callback))
-            {
                 callback();
-            }
-
             base.WndProc(ref m);
         }
 

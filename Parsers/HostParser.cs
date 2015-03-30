@@ -53,9 +53,7 @@ namespace ListPlayers.Parsers
             var extension = Path.GetExtension(path).ToLowerInvariant();
             var provider = parserProviders.FirstOrDefault(pr => pr.AcceptedFileExtension == extension && pr.CheckFormat(path));
             if (provider == null)
-            {
                 return;
-            }
             using (var parser = provider.GetParser(this, Database))
             {
                 parser.Parse(path);
@@ -77,9 +75,7 @@ namespace ListPlayers.Parsers
         private void OnParsingCancelled()
         {
             if (ParsingCancelled != null)
-            {
                 ParsingCancelled();
-            }
         }
     }
 }

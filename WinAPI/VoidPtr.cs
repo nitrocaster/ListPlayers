@@ -16,7 +16,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 
 using System.Globalization;
 
-
 namespace System
 {
     /// <summary>
@@ -28,8 +27,7 @@ namespace System
         public static readonly VoidPtr Null     = (VoidPtr)(0);
         public static readonly unsafe int Size  = sizeof(void*);
         private IntPtr value;
-
-
+        
         #region [ logical operators ]
         #if VoidPtr_IncludeLogicalOperators
         public static VoidPtr operator &(VoidPtr pv1, VoidPtr pv2)

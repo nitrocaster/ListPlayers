@@ -25,7 +25,6 @@ namespace ListPlayers.Dialogs
     public sealed partial class DatabaseViewDialog : FormEx
     {
         private readonly Dictionary<TreeNode, IPcdbField> sample = new Dictionary<TreeNode, IPcdbField>();
-
         private TreeNode currentNode;
         private DatabaseViewer databaseViewer;
 
@@ -36,12 +35,10 @@ namespace ListPlayers.Dialogs
             tbDbPath.SuspendLayout();
             tbDbPath.Items.AddRange(Settings.RecentDatabases);
             tbDbPath.ResumeLayout();
-
             chkAllRelatedData.Checked = Settings.ShowAllRelatedData;
             chkHashPattern.Checked = Settings.HashPattern;
             chkNamePattern.Checked = Settings.NamePattern;
             chkIpPattern.Checked = Settings.IpPattern;
-
             this.databaseViewer = databaseViewer;
             databaseViewer.SearchCompleted += OnSearchCompleted;
             databaseViewer.ConnectionStatusChanged += OnConnectionStatusChanged;
@@ -58,62 +55,55 @@ namespace ListPlayers.Dialogs
                 const string emptyFormat = " ";
                 currentNode = value;
                 var field = sample[currentNode];
-
                 switch (field.Id)
                 {
-                    case PcdbFieldId.Comment:
+                case PcdbFieldId.Comment:
+                {
+                    tbDetails.ReadOnly = false;
+                    tbDetails.Text = (PcdbItemContainer<string>)field;
+                    dtpTimestamp.Enabled = false;
+                    dtpTimestamp.CustomFormat = emptyFormat;
+                    break;
+                }
+                case PcdbFieldId.Hash:
+                case PcdbFieldId.Group | PcdbFieldId.Hash:
+                {
+                    tbDetails.ReadOnly = true;
+                    tbDetails.Text = currentNode.Text;
+                    dtpTimestamp.Enabled = false;
+                    dtpTimestamp.CustomFormat = emptyFormat;
+                    break;
+                }
+                case PcdbFieldId.Group | PcdbFieldId.Name:
+                case PcdbFieldId.Group | PcdbFieldId.Ip:
+                case PcdbFieldId.Group | PcdbFieldId.Gsid:
+                {
+                    tbDetails.ReadOnly = true;
+                    tbDetails.Text = "";
+                    dtpTimestamp.Enabled = false;
+                    dtpTimestamp.CustomFormat = emptyFormat;
+                    break;
+                }
+                default:
+                {
+                    tbDetails.ReadOnly = true;
+                    tbDetails.Text = currentNode.Text;
+                    dtpTimestamp.Enabled = true;
+                    dtpTimestamp.CustomFormat = Utils.DateTimePatternLong;
+                    switch (field.Id)
                     {
-                        tbDetails.ReadOnly = false;
-                        tbDetails.Text = (PcdbItemContainer<string>)field;
-                        dtpTimestamp.Enabled = false;
-                        dtpTimestamp.CustomFormat = emptyFormat;
+                    case PcdbFieldId.Name:
+                        dtpTimestamp.Value = ((PcdbName)field).Timestamp;
+                        break;
+                    case PcdbFieldId.Ip:
+                        dtpTimestamp.Value = ((PcdbIp)field).Timestamp;
+                        break;
+                    case PcdbFieldId.Gsid:
+                        dtpTimestamp.Value = ((PcdbGsid)field).Timestamp;
                         break;
                     }
-                    case PcdbFieldId.Hash:
-                    case PcdbFieldId.Group | PcdbFieldId.Hash:
-                    {
-                        tbDetails.ReadOnly = true;
-                        tbDetails.Text = currentNode.Text;
-                        dtpTimestamp.Enabled = false;
-                        dtpTimestamp.CustomFormat = emptyFormat;
-                        break;
-                    }
-                    case PcdbFieldId.Group | PcdbFieldId.Name:
-                    case PcdbFieldId.Group | PcdbFieldId.Ip:
-                    case PcdbFieldId.Group | PcdbFieldId.Gsid:
-                    {
-                        tbDetails.ReadOnly = true;
-                        tbDetails.Text = "";
-                        dtpTimestamp.Enabled = false;
-                        dtpTimestamp.CustomFormat = emptyFormat;
-                        break;
-                    }
-                    default:
-                    {
-                        tbDetails.ReadOnly = true;
-                        tbDetails.Text = currentNode.Text;
-                        dtpTimestamp.Enabled = true;
-                        dtpTimestamp.CustomFormat = Utils.DateTimePatternLong;
-                        switch (field.Id)
-                        {
-                            case PcdbFieldId.Name:
-                            {
-                                dtpTimestamp.Value = ((PcdbName)field).Timestamp;
-                                break;
-                            }
-                            case PcdbFieldId.Ip:
-                            {
-                                dtpTimestamp.Value = ((PcdbIp)field).Timestamp;
-                                break;
-                            }
-                            case PcdbFieldId.Gsid:
-                            {
-                                dtpTimestamp.Value = ((PcdbGsid)field).Timestamp;
-                                break;
-                            }
-                        }
-                        break;
-                    }
+                    break;
+                }
                 }
             }
         }
@@ -121,9 +111,7 @@ namespace ListPlayers.Dialogs
         private void OnSearchCompleted(List<PcdbEntry> data, bool cancelled)
         {
             if (data.Count == 0 && !cancelled)
-            {
                 OnNotFound();
-            }
             InvokeAsync(() =>
             {
                 foreach (var entry in data)
@@ -131,38 +119,31 @@ namespace ListPlayers.Dialogs
                     var nodeEntry = new TreeNode(entry.Hash);
                     var nodeInfo  = new TreeNode("Info");
                     nodeEntry.Nodes.Add(nodeInfo);
-
                     sample.Add(nodeEntry, entry);
                     sample.Add(nodeInfo, entry.Info);
-
                     var nodeNames = new TreeNode("Names");
                     nodeEntry.Nodes.Add(nodeNames);
                     sample.Add(nodeNames, entry.Names);
-
                     foreach (var field in entry.Names)
                     {
                         var node = new TreeNode(field.Name);
                         nodeNames.Nodes.Add(node);
                         sample.Add(node, field);
                     }
-
                     var nodeIps = new TreeNode("IPs");
                     nodeEntry.Nodes.Add(nodeIps);
                     sample.Add(nodeIps, entry.Ips);
-
                     foreach (var field in entry.Ips)
                     {
                         var node = new TreeNode(field.Ip);
                         nodeIps.Nodes.Add(node);
                         sample.Add(node, field);
                     }
-
                     if (databaseViewer.GameVersion == PcdbGameVersion.COP)
                     {
                         var nodeGsids = new TreeNode("GSIDs");
                         nodeEntry.Nodes.Add(nodeGsids);
                         sample.Add(nodeGsids, entry.Gsids);
-
                         foreach (var field in entry.Gsids)
                         {
                             var node = new TreeNode(field.Gsid.ToString());
@@ -170,10 +151,8 @@ namespace ListPlayers.Dialogs
                             sample.Add(node, field);
                         }
                     }
-
                     tvResult.Nodes.Add(nodeEntry);
                 }
-                //
                 btnExport.Enabled = true;
                 tvResult.Show();
                 pnlSearchProgress.Hide();
@@ -197,9 +176,7 @@ namespace ListPlayers.Dialogs
         private void OnConnectionStatusChanged(bool connected)
         {
             if (connected)
-            {
                 Settings.SetLastDatabase(databaseViewer.FileName);
-            }
             tbDetails.ReadOnly = true;
             tbDetails.Clear();
             btnRefresh.Enabled = connected;
@@ -236,16 +213,11 @@ namespace ListPlayers.Dialogs
         {
             string path;
             if (!PcdbFileDialog.ShowOpenDialog(out path))
-            {
                 return;
-            }
-
             if (!tbDbPath.Items.Contains(path))
             {
                 if (tbDbPath.Items.Count >= Settings.LastPathesCapacity)
-                {
                     tbDbPath.Items.RemoveAt(Settings.LastPathesCapacity - 1);
-                }
                 tbDbPath.Items.Insert(0, path);
             }
             tbDbPath.SelectedItem = path;
@@ -276,9 +248,7 @@ namespace ListPlayers.Dialogs
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             if (databaseViewer.IsBusy)
-            {
                 databaseViewer.CancelSearch();
-            }
             else
             {
                 OnBeginSearch();
@@ -294,32 +264,29 @@ namespace ListPlayers.Dialogs
             var node = CurrentNode;
             switch (sample[node].Id)
             {
-                case PcdbFieldId.Comment:
-                    entry = (PcdbEntry)sample[node.Parent];
-                    entry.Info.Item = tbDetails.Text;
-                    databaseViewer.UpdateEntry(entry, entry.Info);
-                    break;
-
-                case PcdbFieldId.Name:
-                    entry = (PcdbEntry)sample[node.Parent.Parent];
-                    var name = (PcdbName)sample[node];
-                    name.Timestamp = dtpTimestamp.Value;
-                    databaseViewer.UpdateEntry(entry, name);
-                    break;
-
-                case PcdbFieldId.Ip:
-                    entry = (PcdbEntry)sample[node.Parent.Parent];
-                    var ip = (PcdbIp)sample[node];
-                    ip.Timestamp = dtpTimestamp.Value;
-                    databaseViewer.UpdateEntry(entry, ip);
-                    break;
-
-                case PcdbFieldId.Gsid:
-                    entry = (PcdbEntry)sample[node.Parent.Parent];
-                    var gsid = (PcdbGsid)sample[node];
-                    gsid.Timestamp = dtpTimestamp.Value;
-                    databaseViewer.UpdateEntry(entry, gsid);
-                    break;
+            case PcdbFieldId.Comment:
+                entry = (PcdbEntry)sample[node.Parent];
+                entry.Info.Item = tbDetails.Text;
+                databaseViewer.UpdateEntry(entry, entry.Info);
+                break;
+            case PcdbFieldId.Name:
+                entry = (PcdbEntry)sample[node.Parent.Parent];
+                var name = (PcdbName)sample[node];
+                name.Timestamp = dtpTimestamp.Value;
+                databaseViewer.UpdateEntry(entry, name);
+                break;
+            case PcdbFieldId.Ip:
+                entry = (PcdbEntry)sample[node.Parent.Parent];
+                var ip = (PcdbIp)sample[node];
+                ip.Timestamp = dtpTimestamp.Value;
+                databaseViewer.UpdateEntry(entry, ip);
+                break;
+            case PcdbFieldId.Gsid:
+                entry = (PcdbEntry)sample[node.Parent.Parent];
+                var gsid = (PcdbGsid)sample[node];
+                gsid.Timestamp = dtpTimestamp.Value;
+                databaseViewer.UpdateEntry(entry, gsid);
+                break;
             }
         }
 
@@ -337,23 +304,18 @@ namespace ListPlayers.Dialogs
         private void dtTimestamp_ValueChanged(object sender, EventArgs e)
         {
             if (dtpTimestamp.Focused)
-            {
                 btnApply.Enabled = true;
-            }
         }
 
         private void tbDetails_TextChanged(object sender, EventArgs e)
         {
             if (tbDetails.Focused)
-            {
                 btnApply.Enabled = true;
-            }
         }
 
         private void DatabaseViewDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             databaseViewer.CloseDatabase();
-
             Settings.ShowAllRelatedData = chkAllRelatedData.Checked;
             Settings.HashPattern = chkHashPattern.Checked;
             Settings.NamePattern = chkNamePattern.Checked;
@@ -374,8 +336,7 @@ namespace ListPlayers.Dialogs
 
         private void cmResults_Popup(object sender, EventArgs e)
         {
-            var state = (tvResult.SelectedNode != null);
-
+            var state = tvResult.SelectedNode != null;
             cmiExpandAll.Enabled      = state;
             cmiCollapseAll.Enabled    = state;
             cmiExpandBranch.Enabled   = state;

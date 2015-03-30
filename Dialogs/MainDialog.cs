@@ -23,9 +23,7 @@ namespace ListPlayers.Dialogs
         public MainDialog()
         {
             InitializeComponent();
-
             lBuild.Text = Root.BuildString;
-
             clDatabaseConstructor.Click += (sender, args) => OpenConstructor();
             clDatabaseView.Click += (sender, args) => OpenViewer();
             linkMpn.LinkClicked += (sender, args) => OpenHomepage();

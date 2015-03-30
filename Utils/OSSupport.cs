@@ -21,8 +21,8 @@ namespace System
         private const int sevenMinorVersion = 1;
 
         private static readonly bool isVistaOrLater =
-            (  Environment.OSVersion.Platform == PlatformID.Win32NT
-            && Environment.OSVersion.Version.Major >= vistaMajorVersion);
+            Environment.OSVersion.Platform == PlatformID.Win32NT &&
+            Environment.OSVersion.Version.Major >= vistaMajorVersion;
 
 		public static bool IsVistaOrLater
         {
@@ -33,9 +33,9 @@ namespace System
 		}
 
         private static readonly bool isSevenOrLater = 
-            (  Environment.OSVersion.Platform == PlatformID.Win32NT
-            && Environment.OSVersion.Version.Major >= sevenMajorVersion
-            && Environment.OSVersion.Version.Minor >= sevenMinorVersion);
+            Environment.OSVersion.Platform == PlatformID.Win32NT &&
+            Environment.OSVersion.Version.Major >= sevenMajorVersion &&
+            Environment.OSVersion.Version.Minor >= sevenMinorVersion;
 
         public static bool IsSevenOrLater
         {

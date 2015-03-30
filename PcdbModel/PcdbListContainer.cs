@@ -14,7 +14,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 
 using System.Collections.Generic;
 
-
 namespace ListPlayers.PcdbModel
 {
     public sealed class PcdbListContainer<T> : List<T>, IPcdbField

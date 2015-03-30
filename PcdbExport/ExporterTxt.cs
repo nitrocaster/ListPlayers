@@ -15,7 +15,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 using System;
 using System.ComponentModel;
 
-
 namespace ListPlayers.PcdbExport
 {
     public sealed class ExporterTxt : ExporterBase
@@ -24,55 +23,38 @@ namespace ListPlayers.PcdbExport
         {
             var hashes = Chunk.Hashes.Rows;
             var names = Chunk.Names.Rows;
-            var ips = Chunk.Ips.Rows;
-            
+            var ips = Chunk.Ips.Rows;            
             var hashesCount = hashes.Count;
             var namesCount = names.Count;
-            var ipsCount = ips.Count;
-            
+            var ipsCount = ips.Count;            
             try
             {
                 for (var i = 0; i < hashesCount; ++i)
                 {
                     if (Dialog.Cancelled)
-                    {
                         break;
-                    }
-
                     var currentId = Convert.ToInt32(hashes[i][0]);
-
                     Writer.WriteLine(hashes[i][1].ToString());
                     Writer.WriteLine("\r\n; names\r\n");
-
                     for (var j = 0; j < namesCount; ++j)
                     {
                         if (Dialog.Cancelled)
-                        {
                             break;
-                        }
                         if (Convert.ToInt32(names[j][0]) != currentId)
-                        {
                             continue;
-                        }
                         Writer.WriteLine("    {0,-32} | {1}",
-                                         names[j][1],
-                                         ((DateTime)names[j][2]).ToString(Utils.DateTimePatternLong));
+                            names[j][1], ((DateTime)names[j][2]).ToString(Utils.DateTimePatternLong));
                     }
 
                     Writer.WriteLine("\r\n; ip addresses\r\n");
                     for (var j = 0; j < ipsCount; ++j)
                     {
                         if (Dialog.Cancelled)
-                        {
                             break;
-                        }
                         if (Convert.ToInt32(ips[j][0]) != currentId)
-                        {
                             continue;
-                        }
                         Writer.WriteLine("    {0,-32} | {1}",
-                                         ips[j][1],
-                                         ((DateTime)ips[j][2]).ToString(Utils.DateTimePatternLong));
+                            ips[j][1], ((DateTime)ips[j][2]).ToString(Utils.DateTimePatternLong));
                     }
 
                     if (Chunk.Gsids != null)
@@ -83,22 +65,16 @@ namespace ListPlayers.PcdbExport
                         for (var j = 0; j < gsidsCount; ++j)
                         {
                             if (Dialog.Cancelled)
-                            {
                                 break;
-                            }
                             if (Convert.ToInt32(gsids[j][0]) != currentId)
-                            {
                                 continue;
-                            }
                             Writer.WriteLine("    {0,-32} | {1}",
-                                             gsids[j][1],
-                                             ((DateTime)gsids[j][2]).ToString(Utils.DateTimePatternLong));
+                                gsids[j][1], ((DateTime)gsids[j][2]).ToString(Utils.DateTimePatternLong));
                         }
                     }
                     Writer.WriteLine("\r\n; comments\r\n");
                     Writer.WriteLine(hashes[i][2]);
                     Writer.WriteLine("\r\n; ----\r\n");
-
                     ++CurrentProgress;
                     Worker.ReportProgress(0);
                 }

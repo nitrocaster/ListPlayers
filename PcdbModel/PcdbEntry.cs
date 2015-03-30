@@ -18,12 +18,10 @@ namespace ListPlayers.PcdbModel
     {
         public readonly PcdbItemContainer<string>   Hash  = new PcdbItemContainer<string>(PcdbFieldId.Hash);
         public readonly PcdbItemContainer<string>   Info  = new PcdbItemContainer<string>(PcdbFieldId.Comment);
-
         public readonly PcdbListContainer<PcdbName> Names = new PcdbListContainer<PcdbName>(PcdbFieldId.Name);
         public readonly PcdbListContainer<PcdbIp>   Ips   = new PcdbListContainer<PcdbIp>(PcdbFieldId.Ip);
         public readonly PcdbListContainer<PcdbGsid> Gsids = new PcdbListContainer<PcdbGsid>(PcdbFieldId.Gsid);
-
-
+        
         public PcdbEntry(string hash)
         {
             Hash.Item = hash;

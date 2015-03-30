@@ -21,15 +21,13 @@ public static unsafe partial class WinAPI
     public const uint BM_SETIMAGE = 0x00F7;
     public const uint BCM_GETNOTE = 0x0000160A;
     public const uint BCM_GETNOTELENGTH = 0x0000160B;
-
-
+    
     [DllImport(ExternDll.USER32, SetLastError = true)]
     public static extern VoidPtr LoadCursor(VoidPtr hInstance, int lpCursorName);
 
     [DllImport(ExternDll.USER32, SetLastError = true)]
     public static extern VoidPtr SetCursor(VoidPtr hCursor);
     
-
     [DllImport(ExternDll.USER32, CharSet = CharSet.Auto, SetLastError = true)]
     public static extern VoidPtr SendMessage(VoidPtr hWnd, uint Msg, VoidPtr wParam, VoidPtr lParam);
 

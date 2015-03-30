@@ -27,9 +27,7 @@ namespace System.Windows.Forms
         {
             base.OnHandleCreated(e);
             if (OSSupport.IsVistaOrLater)
-            {
                 WinAPI.SetWindowTheme(Handle, "Explorer", null);
-            }
         }
     }
 }

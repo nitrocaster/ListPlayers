@@ -22,7 +22,6 @@ using ListPlayers.Common;
 using ListPlayers.PcdbModel;
 using ListPlayers.Dialogs;
 
-
 namespace ListPlayers
 {
     public static class Root
@@ -56,17 +55,12 @@ namespace ListPlayers
                         }
                     }
                 }
-
                 SelfPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
                 CheckFileType();
-
                 Settings.Load();
-
                 var mainDialog = new MainDialog();
                 Utils.CreateThread(Updater.CheckForUpdates, "Updater");
-
                 Application.Run(mainDialog);
-
                 Settings.Save();
 #if !DEBUG
             }
@@ -84,13 +78,11 @@ namespace ListPlayers
                 MsgBox.Error("Can't open file: " + path);
                 return;
             }
-            var database = PcdbFile.Open(path);
-            database.OpenConnection();
-            int names;
-            int ips;
-            database.Clean(out names, out ips);
-            database.CloseConnection();
-
+            var db = PcdbFile.Open(path);
+            db.OpenConnection();
+            int names, ips;
+            db.Clean(out names, out ips);
+            db.CloseConnection();
             MsgBox.Info(String.Format("Cleaned:\t\t\nNames: {0}\nIPs: {1}", names, ips));
         }
 
@@ -102,14 +94,11 @@ namespace ListPlayers
         private static void CheckFileType()
         {
             const string pcdbExtKey  = @"HKEY_CLASSES_ROOT\.pcdb";
-            const string pcdbTypeKey = @"HKEY_CLASSES_ROOT\PlayersCorrespondenceDatabase";
-
-            if ((string)Registry.GetValue(pcdbExtKey, null, null) == "PlayersCorrespondenceDatabase")
-            {
+            const string pcdbTypeName = "PlayersCorrespondenceDatabase";
+            const string pcdbTypeKey = @"HKEY_CLASSES_ROOT\" + pcdbTypeName;
+            if ((string)Registry.GetValue(pcdbExtKey, null, null) == pcdbTypeName)
                 return;
-            }
-
-            Registry.SetValue(pcdbExtKey,  null, "PlayersCorrespondenceDatabase",   RegistryValueKind.String);
+            Registry.SetValue(pcdbExtKey, null, pcdbTypeName, RegistryValueKind.String);
             Registry.SetValue(pcdbTypeKey, null, "Players Correspondence Database", RegistryValueKind.String);
             Registry.SetValue(pcdbTypeKey + "\\DefaultIcon", null, "imageres.dll,-67", RegistryValueKind.String);
         }

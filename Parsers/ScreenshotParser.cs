@@ -15,7 +15,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 using System.IO;
 using ListPlayers.PcdbModel;
 
-
 namespace ListPlayers.Parsers
 {
     public sealed class ScreenshotParser : ISpecificParser

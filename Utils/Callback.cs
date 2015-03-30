@@ -14,7 +14,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 
 using System.Windows.Forms;
 
-
 namespace System
 {
     public static class Callback
@@ -122,4 +121,3 @@ namespace System
         }
     }
 }
-

@@ -16,7 +16,6 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-
 namespace ListPlayers.Service
 {
     public sealed partial class UpdaterDialog : Form
@@ -26,7 +25,6 @@ namespace ListPlayers.Service
         public UpdaterDialog(UpdateInfo info)
         {
             InitializeComponent();
-
             AcceptButton = btnDownload;
             lVersionNum.Text = info.Version;
             tbVersionInfo.Text = info.Description;

@@ -35,22 +35,15 @@ namespace ListPlayers.Parsers
             public override void Parse(string path)
             {
                 var digest = "";
-
                 var insideName = false;
                 var insideIp   = false;
                 var insideGsid = false;
-
                 var progress = new Progress(100);
                 OnProgressChanged(progress);
                 var currentLine = -1;
-
                 char[] hexDigestTrimChars = { '[', ']', ' ', '\t' };
-
                 if (!VerifyOldDatabase(path, Database.GetGameVersion()) || Cancelled)
-                {
                     return;
-                }
-
                 using (var reader = new StreamReader(path, Encoding.Default))
                 {
                     try
@@ -58,21 +51,15 @@ namespace ListPlayers.Parsers
                         while (!reader.EndOfStream)
                         {
                             if (Cancelled)
-                            {
                                 break;
-                            }
-
                             ++currentLine;
-
                             var newProgress = (uint)Math.Round(100.0 * reader.BaseStream.Position / reader.BaseStream.Length);
                             if (newProgress > progress.Current)
                             {
                                 progress.Current = newProgress;
                                 OnProgressChanged(progress);
                             }
-
                             var buf = reader.ReadLine().TrimEnd();
-
                             if (buf.StartsWith("[") && buf.EndsWith("]") && buf.Length == 34)
                             {
                                 OnFoundData(DatabaseTableId.Hash);
@@ -80,61 +67,46 @@ namespace ListPlayers.Parsers
                                 continue;
                             }
                             if (buf == "" || buf == "\t{" || buf.Trim() == "")
-                            {
                                 continue;
-                            }
-
                             switch (buf.Remove(0, 1))
                             {
-                                case "player_name":
-                                    insideName = true;
-                                    continue;
-
-                                case "player_ip":
-                                    insideIp = true;
-                                    continue;
-
-                                case "player_profile_id":
-                                    insideGsid = true;
-                                    continue;
-
-                                case "}":
-                                    insideName = false;
-                                    insideIp   = false;
-                                    insideGsid = false;
-                                    continue;
+                            case "player_name":
+                                insideName = true;
+                                continue;
+                            case "player_ip":
+                                insideIp = true;
+                                continue;
+                            case "player_profile_id":
+                                insideGsid = true;
+                                continue;
+                            case "}":
+                                insideName = false;
+                                insideIp   = false;
+                                insideGsid = false;
+                                continue;
                             }
-
                             if (insideName)
                             {
                                 OnFoundData(DatabaseTableId.Name);
                                 var name = buf.Trim();
                                 if (name != "" && digest != "")
-                                {
                                     Database.AppendName(digest, name, PcdbFile.InvalidDateTime);
-                                }
                                 continue;
                             }
-
                             if (insideIp)
                             {
                                 OnFoundData(DatabaseTableId.Ip);
                                 var ip = buf.Trim();
                                 if (ip != "" & digest != "")
-                                {
                                     Database.AppendIp(digest, ip, PcdbFile.InvalidDateTime);
-                                }
                                 continue;
                             }
-
                             if (insideGsid)
                             {
                                 OnFoundData(DatabaseTableId.Gsid);
                                 var profileID = buf.Trim();
                                 if (profileID != "" & digest != "")
-                                {
                                     Database.AppendGsid(digest, Convert.ToUInt32(profileID), PcdbFile.InvalidDateTime);
-                                }
                                 continue;
                             }
                         }
@@ -158,23 +130,18 @@ namespace ListPlayers.Parsers
             {
                 var hashCount = 0;
                 var gsidCount = 0;
-
                 using (var reader = new StreamReader(path, Encoding.Default))
                 {
                     while (!reader.EndOfStream)
                     {
                         if (Cancelled)
-                        {
                             return false;
-                        }
                         var buf = reader.ReadLine().TrimEnd();
-
                         if (buf.StartsWith("[") && buf.EndsWith("]") && buf.Length == 34)
                         {
                             ++hashCount;
                             continue;
                         }
-
                         if (buf == "\tplayer_profile_id")
                         {
                             ++gsidCount;
@@ -183,13 +150,9 @@ namespace ListPlayers.Parsers
                     }
                 }
                 if (version == PcdbGameVersion.COP && hashCount != gsidCount)
-                {
                     return false;
-                }
                 if (version != PcdbGameVersion.COP && gsidCount != 0)
-                {
                     return false;
-                }
                 return true;
             }
         }

@@ -35,14 +35,24 @@ namespace ListPlayers.Common
             }
         }
 
+        public event Action<DatabaseTableId, int> FoundData;
+        public event Action<DatabaseTableId, int> AppendedData;
+        public event Action<GlobalProgressInfo> GlobalProgressChanged;
+        public event Action<Progress> FileProgressChanged;
+        public event Action<int, bool> UpdateCompleted;
+        public event Action CommitTransaction;
+        public event Action Compress;
+        public event Action RollBackTransaction;
+        public event Action OpenConnection;
+        public event Action BeginTransaction;
+
         private readonly IList<string> files;
-        private readonly string databasePath;
-        
+        private readonly string dbPath;        
         private HostParser host;
 
-        public DatabaseUpdater(string databasePath, IList<string> files)
+        public DatabaseUpdater(string dbPath, IList<string> files)
         {
-            this.databasePath = databasePath;
+            this.dbPath = dbPath;
             this.files = files;
         }
 
@@ -58,24 +68,20 @@ namespace ListPlayers.Common
 
         private void BeginUpdateProc()
         {
-            var db = PcdbFile.Open(databasePath);
+            var db = PcdbFile.Open(dbPath);
             OnOpenConnection();
             db.OpenConnection();
             OnBeginTransaction();
             db.BeginTransaction();
-
             var count = files.Count;
             var progressInfo = new GlobalProgressInfo(null, new Progress((uint)count), true);
-
             OnGlobalProgressChanged(progressInfo);
             progressInfo.Startup = false;
-
             using (host = new HostParser(db, ApplicationPersistent.ParserProviders))
             {
                 db.AppendedData += OnAppendedData;
                 host.FoundData += OnFoundData;
                 host.ProgressChanged += OnFileProgressChanged;
-
                 for (var i = 0; i < count; ++i)
                 {
                     if (Cancelled)
@@ -85,20 +91,16 @@ namespace ListPlayers.Common
                         db.CloseConnection();
                         break;
                     }
-
                     progressInfo.Progress.Current = (uint)i;
                     progressInfo.File = files[i];
                     OnGlobalProgressChanged(progressInfo);
-
                     host.Parse(files[i]);
                 }
-
                 host.FoundData -= OnFoundData;
                 host.ProgressChanged -= OnFileProgressChanged;
                 db.AppendedData -= OnAppendedData;
             }
             host = null;
-
             if (!Cancelled)
             {
                 OnCommitTransaction();
@@ -107,7 +109,6 @@ namespace ListPlayers.Common
                 OnCompress();
                 db.Compress();
             }
-
             Completed = true;
             OnUpdateCompleted(count, !Cancelled);
         }
@@ -122,9 +123,7 @@ namespace ListPlayers.Common
         {
             Cancelled = true;
             if (host != null)
-            {
                 host.Cancel();
-            }
         }
 
         public bool Cancelled
@@ -133,107 +132,64 @@ namespace ListPlayers.Common
             private set;
         }
 
-        //
-
-        public event Action<DatabaseTableId, int> FoundData;
-
-        public event Action<DatabaseTableId, int> AppendedData;
-
-        public event Action<GlobalProgressInfo> GlobalProgressChanged;
-
-        public event Action<Progress> FileProgressChanged;
-
-        public event Action<int, bool> UpdateCompleted;
-
-        public event Action CommitTransaction;
-
-        public event Action Compress;
-
-        public event Action RollBackTransaction;
-
-        public event Action OpenConnection;
-
-        public event Action BeginTransaction;
-
-
         private void OnFoundData(DatabaseTableId field, int count = 1)
         {
             if (FoundData != null)
-            {
                 FoundData(field, count);
-            }
         }
 
         private void OnAppendedData(DatabaseTableId field, int count = 1)
         {
             if (AppendedData != null)
-            {
                 AppendedData(field, count);
-            }
         }
 
         private void OnGlobalProgressChanged(GlobalProgressInfo info)
         {
             if (GlobalProgressChanged != null)
-            {
                 GlobalProgressChanged(info);
-            }
         }
 
         private void OnFileProgressChanged(Progress progress)
         {
             if (FileProgressChanged != null)
-            {
                 FileProgressChanged(progress);
-            }
         }
 
         private void OnUpdateCompleted(int fileCount, bool success)
         {
             if (UpdateCompleted != null)
-            {
                 UpdateCompleted(fileCount, success);
-            }
         }
 
         private void OnCommitTransaction()
         {
             if (CommitTransaction != null)
-            {
                 CommitTransaction();
-            }
         }
 
         private void OnCompress()
         {
             if (Compress != null)
-            {
                 Compress();
-            }
         }
 
         private void OnRollBackTransaction()
         {
             if (RollBackTransaction != null)
-            {
                 RollBackTransaction();
-            }
         }
 
         private void OnOpenConnection()
         {
             if (OpenConnection != null)
-            {
                 OpenConnection();
-            }
         }
 
         private void OnBeginTransaction()
         {
             if (BeginTransaction != null)
-            {
                 BeginTransaction();
-            }
         }
     }
 }

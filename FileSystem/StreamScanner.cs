@@ -39,15 +39,11 @@ namespace FileSystem
                     shift = 1;
                 }
                 else
-                {
                     ++shift;
-                }
             }
             var ret = new int[shiftCount];
             for (var i = 0; i < shiftCount; ++i)
-            {
                 ret[i] = shifts[i];
-            }
             return ret;
         }
 
@@ -55,9 +51,7 @@ namespace FileSystem
         {
             var newBuffer = new byte[buffer.Length];
             for (var i = 0; i < keepSize; ++i)
-            {
                 newBuffer[i] = buffer[buffer.Length - keepSize + i];
-            }
             return newBuffer;
         }
 
@@ -72,13 +66,9 @@ namespace FileSystem
                 while (true)
                 {
                     if (index >= haystackSize)
-                    {
                         return -1;
-                    }
                     if (haystack[index] == needle[needleIndex])
-                    {
                         break;
-                    }
                     ++index;
                 }
                 var searchIndex = index;
@@ -89,9 +79,7 @@ namespace FileSystem
                     --needleIndex;
                 }
                 if (needleIndex < 0)
-                {
                     return index - needle.Length + 1;
-                }
                 if (shiftFlag)
                 {
                     shiftFlag = false;
@@ -106,13 +94,9 @@ namespace FileSystem
                 else
                 {
                     if (shiftArray.Length == 0)
-                    {
                         ++index;
-                    }
                     else
-                    {
                         index += shiftArray[currentShiftIndex++];
-                    }
                 }
             }
         }
@@ -126,9 +110,7 @@ namespace FileSystem
         public static int FindBytes(Stream stream, byte[] needle, int bufferSize = defaultBufferSize)
         {
             if (needle.Length > bufferSize)
-            {
                 bufferSize = needle.Length;
-            }
             var buffer = new byte[bufferSize];
             var shiftArray = BuildShiftArray(needle);
             var offset = 0;
@@ -137,14 +119,10 @@ namespace FileSystem
             {
                 var bytesRead = stream.Read(buffer, needle.Length - init, buffer.Length - needle.Length + init);
                 if (bytesRead == 0)
-                {
                     return -1;
-                }
                 var val = FindBytes(buffer, bytesRead + needle.Length - init, needle, shiftArray);
                 if (val != -1)
-                {
                     return val + offset;
-                }
                 buffer = FlushBuffer(buffer, needle.Length);
                 offset += bytesRead - init;
                 init = 0;

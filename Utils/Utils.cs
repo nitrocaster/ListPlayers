@@ -39,9 +39,7 @@ public static partial class Utils
             CurrentCulture = CultureInfo.InvariantCulture
         };
         if (!suspended)
-        {
             trd.Start();
-        }
         return trd;
     }
 
@@ -54,13 +52,9 @@ public static partial class Utils
             CurrentCulture  = CultureInfo.InvariantCulture
         };
         if (!suspended)
-        {
             trd.Start(arg);
-        }
         return trd;
     }
-
-    // -----------------------------------------------------------------------------------
 
     public static string BoolToString(bool b)
     {
@@ -70,14 +64,9 @@ public static partial class Utils
     public static bool StringToBool(string a)
     {
         if (a == "1" || a == "on")
-        {
             return true;
-        }
         if (a == "0" || a == "off")
-        {
             return false;
-        }
-
         throw new ArgumentException();
     }
 
@@ -97,8 +86,6 @@ public static partial class Utils
         return false;
     }
 
-    //
-
     public static string Itoa(int i)
     {
         return i.ToString(CultureInfo.InvariantCulture);
@@ -113,8 +100,6 @@ public static partial class Utils
     {
         return int.TryParse(a, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
     }
-
-    //
 
     public static string Ltoa(long i)
     {
@@ -131,8 +116,6 @@ public static partial class Utils
         return long.TryParse(a, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
     }
 
-    //
-
     public static string Ftoa(float f)
     {
         return f.ToString("#0.000###", CultureInfo.InvariantCulture);
@@ -147,8 +130,6 @@ public static partial class Utils
     {
         return float.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
     }
-
-    //
 
     public static string Dtoa(double d)
     {
@@ -165,8 +146,6 @@ public static partial class Utils
         return double.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
     }
     
-    //
-
     public static string GetCurrentDateTime()
     {
         return DateTime.Now.ToString(DateTimePatternShort, CultureInfo.InvariantCulture);

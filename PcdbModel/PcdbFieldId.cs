@@ -12,7 +12,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 ====================================================================================
 */
 
-
 using System;
 
 namespace ListPlayers.PcdbModel

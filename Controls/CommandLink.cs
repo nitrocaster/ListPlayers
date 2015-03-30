@@ -23,20 +23,16 @@ namespace System.Windows.Forms
             // Only add BS_COMMANDLINK style on Windows Vista or above.
             // Otherwise, button creation will fail.
             if (OSSupport.IsVistaOrLater)
-            {
                 newStyle |= WinAPI.BS_COMMANDLINK;
-            }
             return newStyle;
         }
 
         private static unsafe string GetNote(Button button)
         {
             var retVal = WinAPI.SendMessage(button.Handle, WinAPI.BCM_GETNOTELENGTH, VoidPtr.Null, VoidPtr.Null);
-
             // Add 1 for null terminator, to get the entire string back.
             var len = (int)retVal + 1;
             var builder = new StringBuilder(len);
-
             retVal = WinAPI.SendMessage(button.Handle, WinAPI.BCM_GETNOTE, &len, builder);
             return builder.ToString();
         }

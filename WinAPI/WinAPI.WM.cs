@@ -236,8 +236,6 @@ public static partial class WinAPI
         public const uint WM_XBUTTONDOWN = 0x020B;
         public const uint WM_XBUTTONUP = 0x020C;
 
-        //
-
         private uint value;
 
         public static implicit operator uint(WM arg)
@@ -253,4 +251,3 @@ public static partial class WinAPI
         }
     }
 }
-

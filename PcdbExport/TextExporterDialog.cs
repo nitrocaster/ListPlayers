@@ -17,7 +17,6 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using ListPlayers.PcdbModel;
 
-
 namespace ListPlayers.PcdbExport
 {
     public sealed partial class TextExporterDialog : FormEx, ITextExporterView
@@ -26,7 +25,6 @@ namespace ListPlayers.PcdbExport
         private Action startExport;
         private bool isBusy = false;
         private bool userclose = false;
-
 
         public TextExporterDialog()
         {
@@ -42,32 +40,27 @@ namespace ListPlayers.PcdbExport
         public DialogResult Export(PcdbChunk chunk, ExportFormat format)
         {
             if (isBusy)
-            {
                 throw new InvalidOperationException("Export has been already started.");
-            }
-
             switch (format)
             {
-                case ExportFormat.Txt:
-                {
-                    var exporter = new ExporterTxt();
-                    startExport = () => exporter.RunExport(this, Destination, chunk);
-                    var result = ShowDialog();
-                    exporter.Dispose();
-                    return result;
-                }
-                case ExportFormat.Radb:
-                {
-                    var exporter = new ExporterRadb();
-                    startExport = () => exporter.RunExport(this, Destination, chunk);
-                    var result = ShowDialog();
-                    exporter.Dispose();
-                    return result;
-                }
-                default:
-                {
-                    throw new InvalidEnumArgumentException("Format not supported: " + format);
-                }
+            case ExportFormat.Txt:
+            {
+                var exporter = new ExporterTxt();
+                startExport = () => exporter.RunExport(this, Destination, chunk);
+                var result = ShowDialog();
+                exporter.Dispose();
+                return result;
+            }
+            case ExportFormat.Radb:
+            {
+                var exporter = new ExporterRadb();
+                startExport = () => exporter.RunExport(this, Destination, chunk);
+                var result = ShowDialog();
+                exporter.Dispose();
+                return result;
+            }
+            default:
+                throw new InvalidEnumArgumentException("Format not supported: " + format);
             }
         }
         
@@ -84,9 +77,7 @@ namespace ListPlayers.PcdbExport
         private void TextExporterDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!isBusy)
-            {
                 return;
-            }
             cancelled = true;
             userclose = true;
             e.Cancel = true;
@@ -95,9 +86,7 @@ namespace ListPlayers.PcdbExport
         private void TextExporterDialog_VisibleChanged(object sender, EventArgs e)
         {
             if (isBusy)
-            {
                 return;
-            }
             isBusy = true;
             startExport();
         }

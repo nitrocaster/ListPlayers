@@ -35,9 +35,7 @@ namespace ListPlayers
             set
             {
                 if (value > maximum)
-                {
                     value = maximum;
-                }
                 current = value;
             }
         }
@@ -52,9 +50,7 @@ namespace ListPlayers
             {
                 maximum = value;
                 if (current > maximum)
-                {
                     current = maximum;
-                }
             }
         }
 

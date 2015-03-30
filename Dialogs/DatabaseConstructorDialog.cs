@@ -25,7 +25,6 @@ namespace ListPlayers.Dialogs
     public sealed partial class DatabaseConstructorDialog : FormEx
     {
         private List<string> files;
-
         public bool   Back;
         public bool   Cancel;
         public string Destination;
@@ -34,12 +33,9 @@ namespace ListPlayers.Dialogs
         public DatabaseConstructorDialog()
         {
             InitializeComponent();
-
-            files = new List<string>();
-            
+            files = new List<string>();            
             Cancel = true;
             cbSubFolders.Checked = Settings.SearchSubfolders;
-
             cbSrc.Items.AddRange(Settings.RecentSources);
             cbDest.Items.AddRange(Settings.RecentDatabases);
         }
@@ -57,58 +53,42 @@ namespace ListPlayers.Dialogs
             if (!Directory.Exists(cbSrc.Text))
             {
                 if (cbSrc.Text.Trim() == "")
-                {
                     MsgBox.Info(StringTable.SelectSourceFolder);
-                }
                 else
-                {
                     MsgBox.Warning(StringTable.SelectedFolderNotFound);
-                }
                 return;
             }
-
             var option = cbSubFolders.Checked ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             files.AddRange(Directory.GetFiles(cbSrc.Text, "*.ltx", option));
             files.AddRange(Directory.GetFiles(cbSrc.Text, "*.jpg", option));
             files.AddRange(Directory.GetFiles(cbSrc.Text, "*.pcdb", option));
-
             if (files.Count == 0)
             {
                 MsgBox.Warning(StringTable.SelectedFolderDoesntContainAcceptedFiles);
                 return;
             }
-
             if (!File.Exists(cbDest.Text))
             {
                 if (cbDest.Text.Trim() == "")
-                {
                     MsgBox.Info(StringTable.SelectDatabaseFile);
-                }
                 else
-                {
                     MsgBox.Warning(StringTable.SelectedFileNotFound);
-                }
                 return;
             }
-
             var dst = cbDest.Text;
             var count = files.Count;
             for (var i = 0; i < count; ++i)
             {
                 if (files[i] != dst)
-                {
                     continue;
-                }
                 files.RemoveAt(i);
                 break;
             }
-
             if (files.Count == 0)
             {
                 MsgBox.Warning(StringTable.SelectedFolderDoesntContainAcceptedFiles);
                 return;
             }
-
             Source       = cbSrc.Text;
             Destination  = cbDest.Text;
             Cancel       = false;
@@ -121,9 +101,7 @@ namespace ListPlayers.Dialogs
             {
                 browser.Description = StringTable.BrowserSelectSourceFolder;
                 if (browser.ShowDialog() == DialogResult.OK)
-                {
                     cbSrc.Text = browser.SelectedPath;
-                }
             }
         }
 
@@ -131,9 +109,7 @@ namespace ListPlayers.Dialogs
         {
             string path;
             if (PcdbFileDialog.ShowOpenDialog(out path))
-            {
                 cbDest.Text = path;
-            }
         }
 
         private void linkCreateEmptyDbCS_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

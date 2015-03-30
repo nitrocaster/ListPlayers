@@ -32,59 +32,43 @@ namespace ListPlayers.Parsers
         protected void InternalParseDumpedFile(string path, string infoSectionName)
         {
             var infoSection = "[" + infoSectionName + "]\r\n";
-
             var digest = "";
             var timeStamp = PcdbFile.InvalidDateTime;
             using (var reader = new StreamReader(path, Encoding.Default))
             {
                 var pos = StreamScanner.FindString(reader.BaseStream, reader.CurrentEncoding, infoSection);
                 if (pos == -1)
-                {
                     return;
-                }
                 reader.DiscardBufferedData();
                 reader.BaseStream.Seek(pos, SeekOrigin.Begin);
                 reader.ReadLine();
-
                 while (!reader.EndOfStream)
                 {
                     if (Cancelled)
-                    {
                         break;
-                    }
                     var buf = reader.ReadLine();
                     var entry = IniFile.ExtractKeyValuePair(buf, false);
-
                     switch (entry.Key)
                     {
-                        case "creation_date":
-                        {
-                            timeStamp = StrToDateTime(entry.Value);
-                            continue;
-                        }
-                        case "player_digest":
-                        {
-                            digest = entry.Value;
-                            if (digest != "")
-                            {
-                                OnFoundData(DatabaseTableId.Hash);
-                            }
-                            else
-                            {
-                                return;
-                            }
-                            continue;
-                        }
-                        case "player_name":
-                        {
-                            var name = entry.Value;
-                            if (name != "" & digest != "")
-                            {
-                                OnFoundData(DatabaseTableId.Name);
-                                Database.AppendName(digest, name, timeStamp);
-                            }
+                    case "creation_date":
+                        timeStamp = StrToDateTime(entry.Value);
+                        continue;
+                    case "player_digest":
+                        digest = entry.Value;
+                        if (digest == "")
                             return;
+                        OnFoundData(DatabaseTableId.Hash);
+                        continue;
+                    case "player_name":
+                    {
+                        var name = entry.Value;
+                        if (name != "" & digest != "")
+                        {
+                            OnFoundData(DatabaseTableId.Name);
+                            Database.AppendName(digest, name, timeStamp);
                         }
+                        return;
+                    }
                     }
                 }
             }
@@ -100,14 +84,11 @@ namespace ListPlayers.Parsers
             // "MM-DD-YY_hh-mm-ss"
             // dateString = "14 11 11 08 30 48";
             // format =     "dd.MM.yyyy_HH:mm:ss";
-
             var dateparts = src.Split(dateTimeSplitChars);
             var builder = new StringBuilder(64);
             for (var i = 0; i < dateparts.Length; ++i)
-            {
                 builder.Append(dateparts[i]);
-            }
-            var result = DateTime.ParseExact(builder.ToString(), "ddMMyyyyHHmmss", CultureInfo.InvariantCulture); // bug: StrToDateTime 
+            var result = DateTime.ParseExact(builder.ToString(), "ddMMyyyyHHmmss", CultureInfo.InvariantCulture); // bug: StrToDateTime
             return result;
         }
     }

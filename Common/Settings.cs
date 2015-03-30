@@ -24,7 +24,6 @@ namespace ListPlayers.Common
     public static class Settings
     {
         private const string configFileName = "listplayers.ini";
-
         public const int LastPathesCapacity = 5;
         private static readonly List<string> recentDatabases = new List<string>(LastPathesCapacity + 1);
         private static readonly List<string> recentSources   = new List<string>(LastPathesCapacity + 1);
@@ -77,7 +76,6 @@ namespace ListPlayers.Common
                 MsgBox.Error(String.Format("Can't read file: {0}\n\n{1}", Path.GetFullPath(path), e.Message));
                 return;
             }
-
             if (cfg.ContainsSection("global"))
             {
                 cfg.TryGetBool("global", "search_subfolders",     ref SearchSubfolders);
@@ -92,9 +90,7 @@ namespace ListPlayers.Common
                 {
                     string buf = null;
                     if (!cfg.TryGetString("last_databases", i.ToString(), ref buf))
-                    {
                         break;
-                    }
                     recentDatabases.Insert(0, buf);
                 }
             }
@@ -104,9 +100,7 @@ namespace ListPlayers.Common
                 {
                     string buf = null;
                     if (!cfg.TryGetString("last_sources", i.ToString(), ref buf))
-                    {
                         break;
-                    }
                     recentSources.Insert(0, buf);
                 }
             }
@@ -119,26 +113,19 @@ namespace ListPlayers.Common
                 using (var writer = new StreamWriter(path, false, Encoding.Default))
                 {
                     writer.WriteLine("[global]");
-
                     writer.WriteLine("search_subfolders     =   {0}", Utils.BoolToString(SearchSubfolders));
                     writer.WriteLine("show_all_related_data =   {0}", Utils.BoolToString(ShowAllRelatedData));
                     writer.WriteLine("hashes_pattern        =   {0}", Utils.BoolToString(HashPattern));
                     writer.WriteLine("names_pattern         =   {0}", Utils.BoolToString(NamePattern));
                     writer.WriteLine("ips_pattern           =   {0}", Utils.BoolToString(IpPattern));
-
                     writer.WriteLine("\r\n[last_databases]");
                     var tmp = recentDatabases;
                     for (var i = tmp.Count - 1; i >= 0; --i)
-                    {
                         writer.WriteLine((tmp.Count - i - 1) + " = " + tmp[i]);
-                    }
-
                     writer.WriteLine("\r\n[last_sources]");
                     tmp = recentSources;
                     for (var i = tmp.Count - 1; i >= 0; --i)
-                    {
                         writer.WriteLine((tmp.Count - i - 1) + " = " + tmp[i]);
-                    }
                 }
             }
             catch (Exception e)
@@ -150,13 +137,9 @@ namespace ListPlayers.Common
         public static bool SetLastDatabase(string path)
         {
             if (recentDatabases.Contains(path))
-            {
                 return false;
-            }
             if (recentDatabases.Count >= LastPathesCapacity)
-            {
                 recentDatabases.RemoveAt(recentDatabases.Count - 1);
-            }
             recentDatabases.Insert(0, path);
             return true;
         }
@@ -164,13 +147,9 @@ namespace ListPlayers.Common
         public static bool SetLastSource(string path)
         {
             if (recentSources.Contains(path))
-            {
                 return false;
-            }
             if (recentSources.Count >= LastPathesCapacity)
-            {
                 recentSources.RemoveAt(recentSources.Count - 1);
-            }
             recentSources.Insert(0, path);
             return true;
         }

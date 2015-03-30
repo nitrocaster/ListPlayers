@@ -27,17 +27,13 @@ namespace ListPlayers.Parsers
         {
             this.host = host;
             if (host != null)
-            {
                 host.ParsingCancelled += Cancel;
-            }
         }
 
         public virtual void Dispose()
         {
             if (host != null)
-            {
                 host.ParsingCancelled -= Cancel;
-            }
         }
 
         public abstract void Parse(string path);
@@ -49,7 +45,6 @@ namespace ListPlayers.Parsers
 
         protected bool Cancelled = false;
 
-
         public event Action<DatabaseTableId, int> FoundData;
 
         public event Action<Progress> ProgressChanged;
@@ -58,18 +53,14 @@ namespace ListPlayers.Parsers
         {
             var target = host ?? this;
             if (target.FoundData != null)
-            {
                 target.FoundData(field, count);
-            }
         }
 
         protected void OnProgressChanged(Progress progress)
         {
             var target = host ?? this;
             if (target.ProgressChanged != null)
-            {
                 target.ProgressChanged(progress);
-            }
         }
     }
 }

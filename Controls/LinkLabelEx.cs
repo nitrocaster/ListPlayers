@@ -35,13 +35,9 @@ namespace System.Windows.Forms
             if (m.Msg == WinAPI.WM.WM_SETCURSOR)
             {
                 if (OverrideCursor == Cursors.Hand)
-                {
                     WinAPI.SetCursor(hCursorHand);
-                }
                 else
-                {
                     WinAPI.SetCursor(Cursors.Arrow.Handle);
-                }
                 m.Result = IntPtr.Zero;
                 return;
             }

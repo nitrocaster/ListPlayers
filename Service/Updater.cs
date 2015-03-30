@@ -16,7 +16,6 @@ using System;
 using System.Net;
 using System.Text;
 
-
 namespace ListPlayers.Service
 {
     public struct UpdateInfo
@@ -36,10 +35,7 @@ namespace ListPlayers.Service
         public static void CheckForUpdates()
         {
             if (updaterDialog != null && !updaterDialog.IsDisposed)
-            {
                 return;
-            }
-
             UpdateInfo info;
             if (GetUpdateInfo(out info) && info.IsNewer)
             {
@@ -52,7 +48,6 @@ namespace ListPlayers.Service
         {
             const string keyLink    = "link =";
             const string keyVersion = "version =";
-
             info = default(UpdateInfo);
             using (var client = new WebClient())
             {
@@ -66,12 +61,8 @@ namespace ListPlayers.Service
                         var buf = updIndex[i].Trim();
                         var version = new Version(buf);
                         if (version <= Root.Version)
-                        {
                             continue;
-                        }
-
                         info.IsNewer = true;
-
                         for (var j = i; j < updIndex.Length; ++j)
                         {
                             data = client.DownloadData(updateUrl + updIndex[j].Trim() + ".txt");
@@ -85,16 +76,11 @@ namespace ListPlayers.Service
                         }
                         break;
                     }
-
                     if (updInfo.Length == 0)
-                    {
                         return true;
-                    }
-
                     info.Description = updInfo.ToString();
                     data = client.DownloadData(updateUrl + "latest.txt");
                     updIndex = Encoding.Default.GetString(data).Split('\n');
-
                     for (var i = 0; i < updIndex.Length; ++i)
                     {
                         if (updIndex[i].StartsWith(keyLink))

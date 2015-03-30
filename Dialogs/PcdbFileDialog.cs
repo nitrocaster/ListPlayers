@@ -23,8 +23,7 @@ namespace ListPlayers.Dialogs
         public static bool ShowOpenDialog(out string path)
         {
             path = null;
-            var result = false;
-            
+            var result = false;            
             var browser = new OpenFileDialog
             {
                 AutoUpgradeEnabled = true,
@@ -43,7 +42,6 @@ namespace ListPlayers.Dialogs
         {
             path        = null;
             var result  = false;
-
             var saver = new SaveFileDialog
             {
                 AddExtension       = true,

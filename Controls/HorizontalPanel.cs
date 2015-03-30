@@ -37,9 +37,7 @@ namespace System.Windows.Forms
             };
             gradient = new Bitmap(1, 6);
             for (var i = 0; i < 6; ++i)
-            {
                 gradient.SetPixel(0, i, gradientColors[i]);
-            }
         }
 
         public HorizontalPanel()
@@ -54,7 +52,6 @@ namespace System.Windows.Forms
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-
             var label = e.Control as LinkLabel;
             if (label != null)
             {

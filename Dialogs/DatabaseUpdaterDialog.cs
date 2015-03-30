@@ -27,14 +27,11 @@ namespace ListPlayers.Dialogs
         private int  appendedHashes;
         private int  appendedIps;
         private int  appendedNames;
-
         private int  foundGsids;
         private int  foundHashes;
         private int  foundIps;
-        private int  foundNames;
-        
+        private int  foundNames;        
         private readonly DatabaseUpdater updater;
-
 
         public DatabaseUpdaterDialog(DatabaseUpdater updater)
         {
@@ -113,7 +110,6 @@ namespace ListPlayers.Dialogs
                 });
                 return;
             }
-
             var fileName = Path.GetFileName(info.File);
             var counter = String.Format("({0}/{1})", (info.Progress.Current + 1), info.Progress.Maximum);
             InvokeAsync(() =>
@@ -145,34 +141,25 @@ namespace ListPlayers.Dialogs
             InvokeAsync(() =>
             {
                 btnCancel.Text = StringTable.Close;
-
                 if (!success)
                 {
                     lCurrentFile.Text = StringTable.TransactionCancelled;
                     return;
                 }
-
                 lCurrentFile.Text = StringTable.UpdateCompleted;
-
                 switch (fileCount%10)
                 {
-                    case 1:
-                    {
-                        MsgBox.Info(fileCount + StringTable.FilesProcessedX1);
-                        break;
-                    }
-                    case 2:
-                    case 3:
-                    case 4:
-                    {
-                        MsgBox.Info(fileCount + StringTable.FilesProcessedX234);
-                        break;
-                    }
-                    default:
-                    {
-                        MsgBox.Info(fileCount + StringTable.FilesProcessedXX);
-                        break;
-                    }
+                case 1:
+                    MsgBox.Info(fileCount + StringTable.FilesProcessedX1);
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    MsgBox.Info(fileCount + StringTable.FilesProcessedX234);
+                    break;
+                default:
+                    MsgBox.Info(fileCount + StringTable.FilesProcessedXX);
+                    break;
                 }
             });
         }
@@ -183,25 +170,22 @@ namespace ListPlayers.Dialogs
             {
                 switch (field)
                 {
-                    case DatabaseTableId.Hash:
-                        foundHashes += count;
-                        tbHashesFound.Text = foundHashes.ToString();
-                        break;
-
-                    case DatabaseTableId.Name:
-                        foundNames += count;
-                        tbNamesFound.Text = foundNames.ToString();
-                        break;
-
-                    case DatabaseTableId.Ip:
-                        foundIps += count;
-                        tbIpsFound.Text = foundIps.ToString();
-                        break;
-
-                    case DatabaseTableId.Gsid:
-                        foundGsids += count;
-                        tbGsidsFound.Text = foundGsids.ToString();
-                        break;
+                case DatabaseTableId.Hash:
+                    foundHashes += count;
+                    tbHashesFound.Text = foundHashes.ToString();
+                    break;
+                case DatabaseTableId.Name:
+                    foundNames += count;
+                    tbNamesFound.Text = foundNames.ToString();
+                    break;
+                case DatabaseTableId.Ip:
+                    foundIps += count;
+                    tbIpsFound.Text = foundIps.ToString();
+                    break;
+                case DatabaseTableId.Gsid:
+                    foundGsids += count;
+                    tbGsidsFound.Text = foundGsids.ToString();
+                    break;
                 }
             });
         }
@@ -212,25 +196,22 @@ namespace ListPlayers.Dialogs
             {
                 switch (field)
                 {
-                    case DatabaseTableId.Hash:
-                        appendedHashes += count;
-                tbHashesAppended.Text = appendedHashes.ToString();
-                        break;
-
-                    case DatabaseTableId.Name:
-                        appendedNames += count;
-                        tbNamesAppended.Text = appendedNames.ToString();
-                        break;
-
-                    case DatabaseTableId.Ip:
-                        appendedIps += count;
-                        tbIpsAppended.Text = appendedIps.ToString();
-                        break;
-
-                    case DatabaseTableId.Gsid:
-                        appendedGsids += count;
-                        tbGsidsAppended.Text = appendedGsids.ToString();
-                        break;
+                case DatabaseTableId.Hash:
+                    appendedHashes += count;
+                    tbHashesAppended.Text = appendedHashes.ToString();
+                    break;
+                case DatabaseTableId.Name:
+                    appendedNames += count;
+                    tbNamesAppended.Text = appendedNames.ToString();
+                    break;
+                case DatabaseTableId.Ip:
+                    appendedIps += count;
+                    tbIpsAppended.Text = appendedIps.ToString();
+                    break;
+                case DatabaseTableId.Gsid:
+                    appendedGsids += count;
+                    tbGsidsAppended.Text = appendedGsids.ToString();
+                    break;
                 }
             });
         }
@@ -243,9 +224,7 @@ namespace ListPlayers.Dialogs
                 return;
             }
             if (!updater.Cancelled)
-            {
                 updater.Cancel();
-            }
         }
 
         private void DatabaseUpdateDialog_FormClosing(object sender, FormClosingEventArgs e)

@@ -21,7 +21,6 @@ using System.Data;
 using System.IO;
 using ListPlayers.Parsers;
 
-
 namespace ListPlayers.PcdbModel
 {
     public sealed class PcdbFile
@@ -43,17 +42,11 @@ namespace ListPlayers.PcdbModel
             database = new SQLiteDatabase(FileName);
             database.BeginTransaction();
             if (database.Execute("SELECT DATEINFO FROM NAMES WHERE 0") == null)
-            {
                 Revision = (int)PcdbRevision.Rev0;
-            }
             else if (database.Execute("SELECT 1 FROM DBVERSION WHERE 0") == null)
-            {
                 Revision = (int)PcdbRevision.Rev1;
-            }
             else
-            {
                 Revision = (int)PcdbRevision.Rev2;
-            }
             database.CommitTransaction();
             database.Close();
         }
@@ -67,52 +60,43 @@ namespace ListPlayers.PcdbModel
                 database.ExecuteNonQuery("PRAGMA encoding = 'UTF-8'");
                 switch (gameVersion)
                 {
-                    case PcdbGameVersion.Unknown:
+                case PcdbGameVersion.Unknown:
+                    database.RollBackTransaction();
+                    database.Close();
+                    throw new NotSupportedException("Unknown game version.");
+                case PcdbGameVersion.SHOC:
+                    database.RollBackTransaction();
+                    database.Close();
+                    throw new NotSupportedException("S.T.A.L.K.E.R.: Shadow of Chernobyl is not supported.");
+                case PcdbGameVersion.CS:
+                    database.ExecuteNonQuery(new[]
                     {
-                        database.RollBackTransaction();
-                        database.Close();
-                        throw new NotSupportedException("Unknown game version.");
-                    }
-                    case PcdbGameVersion.SHOC:
+                        @"CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
+                        @"INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
+                        @"CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
+                        @"INSERT INTO DBTYPE VALUES ('2')",
+                        @"CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)", // cp1251
+                        @"CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        @"CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)"
+                    });
+                    break;
+                case PcdbGameVersion.COP:
+                    database.ExecuteNonQuery(new[]
                     {
-                        database.RollBackTransaction();
-                        database.Close();
-                        throw new NotSupportedException("S.T.A.L.K.E.R.: Shadow of Chernobyl is not supported.");
-                    }
-                    case PcdbGameVersion.CS:
-                    {
-                        database.ExecuteNonQuery(new[]
-                        {
-                            @"CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
-                            @"INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
-                            @"CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
-                            @"INSERT INTO DBTYPE VALUES ('2')",
-                            @"CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)", // cp1251
-                            @"CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                            @"CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)"
-                        });
-                        break;
-                    }
-                    case PcdbGameVersion.COP:
-                    {
-                        database.ExecuteNonQuery(new[]
-                        {
-                            @"CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
-                            @"INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
-                            @"CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
-                            @"INSERT INTO DBTYPE VALUES ('3')",
-                            @"CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
-                            @"CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                            @"CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                            @"CREATE TABLE GSIDS (ID INTEGER NOT NULL, GSID INT UNSIGNED NOT NULL, DATEINFO TIMESTAMP NULL)"
-                        });
-                        break;
-                    }
+                        @"CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
+                        @"INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
+                        @"CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
+                        @"INSERT INTO DBTYPE VALUES ('3')",
+                        @"CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
+                        @"CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        @"CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        @"CREATE TABLE GSIDS (ID INTEGER NOT NULL, GSID INT UNSIGNED NOT NULL, DATEINFO TIMESTAMP NULL)"
+                    });
+                    break;
                 }
             }
             database.CommitTransaction();
             database.Close();
-
             Revision = (int)SupportedRevision;
         }
 
@@ -133,31 +117,21 @@ namespace ListPlayers.PcdbModel
         private void OnAppendedData(DatabaseTableId field, int count = 1)
         {
             if (AppendedData != null)
-            {
                 AppendedData(field, count);
-            }
         }
-
-        //
 
         public static bool CheckFormat(string filename)
         {
             var buf = new char[sqliteSignature.Length];
             using (var reader = new StreamReader(filename, Encoding.ASCII))
-            {
                 reader.Read(buf, 0, sqliteSignature.Length);
-            }
             return !sqliteSignature.Where((t, i) => buf[i] != t).Any();
         }
 
         public static bool CheckGameVersion(string filename)
         {
             var ver = GetGameVersion(filename);
-            if (ver == PcdbGameVersion.CS || ver == PcdbGameVersion.COP)
-            {
-                return true;
-            }
-            return false;
+            return ver == PcdbGameVersion.CS || ver == PcdbGameVersion.COP;
         }
 
         public static PcdbGameVersion GetGameVersion(string filename)
@@ -182,9 +156,7 @@ namespace ListPlayers.PcdbModel
         public static PcdbFile Create(string filename, PcdbGameVersion type)
         {
             if (File.Exists(filename))
-            {
                 File.Delete(filename);
-            }
             return new PcdbFile(filename, type);
         }
 
@@ -232,40 +204,21 @@ namespace ListPlayers.PcdbModel
         {
             names = 0;
             ips = 0;
-
             database.BeginTransaction();
-
             var data = database.Execute("SELECT COUNT(ID) FROM NAMES WHERE NAME = \"\"");
             if (data != null)
-            {
                 names = data.Rows.Count;
-            }
-
             data = database.Execute("SELECT COUNT(ID) FROM IPS WHERE IP = \"\"");
             if (data != null)
-            {
                 ips = data.Rows.Count;
-            }
-
             if (names > 0)
-            {
                 database.ExecuteNonQuery("DELETE FROM NAMES WHERE NAME = \"\"");
-            }
-
             if (ips > 0)
-            {
                 database.ExecuteNonQuery("DELETE FROM IPS WHERE IP = \"\"");
-            }
-
             database.CommitTransaction();
-
             if (names > 0 || ips > 0)
-            {
                 database.Vacuum();
-            }
         }
-
-        //
 
         private string EscapeString(string str)
         {
@@ -276,52 +229,34 @@ namespace ListPlayers.PcdbModel
         {
             switch (table)
             {
-                case DatabaseTableId.Hash:
-                    return "HASHES";
-
-                case DatabaseTableId.Name:
-                    return "NAMES";
-
-                case DatabaseTableId.Ip:
-                    return "IPS";
-
-                case DatabaseTableId.Gsid:
-                    return "GSIDS";
+            case DatabaseTableId.Hash: return "HASHES";
+            case DatabaseTableId.Name: return "NAMES";
+            case DatabaseTableId.Ip: return "IPS";
+            case DatabaseTableId.Gsid: return "GSIDS";
+            default: return null;
             }
-            return null;
         }
 
         private string GetFieldName(DatabaseTableId table)
         {
             switch (table)
             {
-                case DatabaseTableId.Hash:
-                    return "HASH";
-
-                case DatabaseTableId.Name:
-                    return "NAME";
-
-                case DatabaseTableId.Ip:
-                    return "IP";
-
-                case DatabaseTableId.Gsid:
-                    return "GSID";
+            case DatabaseTableId.Hash: return "HASH";
+            case DatabaseTableId.Name: return "NAME";
+            case DatabaseTableId.Ip: return "IP";
+            case DatabaseTableId.Gsid: return "GSID";
+            default: return null;
             }
-            return null;
         }
-
-        //
 
         public DataTable Select(DatabaseTableId table, uint[] ids, string[] filter, bool asPattern = false)
         {
             var tableName = GetTableName(table);
             var fieldName = GetFieldName(table);
-
             DataTable result = null;
             var query = new StringBuilder("SELECT * FROM ");
             query.Append(tableName);
             query.Append(" WHERE");
-
             var idUsed = false;
             var len = ids.Length;
             if (len > 0)
@@ -336,14 +271,11 @@ namespace ListPlayers.PcdbModel
                 }
                 query.Append(')');
             }
-
             len = filter.Length;
             if (len > 0)
             {
                 if (idUsed)
-                {
                     query.Append(" AND ");
-                }
                 if (asPattern)
                 {
                     query.Append(fieldName);
@@ -376,9 +308,7 @@ namespace ListPlayers.PcdbModel
                 idUsed = true;
             }
             if (idUsed)
-            {
                 result = database.Execute(query.ToString());
-            }
             return result ?? new DataTable();
         }
 
@@ -395,13 +325,9 @@ namespace ListPlayers.PcdbModel
         {
             var len = filter.Length;
             if (len == 0)
-            {
                 return null;
-            }
-
             var tableName = GetTableName(table);
             var fieldName = GetFieldName(table);
-
             var query = new StringBuilder("SELECT DISTINCT ID FROM ");
             query.Append(tableName);
             if (asPattern)
@@ -447,9 +373,7 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return;
-            }
             UpdateHash(id, unescapedInfo);
         }
 
@@ -457,9 +381,7 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return;
-            }
             UpdateName(id, EscapeString(unescapedName), date);
         }
 
@@ -467,9 +389,7 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return;
-            }
             UpdateIp(id, ip, date);
         }
 
@@ -477,22 +397,16 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return;
-            }
             UpdateGsid(id, gsid, date);
         }
-
-        //
 
         public static uint[] ExtractIds(DataTable src)
         {
             var count = src.Rows.Count;
             var ids = new uint[count];
             for (var i = 0; i < count; ++i)
-            {
                 ids[i] = Convert.ToUInt32(src.Rows[i][0]);
-            }
             return ids;
         }
 
@@ -506,9 +420,7 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return false;
-            }
             return NameExist(id, EscapeString(unescapedName));
         }
 
@@ -516,9 +428,7 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return false;
-            }
             return IpExist(id, ip);
         }
 
@@ -526,19 +436,14 @@ namespace ListPlayers.PcdbModel
         {
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
-            {
                 return false;
-            }
             return GsidExist(id, gsid);
         }
 
         public void AppendNew(string hash)
         {
             if (hash == "")
-            {
                 return;
-            }
-
             OnAppendedData(DatabaseTableId.Hash);
             InsertHash(hash);
         }
@@ -546,10 +451,7 @@ namespace ListPlayers.PcdbModel
         public void AppendNew(string hash, string unescapedInfo)
         {
             if (hash == "")
-            {
                 return;
-            }
-
             OnAppendedData(DatabaseTableId.Hash);
             InsertHash(hash, unescapedInfo);
         }
@@ -557,16 +459,11 @@ namespace ListPlayers.PcdbModel
         public void AppendNew(string hash, string unescapedInfo, string unescapedName, DateTime date)
         {
             if (hash == "")
-            {
                 return;
-            }
-
             OnAppendedData(DatabaseTableId.Hash);
             InsertHash(hash, unescapedInfo);
-
             uint id = 0;
             GetIdByHash(hash, ref id);
-
             if (unescapedName != "")
             {
                 OnAppendedData(DatabaseTableId.Name);
@@ -577,22 +474,16 @@ namespace ListPlayers.PcdbModel
         public void AppendNew(string hash, string unescapedInfo, string unescapedName, string ip, DateTime date)
         {
             if (hash == "")
-            {
                 return;
-            }
-
             OnAppendedData(DatabaseTableId.Hash);
             InsertHash(hash, unescapedInfo);
-
             uint id = 0;
             GetIdByHash(hash, ref id);
-
             if (unescapedName != "")
             {
                 OnAppendedData(DatabaseTableId.Name);
                 InsertName(id, EscapeString(unescapedName), date);
             }
-
             if (ip != "")
             {
                 OnAppendedData(DatabaseTableId.Ip);
@@ -603,28 +494,21 @@ namespace ListPlayers.PcdbModel
         public void AppendNew(string hash, string unescapedInfo, string unescapedName, string ip, uint gsid, DateTime date)
         {
             if (hash == "")
-            {
                 return;
-            }
-
             OnAppendedData(DatabaseTableId.Hash);
             InsertHash(hash, unescapedInfo);
-
             uint id = 0;
             GetIdByHash(hash, ref id);
-
             if (unescapedName != "")
             {
                 OnAppendedData(DatabaseTableId.Name);
                 InsertName(id, EscapeString(unescapedName), date);
             }
-
             if (ip != "")
             {
                 OnAppendedData(DatabaseTableId.Ip);
                 InsertIp(id, ip, date);
             }
-
             OnAppendedData(DatabaseTableId.Gsid);
             InsertGsid(id, gsid, date);
         }
@@ -632,34 +516,26 @@ namespace ListPlayers.PcdbModel
         public void AppendName(string hash, string unescapedName, DateTime date)
         {
             if (unescapedName == "")
-            {
                 return;
-            }
-
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
             {
                 AppendNew(hash);
                 GetIdByHash(hash, ref id);
             }
-
             AppendName(id, unescapedName, date);
         }
 
         public void AppendIp(string hash, string ip, DateTime date)
         {
             if (ip == "")
-            {
                 return;
-            }
-
             uint id = 0;
             if (!GetIdByHash(hash, ref id))
             {
                 AppendNew(hash);
                 GetIdByHash(hash, ref id);
             }
-
             AppendIp(id, ip, date);
         }
 
@@ -682,7 +558,6 @@ namespace ListPlayers.PcdbModel
                 AppendNew(hash, "", unescapedName, ip, date);
                 GetIdByHash(hash, ref id);
             }
-
             AppendName(id, unescapedName, date);
             AppendIp(id, ip, date);
         }
@@ -695,20 +570,15 @@ namespace ListPlayers.PcdbModel
                 AppendNew(hash, "", unescapedName, ip, gsid, date);
                 GetIdByHash(hash, ref id);
             }
-
             AppendName(id, unescapedName, date);
             AppendIp(id, ip, date);
             AppendGsid(id, gsid, date);
         }
 
-        //
-
         private void AppendName(uint id, string unescapedName, DateTime date)
         {
             if (unescapedName == "")
-            {
                 return;
-            }
             var escapedName = EscapeString(unescapedName);
             if (!NameExist(id, escapedName))
             {
@@ -716,26 +586,20 @@ namespace ListPlayers.PcdbModel
                 InsertName(id, escapedName, date);
             }
             else
-            {
                 UpdateName(id, escapedName, date);
-            }
         }
 
         private void AppendIp(uint id, string ip, DateTime date)
         {
             if (ip == "")
-            {
                 return;
-            }
             if (!IpExist(id, ip))
             {
                 OnAppendedData(DatabaseTableId.Ip);
                 InsertIp(id, ip, date);
             }
             else
-            {
                 UpdateIp(id, ip, date);
-            }
         }
 
         private void AppendGsid(uint id, uint gsid, DateTime date)
@@ -746,9 +610,7 @@ namespace ListPlayers.PcdbModel
                 InsertGsid(id, gsid, date);
             }
             else
-            {
                 UpdateGsid(id, gsid, date);
-            }
         }
 
         private bool GetIdByHash(string hash, ref uint id)
@@ -756,13 +618,9 @@ namespace ListPlayers.PcdbModel
             var query = new StringBuilder("SELECT ID FROM HASHES WHERE HASH = '", 100);
             query.Append(hash);
             query.Append('\'');
-
             var table = database.Execute(query.ToString());
             if (table.Rows.Count == 0)
-            {
                 return false;
-            }
-
             id = Convert.ToUInt32(table.Rows[0][0]);
             return true;
         }
@@ -774,7 +632,6 @@ namespace ListPlayers.PcdbModel
             query.Append("' AND NAME = '");
             query.Append(escapedName);
             query.Append('\'');
-
             return (long)database.Execute(query.ToString()).Rows[0][0] > 0;
         }
 
@@ -785,7 +642,6 @@ namespace ListPlayers.PcdbModel
             query.Append("' AND IP = '");
             query.Append(ip);
             query.Append('\'');
-
             return (long)database.Execute(query.ToString()).Rows[0][0] > 0;
         }
 
@@ -796,7 +652,6 @@ namespace ListPlayers.PcdbModel
             query.Append("' AND GSID = '");
             query.Append(gsid);
             query.Append('\'');
-
             return (long)database.Execute(query.ToString()).Rows[0][0] > 0;
         }
 
@@ -807,7 +662,6 @@ namespace ListPlayers.PcdbModel
             query.Append("', '");
             query.Append(EscapeString(unescapedInfo));
             query.Append("')");
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -816,7 +670,6 @@ namespace ListPlayers.PcdbModel
             var query = new StringBuilder("INSERT INTO HASHES(HASH) VALUES ('", 100);
             query.Append(hash);
             query.Append("')");
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -826,7 +679,6 @@ namespace ListPlayers.PcdbModel
             query.Append(EscapeString(unescapedInfo));
             query.Append("' WHERE ID = ");
             query.Append(id);
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -839,7 +691,6 @@ namespace ListPlayers.PcdbModel
             query.Append("', '");
             query.Append(date.ToString(sqlDateTimeFormat));
             query.Append("')");
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -852,7 +703,6 @@ namespace ListPlayers.PcdbModel
             query.Append(" AND NAME = '");
             query.Append(escapedName);
             query.Append('\'');
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -865,7 +715,6 @@ namespace ListPlayers.PcdbModel
             query.Append("', '");
             query.Append(date.ToString(sqlDateTimeFormat));
             query.Append("')");
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -878,7 +727,6 @@ namespace ListPlayers.PcdbModel
             query.Append(" AND IP = '");
             query.Append(ip);
             query.Append('\'');
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -891,7 +739,6 @@ namespace ListPlayers.PcdbModel
             query.Append("', '");
             query.Append(date.ToString(sqlDateTimeFormat));
             query.Append("')");
-
             database.ExecuteNonQuery(query.ToString());
         }
 
@@ -904,7 +751,6 @@ namespace ListPlayers.PcdbModel
             query.Append(" AND GSID = '");
             query.Append(gsid);
             query.Append('\'');
-
             database.ExecuteNonQuery(query.ToString());
         }
     }
