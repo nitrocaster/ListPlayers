@@ -95,9 +95,9 @@ namespace ListPlayers.Common
         {
             CloseDatabase();
             if (!File.Exists(path))
-                throw new DatabaseViewerException("Выбранный файл не найден.");
+                throw new DatabaseViewerException(StringTable.SelectedFileNotFound);
             if (!PcdbFile.CheckFormat(path) | !PcdbFile.CheckGameVersion(path))
-                throw new DatabaseViewerException("Формат выбранной базы данных не поддерживается.");
+                throw new DatabaseViewerException(StringTable.UnsupportedDatabaseVersion);
             OpenDatabase(path);
         }
 

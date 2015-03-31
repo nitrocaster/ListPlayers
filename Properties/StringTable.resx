@@ -199,4 +199,7 @@
   <data name="ExportCompleted" xml:space="preserve">
     <value>Экспорт завершен.</value>
   </data>
+  <data name="UnsupportedDatabaseVersion" xml:space="preserve">
+    <value>Формат выбранной базы данных не поддерживается.</value>
+  </data>
 </root>
