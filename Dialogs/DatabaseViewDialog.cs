@@ -156,7 +156,7 @@ namespace ListPlayers.Dialogs
         {
             if (InvokeRequired)
             {
-                Callback.Invoke(this, OnNotFound);
+                InvokeSync(OnNotFound);
                 return;
             }
             MsgBox.Info(StringTable.NothingFound);

@@ -56,6 +56,18 @@ namespace System.Windows.Forms
         }
 
         /// <summary>
+        /// Same as Invoke, but closes created handle.
+        /// </summary>
+        public void InvokeSync(Action callback)
+        {
+            var result = BeginInvoke(callback);
+            using (result.AsyncWaitHandle)
+            {
+                EndInvoke(result);
+            }
+        }
+        
+        /// <summary>
         ///     Adds a callback to the queue to be invoked from WndProc.
         /// </summary>
         public void InvokeAsync(Action callback)

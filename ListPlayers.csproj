@@ -125,7 +125,6 @@
     <Compile Include="PcdbModel\PcdbItemContainer.cs" />
     <Compile Include="Common\DatabaseViewerException.cs" />
     <Compile Include="Common\DatabaseViewer.cs" />
-    <Compile Include="Utils\Callback.cs" />
     <Compile Include="Utils\MsgBox.cs" />
     <Compile Include="Utils\Progress.cs" />
     <Compile Include="Parsers\DatabaseTableId.cs" />
