@@ -43,7 +43,8 @@ public static partial class Utils
         return trd;
     }
 
-    public static Thread CreateThread(ParameterizedThreadStart target, object arg, string name, bool background = true, bool suspended = false)
+    public static Thread CreateThread(ParameterizedThreadStart target, object arg, string name,
+        bool background = true, bool suspended = false)
     {
         var trd = new Thread(target)
         {
@@ -56,10 +57,7 @@ public static partial class Utils
         return trd;
     }
 
-    public static string BoolToString(bool b)
-    {
-        return b ? "1" : "0";
-    }
+    public static string BoolToString(bool b) { return b ? "1" : "0"; }
 
     public static bool StringToBool(string a)
     {
@@ -87,67 +85,41 @@ public static partial class Utils
     }
 
     public static string Itoa(int i)
-    {
-        return i.ToString(CultureInfo.InvariantCulture);
-    }
+    { return i.ToString(CultureInfo.InvariantCulture); }
 
     public static int Atoi(string a)
-    {
-        return int.Parse(a, NumberStyles.Integer, CultureInfo.InvariantCulture);
-    }
+    { return int.Parse(a, NumberStyles.Integer, CultureInfo.InvariantCulture); }
 
     public static bool Atoi(string a, out int result)
-    {
-        return int.TryParse(a, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
-    }
+    { return int.TryParse(a, NumberStyles.Integer, CultureInfo.InvariantCulture, out result); }
 
     public static string Ltoa(long i)
-    {
-        return i.ToString(CultureInfo.InvariantCulture);
-    }
+    { return i.ToString(CultureInfo.InvariantCulture); }
 
     public static long Atol(string a)
-    {
-        return long.Parse(a, NumberStyles.Integer, CultureInfo.InvariantCulture);
-    }
+    { return long.Parse(a, NumberStyles.Integer, CultureInfo.InvariantCulture); }
 
     public static bool Atol(string a, out long result)
-    {
-        return long.TryParse(a, NumberStyles.Integer, CultureInfo.InvariantCulture, out result);
-    }
+    { return long.TryParse(a, NumberStyles.Integer, CultureInfo.InvariantCulture, out result); }
 
     public static string Ftoa(float f)
-    {
-        return f.ToString("#0.000###", CultureInfo.InvariantCulture);
-    }
+    { return f.ToString("#0.000###", CultureInfo.InvariantCulture); }
 
     public static float Atof(string a)
-    {
-        return float.Parse(a, NumberStyles.Float, CultureInfo.InvariantCulture);
-    }
+    { return float.Parse(a, NumberStyles.Float, CultureInfo.InvariantCulture); }
 
     public static bool Atof(string a, out float result)
-    {
-        return float.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
-    }
+    { return float.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out result); }
 
     public static string Dtoa(double d)
-    {
-        return d.ToString("#0.000000", CultureInfo.InvariantCulture);
-    }
+    { return d.ToString("#0.000000", CultureInfo.InvariantCulture); }
 
     public static double Atod(string a)
-    {
-        return double.Parse(a, NumberStyles.Float, CultureInfo.InvariantCulture);
-    }
+    { return double.Parse(a, NumberStyles.Float, CultureInfo.InvariantCulture); }
 
     public static bool Atod(string a, out double result)
-    {
-        return double.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
-    }
+    { return double.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out result); }
     
     public static string GetCurrentDateTime()
-    {
-        return DateTime.Now.ToString(DateTimePatternShort, CultureInfo.InvariantCulture);
-    }
+    { return DateTime.Now.ToString(DateTimePatternShort, CultureInfo.InvariantCulture); }
 }

@@ -42,10 +42,7 @@ namespace ListPlayers.PcdbExport
             Worker.RunWorkerCompleted += OnExportCompleted;
         }
 
-        public virtual void Dispose()
-        {
-            Worker.Dispose();
-        }
+        public virtual void Dispose() { Worker.Dispose(); }
 
         public void RunExport(ITextExporterView dialog, string destination, PcdbChunk chunk)
         {
@@ -56,12 +53,12 @@ namespace ListPlayers.PcdbExport
             Writer = new StreamWriter(destination, false, Encoding.Default);
             Dialog.InvokeAsync(() =>
             {
-                MaximumProgress      = Chunk.Hashes.Rows.Count;
-                CurrentProgress      = 0;
-                Dialog.ProgressMin   = 0;
-                Dialog.ProgressMax   = MaximumProgress;
+                MaximumProgress = Chunk.Hashes.Rows.Count;
+                CurrentProgress = 0;
+                Dialog.ProgressMin = 0;
+                Dialog.ProgressMax = MaximumProgress;
                 Dialog.ProgressValue = 0;
-                Dialog.StatusText    = StringTable.ExportEtc;
+                Dialog.StatusText = StringTable.ExportEtc;
             });
             Worker.RunWorkerAsync();
         }

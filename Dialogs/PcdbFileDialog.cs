@@ -40,14 +40,14 @@ namespace ListPlayers.Dialogs
 
         public static bool ShowSaveDialog(out string path)
         {
-            path        = null;
-            var result  = false;
+            path = null;
+            var result = false;
             var saver = new SaveFileDialog
             {
-                AddExtension       = true,
+                AddExtension = true,
                 AutoUpgradeEnabled = true,
-                DefaultExt         = "pcdb",
-                Filter             = fileNameFilter
+                DefaultExt = "pcdb",
+                Filter = fileNameFilter
             };
             if (saver.ShowDialog() == DialogResult.OK)
             {

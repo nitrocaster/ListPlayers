@@ -23,80 +23,71 @@ namespace ListPlayers.Dialogs
 {
     public sealed partial class DatabaseUpdaterDialog : FormEx
     {
-        private int  appendedGsids;
-        private int  appendedHashes;
-        private int  appendedIps;
-        private int  appendedNames;
-        private int  foundGsids;
-        private int  foundHashes;
-        private int  foundIps;
-        private int  foundNames;        
+        private int appendedGsids;
+        private int appendedHashes;
+        private int appendedIps;
+        private int appendedNames;
+        private int foundGsids;
+        private int foundHashes;
+        private int foundIps;
+        private int foundNames;        
         private readonly DatabaseUpdater updater;
 
         public DatabaseUpdaterDialog(DatabaseUpdater updater)
         {
             InitializeComponent();
-
             this.updater = updater;
             ConnectUpdater();
         }
 
         private void ConnectUpdater()
         {
-            updater.BeginTransaction      += OnBeginTransaction;
-            updater.OpenConnection        += OnOpenConnection;
-            updater.Compress              += OnCompress;
-            updater.CommitTransaction     += OnCommitTransaction;
-            updater.RollBackTransaction   += OnRollBackTransaction;
+            updater.BeginTransaction += OnBeginTransaction;
+            updater.OpenConnection += OnOpenConnection;
+            updater.Compress += OnCompress;
+            updater.CommitTransaction += OnCommitTransaction;
+            updater.RollBackTransaction += OnRollBackTransaction;
             updater.GlobalProgressChanged += OnGlobalProgressChanged;
-            updater.FileProgressChanged   += OnFileProgressChanged;
-            updater.UpdateCompleted       += OnUpdateCompleted;
-            updater.FoundData             += OnFoundData;
-            updater.AppendedData          += OnAppendedData;
+            updater.FileProgressChanged += OnFileProgressChanged;
+            updater.UpdateCompleted += OnUpdateCompleted;
+            updater.FoundData += OnFoundData;
+            updater.AppendedData += OnAppendedData;
         }
 
         private void DisconnectUpdater()
         {
-            updater.BeginTransaction      -= OnBeginTransaction;
-            updater.OpenConnection        -= OnOpenConnection;
-            updater.Compress              -= OnCompress;
-            updater.CommitTransaction     -= OnCommitTransaction;
-            updater.RollBackTransaction   -= OnRollBackTransaction;
+            updater.BeginTransaction -= OnBeginTransaction;
+            updater.OpenConnection -= OnOpenConnection;
+            updater.Compress -= OnCompress;
+            updater.CommitTransaction -= OnCommitTransaction;
+            updater.RollBackTransaction -= OnRollBackTransaction;
             updater.GlobalProgressChanged -= OnGlobalProgressChanged;
-            updater.FileProgressChanged   -= OnFileProgressChanged;
-            updater.UpdateCompleted       -= OnUpdateCompleted;
-            updater.FoundData             -= OnFoundData;
-            updater.AppendedData          -= OnAppendedData;
+            updater.FileProgressChanged -= OnFileProgressChanged;
+            updater.UpdateCompleted -= OnUpdateCompleted;
+            updater.FoundData -= OnFoundData;
+            updater.AppendedData -= OnAppendedData;
         }
 
         private void OnBeginTransaction()
-        {
-            InvokeAsync(() => lCurrentFile.Text = StringTable.OpeningTransaction);
-        }
+        { InvokeAsync(() => lCurrentFile.Text = StringTable.OpeningTransaction); }
 
-        private void OnOpenConnection()
-        {
-        }
+        private void OnOpenConnection() {}
         
         private void OnCompress()
-        {
-            InvokeAsync(() => lCurrentFile.Text = StringTable.Compressing);
-        }
+        { InvokeAsync(() => lCurrentFile.Text = StringTable.Compressing); }
 
         private void OnCommitTransaction()
         {
             InvokeAsync(() =>
             {
                 lCurrentFile.Text = StringTable.CommittingTransaction;
-                pbProgress.Value  = pbProgress.Maximum;
-                Text              = String.Format("{0} ({1}%)", StringTable.UpdatingDatabase, 100);
+                pbProgress.Value = pbProgress.Maximum;
+                Text = String.Format("{0} ({1}%)", StringTable.UpdatingDatabase, 100);
             });
         }
 
         private void OnRollBackTransaction()
-        {
-            InvokeAsync(() => lCurrentFile.Text = StringTable.CancellingTransaction);
-        }
+        { InvokeAsync(() => lCurrentFile.Text = StringTable.CancellingTransaction); }
 
         private void OnGlobalProgressChanged(DatabaseUpdater.GlobalProgressInfo info)
         {
@@ -115,9 +106,10 @@ namespace ListPlayers.Dialogs
             InvokeAsync(() =>
             {
                 lCurrentFile.Text = fileName;
-                tbCounter.Text    = counter;
-                pbProgress.Value  = (int)info.Progress.Current;
-                Text              = String.Format("{0} ({1}%)", StringTable.UpdatingDatabase, Math.Round(info.Progress.Percentage));
+                tbCounter.Text = counter;
+                pbProgress.Value = (int)info.Progress.Current;
+                Text = String.Format("{0} ({1}%)",
+                    StringTable.UpdatingDatabase, Math.Round(info.Progress.Percentage));
             });
         }
 
@@ -134,8 +126,7 @@ namespace ListPlayers.Dialogs
             updater.BeginUpdate();
             return base.ShowDialog();
         }
-
-
+        
         private void OnUpdateCompleted(int fileCount, bool success)
         {
             InvokeAsync(() =>

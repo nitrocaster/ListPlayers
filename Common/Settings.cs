@@ -35,29 +35,17 @@ namespace ListPlayers.Common
 
         public static string[] RecentDatabases
         {
-            get
-            {
-                return recentDatabases.ToArray();
-            }
+            get { return recentDatabases.ToArray(); }
         }
 
         public static string[] RecentSources
         {
-            get
-            {
-                return recentSources.ToArray();
-            }
+            get { return recentSources.ToArray(); }
         }
 
-        public static void Load()
-        {
-            Load(configFileName);
-        }
+        public static void Load() { Load(configFileName); }
 
-        public static void Save()
-        {
-            Save(configFileName);
-        }
+        public static void Save() { Save(configFileName); }
 
         private static void Load(string path)
         {
@@ -78,11 +66,11 @@ namespace ListPlayers.Common
             }
             if (cfg.ContainsSection("global"))
             {
-                cfg.TryGetBool("global", "search_subfolders",     ref SearchSubfolders);
+                cfg.TryGetBool("global", "search_subfolders", ref SearchSubfolders);
                 cfg.TryGetBool("global", "show_all_related_data", ref ShowAllRelatedData);
-                cfg.TryGetBool("global", "hashes_pattern",        ref HashPattern);
-                cfg.TryGetBool("global", "names_pattern",         ref NamePattern);
-                cfg.TryGetBool("global", "ips_pattern",           ref IpPattern);
+                cfg.TryGetBool("global", "hashes_pattern", ref HashPattern);
+                cfg.TryGetBool("global", "names_pattern", ref NamePattern);
+                cfg.TryGetBool("global", "ips_pattern", ref IpPattern);
             }
             if (cfg.ContainsSection("last_databases"))
             {

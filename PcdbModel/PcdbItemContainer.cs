@@ -17,31 +17,19 @@ namespace ListPlayers.PcdbModel
     public sealed class PcdbItemContainer<T> : IPcdbField
     {
         public T Item;
-
         private readonly PcdbFieldId id;
 
-        public PcdbItemContainer(PcdbFieldId id)
-        {
-            this.id = id;
-        }
+        public PcdbItemContainer(PcdbFieldId id) { this.id = id; }
 
         public PcdbItemContainer(PcdbFieldId id, T item)
             : this(id)
-        {
-            Item = item;
-        }
+        { Item = item; }
 
-        public static implicit operator T(PcdbItemContainer<T> src)
-        {
-            return src.Item;
-        }
+        public static implicit operator T(PcdbItemContainer<T> src) { return src.Item; }
 
         public PcdbFieldId Id
         {
-            get
-            {
-                return id;
-            }
+            get { return id; }
         }
     }
 }

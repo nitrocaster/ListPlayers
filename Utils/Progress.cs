@@ -17,7 +17,6 @@ namespace ListPlayers
     public struct Progress
     {
         private uint current;
-
         private uint maximum;
 
         public Progress(uint max)
@@ -28,10 +27,7 @@ namespace ListPlayers
 
         public uint Current
         {
-            get
-            {
-                return current;
-            }
+            get { return current; }
             set
             {
                 if (value > maximum)
@@ -42,10 +38,7 @@ namespace ListPlayers
 
         public uint Maximum
         {
-            get
-            {
-                return maximum;
-            }
+            get { return maximum; }
             set
             {
                 maximum = value;
@@ -56,10 +49,7 @@ namespace ListPlayers
 
         public double Percentage
         {
-            get
-            {
-                return 1.0 * current / maximum;
-            }
+            get { return 1.0 * current / maximum; }
         }
     }
 }

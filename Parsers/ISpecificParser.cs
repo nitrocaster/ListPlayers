@@ -23,9 +23,6 @@ namespace ListPlayers.Parsers
 
         bool CheckFormat(string path);
 
-        string AcceptedFileExtension
-        {
-            get;
-        }
+        string AcceptedFileExtension { get; }
     }
 }

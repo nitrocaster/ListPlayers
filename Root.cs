@@ -28,7 +28,8 @@ namespace ListPlayers
     {
         private const string buildDate = "May 01 2013";
         public static readonly Version Version = Assembly.GetExecutingAssembly().GetName().Version;
-        public static readonly string BuildString = String.Format("v. {0}.{1}.{2}, {3}", Version.Major, Version.Minor, Version.Build, buildDate);
+        public static readonly string BuildString = String.Format("v. {0}.{1}.{2}, {3}",
+            Version.Major, Version.Minor, Version.Build, buildDate);
         public static string SelfPath = "null";
 
         [STAThread]
@@ -87,9 +88,7 @@ namespace ListPlayers
         }
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            MsgBox.Error("Fatal error:\n" + ((Exception)e.ExceptionObject).Message);
-        }
+        { MsgBox.Error("Fatal error:\n" + ((Exception)e.ExceptionObject).Message); }
 
         private static void CheckFileType()
         {

@@ -52,10 +52,7 @@ namespace System.Windows.Forms
 
         #endregion
 
-        public CommandLink()
-        {
-            FlatStyle = FlatStyle.System;
-        }
+        public CommandLink() { FlatStyle = FlatStyle.System; }
 
         protected override CreateParams CreateParams
         {
@@ -72,10 +69,7 @@ namespace System.Windows.Forms
         // Increase default width.
         protected override Size DefaultSize
         {
-            get
-            {
-                return new Size(180, 60);
-            }
+            get { return new Size(180, 60); }
         }
 
         // Enable note text to be set at design-time.
@@ -85,27 +79,19 @@ namespace System.Windows.Forms
         [DefaultValue("(Note Text)")]
         public string NoteText
         {
-            get
-            {
-                return (GetNote(this));
-            }
-            set
-            {
-                SetNote(this, value);
-            }
+            get { return (GetNote(this)); }
+            set { SetNote(this, value); }
         }
 
         // Enable shield icon to be set at design-time.
         [Category("Appearance")]
-        [Description("Indicates whether the button should be decorated with the security shield icon (Windows Vista only).")]
+        [Description("Indicates whether the button should be " +
+            "decorated with the security shield icon (Windows Vista only).")]
         [Browsable(true)]
         [DefaultValue(false)]
         public bool ShieldIcon
         {
-            get
-            {
-                return (shieldIconDisplayed);
-            }
+            get { return (shieldIconDisplayed); }
             set
             {
                 shieldIconDisplayed = value;

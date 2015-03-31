@@ -21,17 +21,11 @@ namespace ListPlayers.PcdbModel
     {
         private readonly PcdbFieldId itemId;
 
-        public PcdbListContainer(PcdbFieldId itemId)
-        {
-            this.itemId = itemId;
-        }
+        public PcdbListContainer(PcdbFieldId itemId) { this.itemId = itemId; }
 
         public PcdbFieldId Id
         {
-            get
-            {
-                return PcdbFieldId.Group | itemId;
-            }
+            get { return PcdbFieldId.Group | itemId; }
         }
     }
 }

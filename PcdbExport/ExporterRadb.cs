@@ -24,11 +24,11 @@ namespace ListPlayers.PcdbExport
         protected override void ExportProc(object sender, DoWorkEventArgs e)
         {
             var hashes = Chunk.Hashes.Rows;
-            var names  = Chunk.Names.Rows;
-            var ips    = Chunk.Ips.Rows;
+            var names = Chunk.Names.Rows;
+            var ips = Chunk.Ips.Rows;
             var hashesCount = hashes.Count;
-            var namesCount  = names.Count;
-            var ipsCount    = ips.Count;
+            var namesCount = names.Count;
+            var ipsCount = ips.Count;
             try
             {
                 for (var i = 0; i < hashesCount; ++i)

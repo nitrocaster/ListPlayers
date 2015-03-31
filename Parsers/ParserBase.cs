@@ -20,8 +20,10 @@ namespace ListPlayers.Parsers
     public abstract class ParserBase : IDisposable
     {
         private readonly HostParser host;
-
         protected PcdbFile Database;
+        protected bool Cancelled = false;
+        public event Action<DatabaseTableId, int> FoundData;
+        public event Action<Progress> ProgressChanged;
         
         protected ParserBase(HostParser host = null)
         {
@@ -38,17 +40,8 @@ namespace ListPlayers.Parsers
 
         public abstract void Parse(string path);
 
-        public virtual void Cancel()
-        {
-            Cancelled = true;
-        }
-
-        protected bool Cancelled = false;
-
-        public event Action<DatabaseTableId, int> FoundData;
-
-        public event Action<Progress> ProgressChanged;
-
+        public virtual void Cancel() { Cancelled = true; }
+        
         protected void OnFoundData(DatabaseTableId field, int count = 1)
         {
             var target = host ?? this;

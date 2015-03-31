@@ -18,29 +18,17 @@ namespace System.Windows.Forms
     {
         private static readonly string appName = Application.ProductName;
 
-        public static void Error(string text)
-        {
-            Show(text, MessageBoxIcon.Error);
-        }
+        public static void Error(string text) { Show(text, MessageBoxIcon.Error); }
 
-        public static void Warning(string text)
-        {
-            Show(text, MessageBoxIcon.Warning);
-        }
+        public static void Warning(string text) { Show(text, MessageBoxIcon.Warning); }
 
-        public static void Info(string text)
-        {
-            Show(text, MessageBoxIcon.Information);
-        }
+        public static void Info(string text) { Show(text, MessageBoxIcon.Information); }
 
-        public static DialogResult Question(string text, MessageBoxButtons buttons, MessageBoxDefaultButton defaultButton)
-        {
-            return MessageBox.Show(text, appName, buttons, MessageBoxIcon.Question, defaultButton);
-        }
+        public static DialogResult Question(
+            string text, MessageBoxButtons buttons, MessageBoxDefaultButton defaultButton)
+        { return MessageBox.Show(text, appName, buttons, MessageBoxIcon.Question, defaultButton); }
 
         private static void Show(string text, MessageBoxIcon icon)
-        {
-            MessageBox.Show(text, appName, MessageBoxButtons.OK, icon, MessageBoxDefaultButton.Button1);
-        }
+        { MessageBox.Show(text, appName, MessageBoxButtons.OK, icon, MessageBoxDefaultButton.Button1); }
     }
 }

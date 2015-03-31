@@ -22,6 +22,7 @@ namespace ListPlayers.Parsers
 {
     public sealed class HostParser : ParserBase
     {
+        public event Action ParsingCancelled;
         private readonly List<ISpecificParser> parserProviders;
 
         public HostParser(PcdbFile database)
@@ -32,15 +33,11 @@ namespace ListPlayers.Parsers
 
         public HostParser(PcdbFile database, IEnumerable<ISpecificParser> providers)
             : this(database)
-        {
-            AddProviders(providers);
-        }
+        { AddProviders(providers); }
 
         public HostParser(PcdbFile database, ISpecificParser provider)
             : this(database)
-        {
-            AddProvider(provider);
-        }
+        { AddProvider(provider); }
 
         public override void Cancel()
         {
@@ -51,7 +48,8 @@ namespace ListPlayers.Parsers
         public override void Parse(string path)
         {
             var extension = Path.GetExtension(path).ToLowerInvariant();
-            var provider = parserProviders.FirstOrDefault(pr => pr.AcceptedFileExtension == extension && pr.CheckFormat(path));
+            var provider = parserProviders.FirstOrDefault(
+                pr => pr.AcceptedFileExtension == extension && pr.CheckFormat(path));
             if (provider == null)
                 return;
             using (var parser = provider.GetParser(this, Database))
@@ -61,17 +59,11 @@ namespace ListPlayers.Parsers
         }
         
         public void AddProvider(ISpecificParser provider)
-        {
-            parserProviders.Add(provider);
-        }
+        { parserProviders.Add(provider); }
 
         public void AddProviders(IEnumerable<ISpecificParser> providers)
-        {
-            parserProviders.AddRange(providers);
-        }
+        { parserProviders.AddRange(providers); }
         
-        public event Action ParsingCancelled;
-
         private void OnParsingCancelled()
         {
             if (ParsingCancelled != null)

@@ -19,7 +19,6 @@ using System.Windows.Forms;
 using ListPlayers.PcdbModel;
 using ListPlayers.Properties;
 
-
 namespace ListPlayers.Parsers
 {
     public sealed class OldPcdbParser : ISpecificParser
@@ -28,9 +27,7 @@ namespace ListPlayers.Parsers
         {
             public OldPcdbParserImpl(HostParser host, PcdbFile database)
                 : base(host)
-            {
-                Database = database;
-            }
+            { Database = database; }
 
             public override void Parse(string path)
             {
@@ -53,7 +50,8 @@ namespace ListPlayers.Parsers
                             if (Cancelled)
                                 break;
                             ++currentLine;
-                            var newProgress = (uint)Math.Round(100.0 * reader.BaseStream.Position / reader.BaseStream.Length);
+                            var newProgress = (uint)Math.Round(
+                                100.0 * reader.BaseStream.Position / reader.BaseStream.Length);
                             if (newProgress > progress.Current)
                             {
                                 progress.Current = newProgress;
@@ -81,7 +79,7 @@ namespace ListPlayers.Parsers
                                 continue;
                             case "}":
                                 insideName = false;
-                                insideIp   = false;
+                                insideIp = false;
                                 insideGsid = false;
                                 continue;
                             }
@@ -106,7 +104,10 @@ namespace ListPlayers.Parsers
                                 OnFoundData(DatabaseTableId.Gsid);
                                 var profileID = buf.Trim();
                                 if (profileID != "" & digest != "")
-                                    Database.AppendGsid(digest, Convert.ToUInt32(profileID), PcdbFile.InvalidDateTime);
+                                {
+                                    Database.AppendGsid(digest,
+                                        Convert.ToUInt32(profileID), PcdbFile.InvalidDateTime);
+                                }
                                 continue;
                             }
                         }
@@ -158,37 +159,25 @@ namespace ListPlayers.Parsers
         }
 
         public ParserBase GetParser(HostParser host, PcdbFile database)
-        {
-            return new OldPcdbParserImpl(host, database);
-        }
+        { return new OldPcdbParserImpl(host, database); }
 
         public string AcceptedFileExtension
         {
-            get
-            {
-                return ".pcdb";
-            }
+            get { return ".pcdb"; }
         }
 
         public bool CheckFormat(string path)
-        {
-            return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension);
-        }
+        { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
 
         #region Singleton implementation
 
-        private OldPcdbParser()
-        {
-        }
+        private OldPcdbParser() {}
 
         private static readonly OldPcdbParser instance = new OldPcdbParser();
 
         public static OldPcdbParser Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         #endregion

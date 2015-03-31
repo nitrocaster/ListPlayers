@@ -20,12 +20,10 @@ namespace ListPlayers.Common
     {
         public DatabaseViewerException(string message)
             : base(message)
-        {
-        }
+        {}
 
         public DatabaseViewerException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
+        {}
     }
 }

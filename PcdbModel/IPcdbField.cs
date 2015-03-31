@@ -16,9 +16,6 @@ namespace ListPlayers.PcdbModel
 {
     public interface IPcdbField
     {
-        PcdbFieldId Id
-        {
-            get;
-        }
+        PcdbFieldId Id { get; }
     }
 }

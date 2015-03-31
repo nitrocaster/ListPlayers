@@ -101,7 +101,8 @@ namespace FileSystem
             }
         }
 
-        public static int FindString(Stream stream, Encoding encoding, string needle, int bufferSize = defaultBufferSize)
+        public static int FindString(Stream stream, Encoding encoding,
+            string needle, int bufferSize = defaultBufferSize)
         {
             var bytes = encoding.GetBytes(needle);
             return FindBytes(stream, bytes, bufferSize);

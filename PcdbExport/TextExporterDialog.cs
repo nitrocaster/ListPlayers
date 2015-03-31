@@ -26,10 +26,7 @@ namespace ListPlayers.PcdbExport
         private bool isBusy = false;
         private bool userclose = false;
 
-        public TextExporterDialog()
-        {
-            InitializeComponent();
-        }
+        public TextExporterDialog() { InitializeComponent(); }
 
         public string Destination
         {

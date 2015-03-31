@@ -23,47 +23,31 @@ namespace ListPlayers.Parsers
         {
             public ConfigDumpParserImpl(HostParser host, PcdbFile database)
                 : base(host, database)
-            {
-            }
+            {}
 
-            public override void Parse(string path)
-            {
-                InternalParseDumpedFile(path, "config_dump_info");
-            }
+            public override void Parse(string path) { InternalParseDumpedFile(path, "config_dump_info"); }
         }
 
         public ParserBase GetParser(HostParser host, PcdbFile database)
-        {
-            return new ConfigDumpParserImpl(host, database);
-        }
+        { return new ConfigDumpParserImpl(host, database); }
 
         public string AcceptedFileExtension
         {
-            get
-            {
-                return ".ltx";
-            }
+            get { return ".ltx"; }
         }
 
         public bool CheckFormat(string path)
-        {
-            return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension);
-        }
+        { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
 
         #region Singleton implementation
 
-        private ConfigDumpParser()
-        {
-        }
+        private ConfigDumpParser() {}
 
         private static readonly ConfigDumpParser instance = new ConfigDumpParser();
 
         public static ConfigDumpParser Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         #endregion

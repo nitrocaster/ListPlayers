@@ -19,12 +19,12 @@ namespace ListPlayers.PcdbModel
     [Flags]
     public enum PcdbFieldId : int
     {
-        Undefined   = 0,
-        Group       = 1,
-        Hash        = 2,
-        Name        = 4,
-        Ip          = 8,
-        Gsid        = 16,
-        Comment     = 32
+        Undefined = 0,
+        Group = 1,
+        Hash = 2,
+        Name = 4,
+        Ip = 8,
+        Gsid = 16,
+        Comment = 32
     }
 }

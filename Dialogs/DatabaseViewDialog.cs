@@ -46,10 +46,7 @@ namespace ListPlayers.Dialogs
 
         private TreeNode CurrentNode
         {
-            get
-            {
-                return currentNode;
-            }
+            get { return currentNode; }
             set
             {
                 const string emptyFormat = " ";
@@ -58,34 +55,27 @@ namespace ListPlayers.Dialogs
                 switch (field.Id)
                 {
                 case PcdbFieldId.Comment:
-                {
                     tbDetails.ReadOnly = false;
                     tbDetails.Text = (PcdbItemContainer<string>)field;
                     dtpTimestamp.Enabled = false;
                     dtpTimestamp.CustomFormat = emptyFormat;
                     break;
-                }
                 case PcdbFieldId.Hash:
                 case PcdbFieldId.Group | PcdbFieldId.Hash:
-                {
                     tbDetails.ReadOnly = true;
                     tbDetails.Text = currentNode.Text;
                     dtpTimestamp.Enabled = false;
                     dtpTimestamp.CustomFormat = emptyFormat;
                     break;
-                }
                 case PcdbFieldId.Group | PcdbFieldId.Name:
                 case PcdbFieldId.Group | PcdbFieldId.Ip:
                 case PcdbFieldId.Group | PcdbFieldId.Gsid:
-                {
                     tbDetails.ReadOnly = true;
                     tbDetails.Text = "";
                     dtpTimestamp.Enabled = false;
                     dtpTimestamp.CustomFormat = emptyFormat;
                     break;
-                }
                 default:
-                {
                     tbDetails.ReadOnly = true;
                     tbDetails.Text = currentNode.Text;
                     dtpTimestamp.Enabled = true;
@@ -103,7 +93,6 @@ namespace ListPlayers.Dialogs
                         break;
                     }
                     break;
-                }
                 }
             }
         }
@@ -225,9 +214,7 @@ namespace ListPlayers.Dialogs
 
         
         private void btnExport_Click(object sender, EventArgs e)
-        {
-            databaseViewer.ExportCurrentSample();
-        }
+        { databaseViewer.ExportCurrentSample(); }
 
         private SearchFilter GetSearchFilter()
         {
@@ -296,10 +283,7 @@ namespace ListPlayers.Dialogs
             ApplyChanges();
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void btnClose_Click(object sender, EventArgs e) { Close(); }
 
         private void dtTimestamp_ValueChanged(object sender, EventArgs e)
         {
@@ -345,29 +329,19 @@ namespace ListPlayers.Dialogs
         }
 
         private void cmiExpandBranch_Click(object sender, EventArgs e)
-        {
-            tvResult.SelectedNode.ExpandAll();
-        }
+        { tvResult.SelectedNode.ExpandAll(); }
 
         private void cmiExpandAll_Click(object sender, EventArgs e)
-        {
-            tvResult.ExpandAll();
-        }
+        { tvResult.ExpandAll(); }
 
         private void cmiCollapseBranch_Click(object sender, EventArgs e)
-        {
-            tvResult.SelectedNode.Collapse(false);
-        }
+        { tvResult.SelectedNode.Collapse(false); }
 
         private void cmiCollapseAll_Click(object sender, EventArgs e)
-        {
-            tvResult.CollapseAll();
-        }
+        { tvResult.CollapseAll(); }
 
         private void tvResult_MouseDown(object sender, MouseEventArgs e)
-        {
-            tvResult.SelectedNode = tvResult.HitTest(e.Location).Node;
-        }
+        { tvResult.SelectedNode = tvResult.HitTest(e.Location).Node; }
 
         private void tvResult_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -388,8 +362,6 @@ namespace ListPlayers.Dialogs
         }
 
         private void cmiCopy_Click(object sender, EventArgs e)
-        {
-            SelectedBranchToClipboard();
-        }
+        { SelectedBranchToClipboard(); }
     }
 }

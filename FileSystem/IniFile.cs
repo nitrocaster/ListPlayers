@@ -55,7 +55,7 @@ namespace FileSystem
 
         public static KeyValuePair<string, string> ExtractKeyValuePair(string line, bool trimComment)
         {
-            string key   = null;
+            string key = null;
             string value = null;
             var buf = line.Trim();
             if (trimComment)
@@ -165,10 +165,7 @@ namespace FileSystem
             }
         }
 
-        public bool ContainsSection(string section)
-        {
-            return sections.ContainsKey(section);
-        }
+        public bool ContainsSection(string section) { return sections.ContainsKey(section); }
 
         public int GetSectionsCount(Predicate<string> match = null)
         {

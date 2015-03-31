@@ -24,10 +24,7 @@ namespace System.Windows.Forms
         private readonly ConcurrentQueue<Action> messageQueue;
         private IntPtr handle;
 
-        public FormEx()
-        {
-            messageQueue = new ConcurrentQueue<Action>();
-        }
+        public FormEx() { messageQueue = new ConcurrentQueue<Action>(); }
 
         /// <summary>
         ///     Gets a value indicating whether the form is active.

@@ -31,10 +31,10 @@ namespace ListPlayers.PcdbModel
         /// <summary>
         ///     "01.01.1970 12:00:00"
         /// </summary>
-        public static readonly DateTime InvalidDateTime = DateTime.ParseExact("01.01.1970 12:00:00", Utils.DateTimePatternLong, CultureInfo.InvariantCulture);
+        public static readonly DateTime InvalidDateTime =
+            DateTime.ParseExact("01.01.1970 12:00:00", Utils.DateTimePatternLong, CultureInfo.InvariantCulture);
 
         private readonly SQLiteDatabase database;
-
 
         private PcdbFile(string path)
         {
@@ -71,26 +71,29 @@ namespace ListPlayers.PcdbModel
                 case PcdbGameVersion.CS:
                     database.ExecuteNonQuery(new[]
                     {
-                        @"CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
-                        @"INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
-                        @"CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
-                        @"INSERT INTO DBTYPE VALUES ('2')",
-                        @"CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)", // cp1251
-                        @"CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                        @"CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)"
+                        "CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
+                        "INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
+                        "CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
+                        "INSERT INTO DBTYPE VALUES ('2')",
+                        "CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            "HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
+                        "CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        "CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)"
                     });
                     break;
                 case PcdbGameVersion.COP:
                     database.ExecuteNonQuery(new[]
                     {
-                        @"CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
-                        @"INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
-                        @"CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
-                        @"INSERT INTO DBTYPE VALUES ('3')",
-                        @"CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
-                        @"CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                        @"CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                        @"CREATE TABLE GSIDS (ID INTEGER NOT NULL, GSID INT UNSIGNED NOT NULL, DATEINFO TIMESTAMP NULL)"
+                        "CREATE TABLE DBVERSION (VERSION INTEGER UNSIGNED NOT NULL)",
+                        "INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
+                        "CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
+                        "INSERT INTO DBTYPE VALUES ('3')",
+                        "CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            "HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
+                        "CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        "CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        "CREATE TABLE GSIDS (ID INTEGER NOT NULL, GSID INT UNSIGNED NOT NULL, " +
+                            "DATEINFO TIMESTAMP NULL)"
                     });
                     break;
                 }
@@ -139,7 +142,8 @@ namespace ListPlayers.PcdbModel
             var db = new SQLiteDatabase(filename);
             try
             {
-                return (PcdbGameVersion)Convert.ToInt32(db.Execute("SELECT TYPEID FROM DBTYPE").Rows[0][0]);
+                return (PcdbGameVersion)Convert.ToInt32(
+                    db.Execute("SELECT TYPEID FROM DBTYPE").Rows[0][0]);
             }
             finally
             {
@@ -149,7 +153,8 @@ namespace ListPlayers.PcdbModel
 
         public PcdbGameVersion GetGameVersion()
         {
-            var result = (PcdbGameVersion)Convert.ToInt32(database.Execute("SELECT TYPEID FROM DBTYPE").Rows[0][0]);
+            var result = (PcdbGameVersion)Convert.ToInt32(
+                database.Execute("SELECT TYPEID FROM DBTYPE").Rows[0][0]);
             return result;
         }
 
@@ -160,40 +165,19 @@ namespace ListPlayers.PcdbModel
             return new PcdbFile(filename, type);
         }
 
-        public static PcdbFile Open(string filename)
-        {
-            return new PcdbFile(filename);
-        }
+        public static PcdbFile Open(string filename) { return new PcdbFile(filename); }
 
-        public bool OpenConnection()
-        {
-            return database.Open();
-        }
+        public bool OpenConnection() { return database.Open(); }
 
-        public bool CloseConnection()
-        {
-            return database.Close();
-        }
+        public bool CloseConnection() { return database.Close(); }
 
-        public void BeginTransaction()
-        {
-            database.BeginTransaction();
-        }
+        public void BeginTransaction() { database.BeginTransaction(); }
 
-        public void CommitTransaction()
-        {
-            database.CommitTransaction();
-        }
+        public void CommitTransaction() { database.CommitTransaction(); }
 
-        public void RollBackTransaction()
-        {
-            database.RollBackTransaction();
-        }
+        public void RollBackTransaction() { database.RollBackTransaction(); }
 
-        public void Compress()
-        {
-            database.Vacuum();
-        }
+        public void Compress() { database.Vacuum(); }
 
         /// <summary>
         ///     Removes empty names and ips.
@@ -220,10 +204,7 @@ namespace ListPlayers.PcdbModel
                 database.Vacuum();
         }
 
-        private string EscapeString(string str)
-        {
-            return str.Replace("'", "''");
-        }
+        private string EscapeString(string str) { return str.Replace("'", "''"); }
 
         private string GetTableName(DatabaseTableId table)
         {
@@ -365,9 +346,7 @@ namespace ListPlayers.PcdbModel
         }
 
         public DataTable SelectIds(DatabaseTableId table)
-        {
-            return database.Execute("SELECT DISTINCT ID FROM " + GetTableName(table));
-        }
+        { return database.Execute("SELECT DISTINCT ID FROM " + GetTableName(table)); }
 
         public void UpdateHash(string hash, string unescapedInfo)
         {
@@ -491,7 +470,8 @@ namespace ListPlayers.PcdbModel
             }
         }
 
-        public void AppendNew(string hash, string unescapedInfo, string unescapedName, string ip, uint gsid, DateTime date)
+        public void AppendNew(string hash, string unescapedInfo, string unescapedName,
+            string ip, uint gsid, DateTime date)
         {
             if (hash == "")
                 return;

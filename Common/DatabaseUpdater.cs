@@ -56,15 +56,9 @@ namespace ListPlayers.Common
             this.files = files;
         }
 
-        public void BeginUpdate()
-        {
-            Utils.CreateThread(BeginUpdateProc, "Updater");
-        }
+        public void BeginUpdate() { Utils.CreateThread(BeginUpdateProc, "Updater"); }
 
-        public void Update()
-        {
-            BeginUpdateProc();
-        }
+        public void Update() { BeginUpdateProc(); }
 
         private void BeginUpdateProc()
         {

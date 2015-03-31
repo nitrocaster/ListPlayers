@@ -26,9 +26,7 @@ namespace System.Windows.Forms
         private readonly IntPtr hCursorHand;
 
         public LinkLabelEx()
-        {
-            hCursorHand = WinAPI.LoadCursor(VoidPtr.Null, WinAPI.IDC_HAND);
-        }
+        { hCursorHand = WinAPI.LoadCursor(VoidPtr.Null, WinAPI.IDC_HAND); }
 
         protected override void WndProc(ref Message m)
         {

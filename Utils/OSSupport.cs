@@ -26,10 +26,7 @@ namespace System
 
 		public static bool IsVistaOrLater
         {
-			get
-			{
-			    return isVistaOrLater;
-			}
+			get { return isVistaOrLater; }
 		}
 
         private static readonly bool isSevenOrLater = 
@@ -39,10 +36,7 @@ namespace System
 
         public static bool IsSevenOrLater
         {
-            get
-            {
-                return isSevenOrLater;
-            }
+            get { return isSevenOrLater; }
         }
 	}
 }

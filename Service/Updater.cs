@@ -20,7 +20,7 @@ namespace ListPlayers.Service
 {
     public struct UpdateInfo
     {
-        public bool   IsNewer;
+        public bool IsNewer;
         public string Link;
         public string Version;
         public string Description;
@@ -29,7 +29,6 @@ namespace ListPlayers.Service
     public static class Updater
     {
         private const string updateUrl = "http://mpnetworks.ru/downloads/cop_soft/listplayers/upd_info/";
-
         private static UpdaterDialog updaterDialog;
 
         public static void CheckForUpdates()
@@ -46,7 +45,7 @@ namespace ListPlayers.Service
 
         private static bool GetUpdateInfo(out UpdateInfo info)
         {
-            const string keyLink    = "link =";
+            const string keyLink = "link =";
             const string keyVersion = "version =";
             info = default(UpdateInfo);
             using (var client = new WebClient())

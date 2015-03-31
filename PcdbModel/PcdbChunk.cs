@@ -14,7 +14,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 
 using System.Data;
 
-
 namespace ListPlayers.PcdbModel
 {
     public sealed class PcdbChunk
@@ -24,23 +23,21 @@ namespace ListPlayers.PcdbModel
         public DataTable Ips;
         public DataTable Gsids;
 
-        public PcdbChunk()
-        {
-        }
+        public PcdbChunk() {}
 
         public PcdbChunk(DataTable hashes, DataTable names, DataTable ips)
         {
-            Hashes  = hashes;
-            Names   = names;
-            Ips     = ips;
+            Hashes = hashes;
+            Names = names;
+            Ips = ips;
         }
 
         public PcdbChunk(DataTable hashes, DataTable names, DataTable ips, DataTable gsids)
         {
-            Hashes  = hashes;
-            Names   = names;
-            Ips     = ips;
-            Gsids   = gsids;
+            Hashes = hashes;
+            Names = names;
+            Ips = ips;
+            Gsids = gsids;
         }
     }
 }

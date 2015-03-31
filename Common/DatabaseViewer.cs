@@ -28,6 +28,8 @@ namespace ListPlayers.Common
 {
     public sealed class DatabaseViewer : IDisposable
     {
+        public event Action<List<PcdbEntry>, bool> SearchCompleted;
+        public event Action<bool> ConnectionStatusChanged;
         private readonly object syncSearch = new object();
         private bool cancel;
         private PcdbFile database;
@@ -36,25 +38,16 @@ namespace ListPlayers.Common
         private bool shutdown;
         private ManualResetEventSlim syncSearchCompleted = new ManualResetEventSlim(false);
 
-        public DatabaseViewer()
-        {
-            Utils.CreateThread(SearchProc, "Seeker");
-        }
+        public DatabaseViewer() { Utils.CreateThread(SearchProc, "Seeker"); }
 
         public string FileName
         {
-            get
-            {
-                return database != null ? database.FileName : "";
-            }
+            get { return database != null ? database.FileName : ""; }
         }
 
         public PcdbGameVersion GameVersion
         {
-            get
-            {
-                return dbGameVersion;
-            }
+            get { return dbGameVersion; }
         }
 
         public SearchFilter Filter
@@ -84,15 +77,11 @@ namespace ListPlayers.Common
             syncSearchCompleted = null;
         }
 
-        public event Action<List<PcdbEntry>, bool> SearchCompleted;
-
         private void OnSearchCompleted(List<PcdbEntry> result, bool cancelled)
         {
             if (SearchCompleted != null)
                 SearchCompleted(result, cancelled);
         }
-
-        public event Action<bool> ConnectionStatusChanged;
 
         private void OnConnectionStatusChanged(bool connected)
         {
@@ -311,7 +300,8 @@ namespace ListPlayers.Common
         {
             using (var saver = new SaveFileDialog())
             {
-                saver.Filter = StringTable.TextDocuments + " (*.txt)|*.txt|RAdmin Panel Database (*.radb)|*.radb";
+                saver.Filter = StringTable.TextDocuments +
+                    " (*.txt)|*.txt|RAdmin Panel Database (*.radb)|*.radb";
                 saver.Title = StringTable.Export;
                 saver.InitialDirectory = Root.SelfPath;
                 if (saver.ShowDialog() != DialogResult.OK)
@@ -364,7 +354,8 @@ namespace ListPlayers.Common
             case PcdbFieldId.Name:
             {
                 var fieldName = (PcdbName)root;
-                data.AppendLine(String.Format("    {0,-32} | {1}", fieldName.Name, fieldName.Timestamp.ToString(Utils.DateTimePatternLong)));
+                data.AppendLine(String.Format("    {0,-32} | {1}",
+                    fieldName.Name, fieldName.Timestamp.ToString(Utils.DateTimePatternLong)));
                 break;
             }
             case (PcdbFieldId.Ip | PcdbFieldId.Group):
@@ -378,7 +369,8 @@ namespace ListPlayers.Common
             case PcdbFieldId.Ip:
             {
                 var fieldIp = (PcdbIp)root;
-                data.AppendLine(String.Format("    {0,-32} | {1}", fieldIp.Ip, fieldIp.Timestamp.ToString(Utils.DateTimePatternLong)));
+                data.AppendLine(String.Format("    {0,-32} | {1}",
+                    fieldIp.Ip, fieldIp.Timestamp.ToString(Utils.DateTimePatternLong)));
                 break;
             }
             case (PcdbFieldId.Gsid | PcdbFieldId.Group):
@@ -392,7 +384,8 @@ namespace ListPlayers.Common
             case PcdbFieldId.Gsid:
             {
                 var fieldGsid = (PcdbGsid)root;
-                data.AppendLine(String.Format("    {0,-32} | {1}", fieldGsid.Gsid, fieldGsid.Timestamp.ToString(Utils.DateTimePatternLong)));
+                data.AppendLine(String.Format("    {0,-32} | {1}",
+                    fieldGsid.Gsid, fieldGsid.Timestamp.ToString(Utils.DateTimePatternLong)));
                 break;
             }
             case PcdbFieldId.Comment:

@@ -66,9 +66,6 @@ namespace ListPlayers.Dialogs
             }
         }
 
-        private void OpenHomepage()
-        {
-            Process.Start("http://mpnetworks.ru");
-        }
+        private void OpenHomepage() { Process.Start("http://mpnetworks.ru"); }
     }
 }

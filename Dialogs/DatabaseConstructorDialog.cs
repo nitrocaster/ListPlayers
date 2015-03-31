@@ -25,8 +25,8 @@ namespace ListPlayers.Dialogs
     public sealed partial class DatabaseConstructorDialog : FormEx
     {
         private List<string> files;
-        public bool   Back;
-        public bool   Cancel;
+        public bool Back;
+        public bool Cancel;
         public string Destination;
         public string Source;
 
@@ -42,10 +42,7 @@ namespace ListPlayers.Dialogs
 
         public string[] SelectedFiles
         {
-            get
-            {
-                return files.ToArray();
-            }
+            get { return files.ToArray(); }
         }
 
         private void btnForward_Click(object sender, EventArgs e)
@@ -89,9 +86,9 @@ namespace ListPlayers.Dialogs
                 MsgBox.Warning(StringTable.SelectedFolderDoesntContainAcceptedFiles);
                 return;
             }
-            Source       = cbSrc.Text;
-            Destination  = cbDest.Text;
-            Cancel       = false;
+            Source = cbSrc.Text;
+            Destination = cbDest.Text;
+            Cancel = false;
             Close();
         }
 
@@ -132,10 +129,7 @@ namespace ListPlayers.Dialogs
             }
         }
 
-        public new void ShowDialog()
-        {
-            base.ShowDialog();
-        }
+        public new void ShowDialog() { base.ShowDialog(); }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -145,8 +139,6 @@ namespace ListPlayers.Dialogs
         }
 
         private void DatabaseConstructorDialog_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Settings.SearchSubfolders = cbSubFolders.Checked;
-        }
+        { Settings.SearchSubfolders = cbSubFolders.Checked; }
     }
 }

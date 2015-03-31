@@ -27,9 +27,7 @@ namespace ListPlayers.Parsers
         {
             public StatisticsDumpParserImpl(HostParser host, PcdbFile database)
                 : base(host)
-            {
-                Database = database;
-            }
+            { Database = database; }
 
             public override void Parse(string path)
             {
@@ -145,12 +143,11 @@ namespace ListPlayers.Parsers
                                 {
                                     OnFoundData(DatabaseTableId.Hash);
                                     if (gsid == "") // player_unique_digest is the last entry
-                                    {
                                         Database.Append(digest, name, ip, onlineDump ? dumpTime : endTime);
-                                    }
                                     else
                                     {
-                                        Database.Append(digest, name, ip, Convert.ToUInt32(gsid), onlineDump ? dumpTime : endTime);
+                                        Database.Append(digest, name, ip,
+                                            Convert.ToUInt32(gsid), onlineDump ? dumpTime : endTime);
                                     }
                                 }
                                 break;
@@ -191,16 +188,11 @@ namespace ListPlayers.Parsers
         }
 
         public ParserBase GetParser(HostParser host, PcdbFile database)
-        {
-            return new StatisticsDumpParserImpl(host, database);
-        }
+        { return new StatisticsDumpParserImpl(host, database); }
 
         public string AcceptedFileExtension
         {
-            get
-            {
-                return ".ltx";
-            }
+            get { return ".ltx"; }
         }
 
         public bool CheckFormat(string path)
@@ -215,18 +207,13 @@ namespace ListPlayers.Parsers
 
         #region Singleton implementation
 
-        private StatisticsDumpParser()
-        {
-        }
+        private StatisticsDumpParser() {}
 
         private static readonly StatisticsDumpParser instance = new StatisticsDumpParser();
 
         public static StatisticsDumpParser Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         #endregion

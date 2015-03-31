@@ -18,50 +18,23 @@ namespace ListPlayers.PcdbExport
 {
     public interface ITextExporterView
     {
-        string StatusText
-        {
-            set;
-        }
+        string StatusText { set; }
 
-        string CounterText
-        {
-            set;
-        }
+        string CounterText { set; }
 
-        string CancelButtonText
-        {
-            set;
-        }
+        string CancelButtonText { set; }
 
-        bool Cancelled
-        {
-            get;
-        }
+        bool Cancelled { get; }
 
-        bool IsBusy
-        {
-            set;
-        }
+        bool IsBusy { set; }
 
-        bool UserClose
-        {
-            get;
-        }
+        bool UserClose { get; }
 
-        int ProgressValue
-        {
-            set;
-        }
+        int ProgressValue { set; }
 
-        int ProgressMin
-        {
-            set;
-        }
+        int ProgressMin { set; }
 
-        int ProgressMax
-        {
-            set;
-        }
+        int ProgressMax { set; }
 
         void InvokeAsync(Action callback);
 

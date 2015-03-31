@@ -17,8 +17,8 @@ namespace ListPlayers.PcdbModel
     public enum PcdbGameVersion : byte
     {
         Unknown = 0,
-        SHOC    = 1,
-        CS      = 2,
-        COP     = 3
+        SHOC = 1,
+        CS = 2,
+        COP = 3
     }
 }

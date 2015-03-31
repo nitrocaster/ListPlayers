@@ -19,15 +19,11 @@ namespace ListPlayers.PcdbModel
     public sealed class PcdbIp : IPcdbField
     {
         public string Ip;
-
         public DateTime Timestamp = PcdbFile.InvalidDateTime;
 
         public PcdbFieldId Id
         {
-            get
-            {
-                return PcdbFieldId.Ip;
-            }
+            get { return PcdbFieldId.Ip; }
         }
     }
 }

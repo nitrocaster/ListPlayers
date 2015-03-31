@@ -24,9 +24,7 @@ namespace ListPlayers.Parsers
         {
             public PcdbParserImpl(HostParser host, PcdbFile database)
                 : base(host)
-            {
-                Database = database;
-            }
+            { Database = database; }
 
             public override void Parse(string path)
             {
@@ -112,37 +110,25 @@ namespace ListPlayers.Parsers
         }
 
         public ParserBase GetParser(HostParser host, PcdbFile database)
-        {
-            return new PcdbParserImpl(host, database);
-        }
+        { return new PcdbParserImpl(host, database); }
 
         public string AcceptedFileExtension
         {
-            get
-            {
-                return ".pcdb";
-            }
+            get { return ".pcdb"; }
         }
 
         public bool CheckFormat(string path)
-        {
-            return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension);
-        }
+        { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
 
         #region Singleton implementation
 
-        private PcdbParser()
-        {
-        }
+        private PcdbParser() {}
 
         private static readonly PcdbParser instance = new PcdbParser();
 
         public static PcdbParser Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         #endregion

@@ -23,47 +23,32 @@ namespace ListPlayers.Parsers
         {
             public ScreenshotParserImpl(HostParser host, PcdbFile database)
                 : base(host, database)
-            {
-            }
+            {}
 
             public override void Parse(string path)
-            {
-                InternalParseDumpedFile(path, "screenshot_info");
-            }
+            { InternalParseDumpedFile(path, "screenshot_info"); }
         }
 
         public ParserBase GetParser(HostParser host, PcdbFile database)
-        {
-            return new ScreenshotParserImpl(host, database);
-        }
+        { return new ScreenshotParserImpl(host, database); }
 
         public string AcceptedFileExtension
         {
-            get
-            {
-                return ".jpg";
-            }
+            get { return ".jpg"; }
         }
 
         public bool CheckFormat(string path)
-        {
-            return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension);
-        }
+        { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
 
         #region Singleton implementation
 
-        private ScreenshotParser()
-        {
-        }
+        private ScreenshotParser() {}
 
         private static readonly ScreenshotParser instance = new ScreenshotParser();
 
         public static ScreenshotParser Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         #endregion

@@ -12,7 +12,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 ====================================================================================
 */
 
-
 namespace ListPlayers.Common
 {
     public struct SearchFilter
