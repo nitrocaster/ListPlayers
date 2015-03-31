@@ -35,10 +35,7 @@ namespace FileSystem
             private set;
         }
 
-        public IniException(IniExceptionCode details)
-        {
-            Details = details;
-        }
+        public IniException(IniExceptionCode details) { Details = details; }
     }
 
     public sealed class IniFile
