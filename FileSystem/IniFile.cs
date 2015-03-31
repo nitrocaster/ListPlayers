@@ -164,13 +164,13 @@ namespace FileSystem
 
         public bool ContainsSection(string section) { return sections.ContainsKey(section); }
 
-        public int GetSectionsCount(Predicate<string> match = null)
+        public int GetSectionCount(Predicate<string> match = null)
         {
-            var sectionsCount = sections.Count;
+            var sectionCount = sections.Count;
             if (match == null)
-                return sectionsCount;
+                return sectionCount;
             var result = 0;
-            for (var i = 0; i < sectionsCount; ++i)
+            for (var i = 0; i < sectionCount; ++i)
             {
                 if (match(sections.Keys[i]))
                     ++result;
