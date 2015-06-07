@@ -33,9 +33,7 @@ namespace ListPlayers.Parsers
         { return new ScreenshotParserImpl(host, database); }
 
         public string AcceptedFileExtension
-        {
-            get { return ".jpg"; }
-        }
+        { get { return ".jpg"; } }
 
         public bool CheckFormat(string path)
         { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
@@ -47,9 +45,7 @@ namespace ListPlayers.Parsers
         private static readonly ScreenshotParser instance = new ScreenshotParser();
 
         public static ScreenshotParser Instance
-        {
-            get { return instance; }
-        }
+        { get { return instance; } }
 
         #endregion
     }

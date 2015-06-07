@@ -28,7 +28,7 @@ namespace ListPlayers.Service
 
     public static class Updater
     {
-        private const string updateUrl = "http://mpnetworks.ru/downloads/cop_soft/listplayers/upd_info/";
+        private const string UpdateUrl = "http://mpnetworks.ru/downloads/cop_soft/listplayers/upd_info/";
         private static UpdaterDialog updaterDialog;
 
         public static void CheckForUpdates()
@@ -52,21 +52,21 @@ namespace ListPlayers.Service
             {
                 try
                 {
-                    var data = client.DownloadData(updateUrl + "index.txt");
+                    var data = client.DownloadData(UpdateUrl + "index.txt");
                     var updIndex = Encoding.Default.GetString(data).Split('\n');
                     var updInfo = new StringBuilder();
-                    for (var i = 0; i < updIndex.Length; ++i)
+                    for (var i = 0; i < updIndex.Length; i++)
                     {
                         var buf = updIndex[i].Trim();
                         var version = new Version(buf);
                         if (version <= Root.Version)
                             continue;
                         info.IsNewer = true;
-                        for (var j = i; j < updIndex.Length; ++j)
+                        for (var j = i; j < updIndex.Length; j++)
                         {
-                            data = client.DownloadData(updateUrl + updIndex[j].Trim() + ".txt");
+                            data = client.DownloadData(UpdateUrl + updIndex[j].Trim() + ".txt");
                             var lines = Encoding.Default.GetString(data).Split('\n');
-                            for (var k = 0; k < lines.Length; ++k)
+                            for (var k = 0; k < lines.Length; k++)
                             {
                                 updInfo.Append(lines[k]);
                                 updInfo.Append("\r\n");
@@ -78,9 +78,9 @@ namespace ListPlayers.Service
                     if (updInfo.Length == 0)
                         return true;
                     info.Description = updInfo.ToString();
-                    data = client.DownloadData(updateUrl + "latest.txt");
+                    data = client.DownloadData(UpdateUrl + "latest.txt");
                     updIndex = Encoding.Default.GetString(data).Split('\n');
-                    for (var i = 0; i < updIndex.Length; ++i)
+                    for (var i = 0; i < updIndex.Length; i++)
                     {
                         if (updIndex[i].StartsWith(keyLink))
                         {

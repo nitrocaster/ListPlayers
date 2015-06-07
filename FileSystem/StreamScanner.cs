@@ -39,10 +39,10 @@ namespace FileSystem
                     shift = 1;
                 }
                 else
-                    ++shift;
+                    shift++;
             }
             var ret = new int[shiftCount];
-            for (var i = 0; i < shiftCount; ++i)
+            for (var i = 0; i < shiftCount; i++)
                 ret[i] = shifts[i];
             return ret;
         }
@@ -50,7 +50,7 @@ namespace FileSystem
         private static byte[] FlushBuffer(byte[] buffer, int keepSize)
         {
             var newBuffer = new byte[buffer.Length];
-            for (var i = 0; i < keepSize; ++i)
+            for (var i = 0; i < keepSize; i++)
                 newBuffer[i] = buffer[buffer.Length - keepSize + i];
             return newBuffer;
         }
@@ -69,14 +69,14 @@ namespace FileSystem
                         return -1;
                     if (haystack[index] == needle[needleIndex])
                         break;
-                    ++index;
+                    index++;
                 }
                 var searchIndex = index;
                 needleIndex = needle.Length - 1;
                 while (needleIndex >= 0 && haystack[searchIndex] == needle[needleIndex])
                 {
-                    --searchIndex;
-                    --needleIndex;
+                    searchIndex--;
+                    needleIndex--;
                 }
                 if (needleIndex < 0)
                     return index - needle.Length + 1;
@@ -89,12 +89,12 @@ namespace FileSystem
                 else if (currentShiftIndex > 0 && currentShiftIndex >= shiftArray.Length)
                 {
                     shiftFlag = true;
-                    ++index;
+                    index++;
                 }
                 else
                 {
                     if (shiftArray.Length == 0)
-                        ++index;
+                        index++;
                     else
                         index += shiftArray[currentShiftIndex++];
                 }

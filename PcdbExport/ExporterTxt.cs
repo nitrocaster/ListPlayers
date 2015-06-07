@@ -29,14 +29,14 @@ namespace ListPlayers.PcdbExport
             var ipsCount = ips.Count;            
             try
             {
-                for (var i = 0; i < hashesCount; ++i)
+                for (var i = 0; i < hashesCount; i++)
                 {
                     if (Dialog.Cancelled)
                         break;
                     var currentId = Convert.ToInt32(hashes[i][0]);
                     Writer.WriteLine(hashes[i][1].ToString());
                     Writer.WriteLine("\r\n; names\r\n");
-                    for (var j = 0; j < namesCount; ++j)
+                    for (var j = 0; j < namesCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
@@ -47,7 +47,7 @@ namespace ListPlayers.PcdbExport
                     }
 
                     Writer.WriteLine("\r\n; ip addresses\r\n");
-                    for (var j = 0; j < ipsCount; ++j)
+                    for (var j = 0; j < ipsCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
@@ -62,7 +62,7 @@ namespace ListPlayers.PcdbExport
                         var gsids = Chunk.Gsids.Rows;
                         var gsidsCount = gsids.Count;
                         Writer.WriteLine("\r\n; gamespy id's\r\n");
-                        for (var j = 0; j < gsidsCount; ++j)
+                        for (var j = 0; j < gsidsCount; j++)
                         {
                             if (Dialog.Cancelled)
                                 break;
@@ -75,7 +75,7 @@ namespace ListPlayers.PcdbExport
                     Writer.WriteLine("\r\n; comments\r\n");
                     Writer.WriteLine(hashes[i][2]);
                     Writer.WriteLine("\r\n; ----\r\n");
-                    ++CurrentProgress;
+                    CurrentProgress++;
                     Worker.ReportProgress(0);
                 }
             }

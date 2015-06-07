@@ -31,14 +31,14 @@ namespace ListPlayers.PcdbExport
             var ipsCount = ips.Count;
             try
             {
-                for (var i = 0; i < hashesCount; ++i)
+                for (var i = 0; i < hashesCount; i++)
                 {
                     if (Dialog.Cancelled)
                         break;
                     var currentId = Convert.ToInt32(hashes[i][0]);
                     Writer.WriteLine();
                     Writer.WriteLine(hashes[i][1].ToString());
-                    for (var j = 0; j < namesCount; ++j)
+                    for (var j = 0; j < namesCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
@@ -49,7 +49,7 @@ namespace ListPlayers.PcdbExport
                         Writer.WriteLine(((DateTime)names[j][2]).ToString(Utils.DateTimePatternLong));
                     }
                     Writer.WriteLine();
-                    for (var j = 0; j < ipsCount; ++j)
+                    for (var j = 0; j < ipsCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
@@ -64,7 +64,7 @@ namespace ListPlayers.PcdbExport
                         var gsids = Chunk.Gsids.Rows;
                         var gsidsCount = gsids.Count;
                         Writer.WriteLine();
-                        for (var j = 0; j < gsidsCount; ++j)
+                        for (var j = 0; j < gsidsCount; j++)
                         {
                             if (Dialog.Cancelled)
                                 break;
@@ -75,7 +75,7 @@ namespace ListPlayers.PcdbExport
                             Writer.WriteLine(((DateTime)gsids[j][2]).ToString(Utils.DateTimePatternLong));
                         }
                     }
-                    ++CurrentProgress;
+                    CurrentProgress++;
                     Worker.ReportProgress(0);
                 }
             }

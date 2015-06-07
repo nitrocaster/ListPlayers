@@ -47,9 +47,6 @@ namespace ListPlayers
             }
         }
 
-        public double Percentage
-        {
-            get { return 1.0 * current / maximum; }
-        }
+        public double Percentage { get { return 1.0 * current / maximum; } }
     }
 }

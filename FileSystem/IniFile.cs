@@ -81,7 +81,7 @@ namespace FileSystem
                 throw new IniException(IniExceptionCode.SectionNotFound);
             var value = "";
             var keyFound = false;
-            for (var i = sections[section]; i < lines.Length; ++i)
+            for (var i = sections[section]; i < lines.Length; i++)
             {
                 var pair = ExtractKeyValuePair(lines[i], true);
                 if (pair.Key == key)
@@ -170,17 +170,17 @@ namespace FileSystem
             if (match == null)
                 return sectionCount;
             var result = 0;
-            for (var i = 0; i < sectionCount; ++i)
+            for (var i = 0; i < sectionCount; i++)
             {
                 if (match(sections.Keys[i]))
-                    ++result;
+                    result++;
             }
             return result;
         }
 
         private void ScanSections()
         {
-            for (var i = 0; i < lines.Length; ++i)
+            for (var i = 0; i < lines.Length; i++)
             {
                 var len = lines[i].Length;
                 if (len < 3)

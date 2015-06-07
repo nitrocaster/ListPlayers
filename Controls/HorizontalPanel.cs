@@ -36,7 +36,7 @@ namespace System.Windows.Forms
                 Color.FromArgb(241, 245, 251)
             };
             gradient = new Bitmap(1, 6);
-            for (var i = 0; i < 6; ++i)
+            for (var i = 0; i < 6; i++)
                 gradient.SetPixel(0, i, gradientColors[i]);
         }
 

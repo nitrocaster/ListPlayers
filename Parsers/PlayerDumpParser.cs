@@ -72,7 +72,7 @@ namespace ListPlayers.Parsers
             }
         }
 
-        private static readonly char[] dateTimeSplitChars = { '.', ' ', '_', ':', '-' };
+        private static readonly char[] DateTimeSplitChars = {'.', ' ', '_', ':', '-'};
 
         /// <summary>
         ///     Extracts DateTime from it's special string representation (used in config dumps and screenshots).
@@ -82,9 +82,9 @@ namespace ListPlayers.Parsers
             // "MM-DD-YY_hh-mm-ss"
             // dateString = "14 11 11 08 30 48";
             // format =     "dd.MM.yyyy_HH:mm:ss";
-            var dateparts = src.Split(dateTimeSplitChars);
+            var dateparts = src.Split(DateTimeSplitChars);
             var builder = new StringBuilder(64);
-            for (var i = 0; i < dateparts.Length; ++i)
+            for (var i = 0; i < dateparts.Length; i++)
                 builder.Append(dateparts[i]);
             // bug: StrToDateTime
             var result = DateTime.ParseExact(builder.ToString(), "ddMMyyyyHHmmss", CultureInfo.InvariantCulture);

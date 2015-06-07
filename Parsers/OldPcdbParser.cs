@@ -49,7 +49,7 @@ namespace ListPlayers.Parsers
                         {
                             if (Cancelled)
                                 break;
-                            ++currentLine;
+                            currentLine++;
                             var newProgress = (uint)Math.Round(
                                 100.0 * reader.BaseStream.Position / reader.BaseStream.Length);
                             if (newProgress > progress.Current)
@@ -140,12 +140,12 @@ namespace ListPlayers.Parsers
                         var buf = reader.ReadLine().TrimEnd();
                         if (buf.StartsWith("[") && buf.EndsWith("]") && buf.Length == 34)
                         {
-                            ++hashCount;
+                            hashCount++;
                             continue;
                         }
                         if (buf == "\tplayer_profile_id")
                         {
-                            ++gsidCount;
+                            gsidCount++;
                             continue;
                         }
                     }

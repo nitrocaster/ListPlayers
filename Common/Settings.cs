@@ -26,7 +26,7 @@ namespace ListPlayers.Common
         private const string configFileName = "listplayers.ini";
         public const int LastPathesCapacity = 5;
         private static readonly List<string> recentDatabases = new List<string>(LastPathesCapacity + 1);
-        private static readonly List<string> recentSources   = new List<string>(LastPathesCapacity + 1);
+        private static readonly List<string> recentSources = new List<string>(LastPathesCapacity + 1);
         public static bool SearchSubfolders = true;
         public static bool ShowAllRelatedData = false;
         public static bool HashPattern = false;
@@ -74,7 +74,7 @@ namespace ListPlayers.Common
             }
             if (cfg.ContainsSection("last_databases"))
             {
-                for (var i = 0; i < LastPathesCapacity; ++i)
+                for (var i = 0; i < LastPathesCapacity; i++)
                 {
                     string buf = null;
                     if (!cfg.TryGetString("last_databases", i.ToString(), ref buf))
@@ -84,7 +84,7 @@ namespace ListPlayers.Common
             }
             if (cfg.ContainsSection("last_sources"))
             {
-                for (var i = 0; i < LastPathesCapacity; ++i)
+                for (var i = 0; i < LastPathesCapacity; i++)
                 {
                     string buf = null;
                     if (!cfg.TryGetString("last_sources", i.ToString(), ref buf))

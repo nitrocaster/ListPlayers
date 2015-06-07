@@ -76,7 +76,7 @@ namespace ListPlayers.Common
                 db.AppendedData += OnAppendedData;
                 host.FoundData += OnFoundData;
                 host.ProgressChanged += OnFileProgressChanged;
-                for (var i = 0; i < count; ++i)
+                for (var i = 0; i < count; i++)
                 {
                     if (Cancelled)
                     {

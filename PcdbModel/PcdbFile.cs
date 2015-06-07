@@ -245,7 +245,7 @@ namespace ListPlayers.PcdbModel
                 idUsed = true;
                 query.Append(" ID IN (");
                 query.Append(ids[0]);
-                for (var j = 1; j < len; ++j)
+                for (var j = 1; j < len; j++)
                 {
                     query.Append(',');
                     query.Append(ids[j]);
@@ -263,7 +263,7 @@ namespace ListPlayers.PcdbModel
                     query.Append(" LIKE '");
                     query.Append(EscapeString(filter[0]));
                     query.Append('\'');
-                    for (var j = 1; j < len; ++j)
+                    for (var j = 1; j < len; j++)
                     {
                         query.Append(" OR ");
                         query.Append(fieldName);
@@ -278,7 +278,7 @@ namespace ListPlayers.PcdbModel
                     query.Append(" IN ('");
                     query.Append(EscapeString(filter[0]));
                     query.Append('\'');
-                    for (var j = 1; j < len; ++j)
+                    for (var j = 1; j < len; j++)
                     {
                         query.Append(",'");
                         query.Append(EscapeString(filter[j]));
@@ -318,7 +318,7 @@ namespace ListPlayers.PcdbModel
                 query.Append(" LIKE '");
                 query.Append(EscapeString(filter[0]));
                 query.Append('\'');
-                for (var j = 1; j < len; ++j)
+                for (var j = 1; j < len; j++)
                 {
                     query.Append(" OR ");
                     query.Append(fieldName);
@@ -334,7 +334,7 @@ namespace ListPlayers.PcdbModel
                 query.Append(" IN ('");
                 query.Append(EscapeString(filter[0]));
                 query.Append('\'');
-                for (var j = 1; j < len; ++j)
+                for (var j = 1; j < len; j++)
                 {
                     query.Append(",'");
                     query.Append(EscapeString(filter[j]));
@@ -384,7 +384,7 @@ namespace ListPlayers.PcdbModel
         {
             var count = src.Rows.Count;
             var ids = new uint[count];
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < count; i++)
                 ids[i] = Convert.ToUInt32(src.Rows[i][0]);
             return ids;
         }

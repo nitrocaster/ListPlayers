@@ -74,7 +74,7 @@ namespace ListPlayers.Dialogs
             }
             var dst = cbDest.Text;
             var count = files.Count;
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < count; i++)
             {
                 if (files[i] != dst)
                     continue;

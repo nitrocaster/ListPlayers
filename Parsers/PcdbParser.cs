@@ -45,7 +45,7 @@ namespace ListPlayers.Parsers
                     var ids = src.SelectIds(DatabaseTableId.Hash);
                     var idCount = ids.Rows.Count;
                     OnFoundData(DatabaseTableId.Hash, idCount);
-                    for (var idIndex = 0; idIndex < idCount; ++idIndex)
+                    for (var idIndex = 0; idIndex < idCount; idIndex++)
                     {
                         if (Cancelled)
                             break;
@@ -60,7 +60,7 @@ namespace ListPlayers.Parsers
                         // names
                         var names = src.Select(DatabaseTableId.Name, id);
                         OnFoundData(DatabaseTableId.Name, names.Rows.Count);
-                        for (var i = 0; i < names.Rows.Count; ++i)
+                        for (var i = 0; i < names.Rows.Count; i++)
                         {
                             var nameRow = names.Rows[i];
                             var name = (string)nameRow[1];
@@ -72,7 +72,7 @@ namespace ListPlayers.Parsers
                         // ips
                         var ips = src.Select(DatabaseTableId.Ip, id);
                         OnFoundData(DatabaseTableId.Ip, ips.Rows.Count);
-                        for (var i = 0; i < ips.Rows.Count; ++i)
+                        for (var i = 0; i < ips.Rows.Count; i++)
                         {
                             var ipRow = ips.Rows[i];
                             var ip = (string)ipRow[1];
@@ -86,7 +86,7 @@ namespace ListPlayers.Parsers
                         {
                             var gsids = src.Select(DatabaseTableId.Gsid, id);
                             OnFoundData(DatabaseTableId.Gsid, gsids.Rows.Count);
-                            for (var i = 0; i < gsids.Rows.Count; ++i)
+                            for (var i = 0; i < gsids.Rows.Count; i++)
                             {
                                 var gsidRow = gsids.Rows[i];
                                 var gsid = Convert.ToUInt32(gsidRow[1]);
@@ -113,9 +113,7 @@ namespace ListPlayers.Parsers
         { return new PcdbParserImpl(host, database); }
 
         public string AcceptedFileExtension
-        {
-            get { return ".pcdb"; }
-        }
+        { get { return ".pcdb"; } }
 
         public bool CheckFormat(string path)
         { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }

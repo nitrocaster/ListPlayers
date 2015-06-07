@@ -180,7 +180,7 @@ namespace ListPlayers.Parsers
                 // format =     "dd.MM.yyyy_HH:mm:ss";
                 var dateparts = src.Split(dateTimeSplitChars);
                 var builder = new StringBuilder(64);
-                for (var i = 0; i < dateparts.Length; ++i)
+                for (var i = 0; i < dateparts.Length; i++)
                     builder.Append(dateparts[i]);
                 var result = DateTime.ParseExact(src, "MMddyyHHmmss", CultureInfo.InvariantCulture);
                 return result;
