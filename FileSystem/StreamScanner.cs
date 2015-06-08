@@ -22,7 +22,7 @@ namespace FileSystem
     /// </summary>
     public static class StreamScanner
     {
-        private const int defaultBufferSize = 1024;
+        private const int DefaultBufferSize = 1024;
 
         private static int[] BuildShiftArray(byte[] needle)
         {
@@ -102,13 +102,13 @@ namespace FileSystem
         }
 
         public static int FindString(Stream stream, Encoding encoding,
-            string needle, int bufferSize = defaultBufferSize)
+            string needle, int bufferSize = DefaultBufferSize)
         {
             var bytes = encoding.GetBytes(needle);
             return FindBytes(stream, bytes, bufferSize);
         }
 
-        public static int FindBytes(Stream stream, byte[] needle, int bufferSize = defaultBufferSize)
+        public static int FindBytes(Stream stream, byte[] needle, int bufferSize = DefaultBufferSize)
         {
             if (needle.Length > bufferSize)
                 bufferSize = needle.Length;

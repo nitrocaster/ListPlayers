@@ -38,7 +38,7 @@ namespace ListPlayers.Parsers
                 var progress = new Progress(100);
                 OnProgressChanged(progress);
                 var currentLine = -1;
-                char[] hexDigestTrimChars = { '[', ']', ' ', '\t' };
+                char[] hexDigestTrimChars = {'[', ']', ' ', '\t'};
                 if (!VerifyOldDatabase(path, Database.GetGameVersion()) || Cancelled)
                     return;
                 using (var reader = new StreamReader(path, Encoding.Default))
@@ -162,9 +162,7 @@ namespace ListPlayers.Parsers
         { return new OldPcdbParserImpl(host, database); }
 
         public string AcceptedFileExtension
-        {
-            get { return ".pcdb"; }
-        }
+        { get { return ".pcdb"; } }
 
         public bool CheckFormat(string path)
         { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
@@ -176,9 +174,7 @@ namespace ListPlayers.Parsers
         private static readonly OldPcdbParser instance = new OldPcdbParser();
 
         public static OldPcdbParser Instance
-        {
-            get { return instance; }
-        }
+        { get { return instance; } }
 
         #endregion
     }

@@ -108,11 +108,11 @@ namespace ListPlayers.Common
                     writer.WriteLine("ips_pattern           =   {0}", Utils.BoolToString(IpPattern));
                     writer.WriteLine("\r\n[last_databases]");
                     var tmp = recentDatabases;
-                    for (var i = tmp.Count - 1; i >= 0; --i)
+                    for (var i = tmp.Count - 1; i >= 0; i--)
                         writer.WriteLine((tmp.Count - i - 1) + " = " + tmp[i]);
                     writer.WriteLine("\r\n[last_sources]");
                     tmp = recentSources;
-                    for (var i = tmp.Count - 1; i >= 0; --i)
+                    for (var i = tmp.Count - 1; i >= 0; i--)
                         writer.WriteLine((tmp.Count - i - 1) + " = " + tmp[i]);
                 }
             }
