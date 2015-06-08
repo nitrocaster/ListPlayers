@@ -277,11 +277,6 @@
     <Compile Include="Service\Updater.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Changes.txt" />
-    <Content Include="License RU.txt" />
-    <Content Include="License.txt" />
-    <Content Include="Microsoft Public License.txt" />
-    <Content Include="Thirdparty.txt" />
     <None Include="Properties\IconListPlayers.ico" />
     <None Include="Properties\IconInfoSmall.png" />
   </ItemGroup>
