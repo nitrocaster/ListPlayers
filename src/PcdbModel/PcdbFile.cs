@@ -75,10 +75,12 @@ namespace ListPlayers.PcdbModel
                         "INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
                         "CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
                         "INSERT INTO DBTYPE VALUES ('2')",
-                        "CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                            "HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
-                        "CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                        "CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)"
+                        "CREATE TABLE HASHES (ID INTEGER UNSIGNED NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            "HASH CHAR(32) NOT NULL UNIQUE, INFO TINYTEXT NULL)",
+                        "CREATE TABLE NAMES (ID INTEGER UNSIGNED NOT NULL REFERENCES HASHES(ID), " +
+                            "NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        "CREATE TABLE IPS (ID INTEGER UNSIGNED NOT NULL REFERENCES HASHES(ID), " +
+                            "IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)"
                     });
                     break;
                 case PcdbGameVersion.COP:
@@ -88,12 +90,14 @@ namespace ListPlayers.PcdbModel
                         "INSERT INTO DBVERSION VALUES ('" + (int)SupportedRevision + "')",
                         "CREATE TABLE DBTYPE (TYPEID TINYINT UNSIGNED NOT NULL)",
                         "INSERT INTO DBTYPE VALUES ('3')",
-                        "CREATE TABLE HASHES (ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
-                            "HASH CHAR(32) NOT NULL, INFO TINYTEXT NULL)",
-                        "CREATE TABLE NAMES (ID INTEGER NOT NULL, NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                        "CREATE TABLE IPS (ID INTEGER NOT NULL, IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
-                        "CREATE TABLE GSIDS (ID INTEGER NOT NULL, GSID INT UNSIGNED NOT NULL, " +
-                            "DATEINFO TIMESTAMP NULL)"
+                        "CREATE TABLE HASHES (ID INTEGER UNSIGNED NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            "HASH CHAR(32) NOT NULL UNIQUE, INFO TINYTEXT NULL)",
+                        "CREATE TABLE NAMES (ID INTEGER UNSIGNED NOT NULL REFERENCES HASHES(ID), " +
+                            "NAME TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        "CREATE TABLE IPS (ID INTEGER UNSIGNED NOT NULL REFERENCES HASHES(ID), " +
+                            "IP TINYTEXT NOT NULL, DATEINFO TIMESTAMP NULL)",
+                        "CREATE TABLE GSIDS (ID INTEGER UNSIGNED NOT NULL REFERENCES HASHES(ID), " +
+                            "GSID INT UNSIGNED NOT NULL, DATEINFO TIMESTAMP NULL)"
                     });
                     break;
                 }
