@@ -31,82 +31,142 @@ namespace ListPlayers.Parsers
                 var src = PcdbFile.Open(path);
                 src.OpenConnection();
                 src.BeginTransaction();
+                switch (src.Revision)
                 {
-                    var srcGameVersion = src.GetGameVersion();
-                    var selfGameVersion = Database.GetGameVersion();
-                    if (srcGameVersion != selfGameVersion)
-                    {
-                        src.CommitTransaction();
-                        src.CloseConnection();
-                        return;
-                    }
-                    var progress = new Progress(100);
-                    OnProgressChanged(progress);
-                    var ids = src.SelectIds(DatabaseTableId.Hash);
-                    var idCount = ids.Rows.Count;
-                    OnFoundData(DatabaseTableId.Hash, idCount);
-                    for (var idIndex = 0; idIndex < idCount; idIndex++)
-                    {
-                        if (Cancelled)
-                            break;
-                        var id = Convert.ToUInt32(ids.Rows[idIndex][0]);
-                        var hashRow = src.Select(DatabaseTableId.Hash, id).Rows[0];
-                        var hash = (string)hashRow.ItemArray[1];
-                        var info = Convert.ToString(hashRow.ItemArray[2]);
-                        if (Database.HashExist(hash) && !String.IsNullOrEmpty(info))
-                            Database.UpdateHash(hash, info);
-                        else
-                            Database.AppendNew(hash, info);
-                        // names
-                        var names = src.Select(DatabaseTableId.Name, id);
-                        OnFoundData(DatabaseTableId.Name, names.Rows.Count);
-                        for (var i = 0; i < names.Rows.Count; i++)
-                        {
-                            var nameRow = names.Rows[i];
-                            var name = (string)nameRow[1];
-                            if (src.Revision >= (int)PcdbRevision.Rev1)
-                                Database.AppendName(hash, name, (DateTime)nameRow[2]);
-                            else
-                                Database.AppendName(hash, name, PcdbFile.InvalidDateTime);
-                        }
-                        // ips
-                        var ips = src.Select(DatabaseTableId.Ip, id);
-                        OnFoundData(DatabaseTableId.Ip, ips.Rows.Count);
-                        for (var i = 0; i < ips.Rows.Count; i++)
-                        {
-                            var ipRow = ips.Rows[i];
-                            var ip = (string)ipRow[1];
-                            if (src.Revision >= (int)PcdbRevision.Rev1)
-                                Database.AppendIp(hash, ip, (DateTime)ipRow[2]);
-                            else
-                                Database.AppendIp(hash, ip, PcdbFile.InvalidDateTime);
-                        }
-                        // gsids
-                        if (srcGameVersion == PcdbGameVersion.COP)
-                        {
-                            var gsids = src.Select(DatabaseTableId.Gsid, id);
-                            OnFoundData(DatabaseTableId.Gsid, gsids.Rows.Count);
-                            for (var i = 0; i < gsids.Rows.Count; i++)
-                            {
-                                var gsidRow = gsids.Rows[i];
-                                var gsid = Convert.ToUInt32(gsidRow[1]);
-                                if (src.Revision >= (int)PcdbRevision.Rev1)
-                                    Database.AppendGsid(hash, gsid, (DateTime)gsidRow[2]);
-                                else
-                                    Database.AppendGsid(hash, gsid, PcdbFile.InvalidDateTime);
-                            }
-                        }
-                        var newProgress = (uint)Math.Round(100.0*idIndex/idCount);
-                        if (newProgress > progress.Current)
-                        {
-                            progress.Current = newProgress;
-                            OnProgressChanged(progress);
-                        }
-                    }
+                case (int)PcdbRevision.Rev0: ParseRev0(src); break;
+                case (int)PcdbRevision.Rev1: ParseRev1(src); break;
+                case (int)PcdbRevision.Rev2: ParseRev2(src); break;
                 }
                 src.CommitTransaction();
                 src.CloseConnection();
             }
+
+            private void ParseRev0(PcdbFile src)
+            {
+                var srcGameVersion = src.GetGameVersion();
+                var selfGameVersion = Database.GetGameVersion();
+                if (srcGameVersion != selfGameVersion)
+                    return;
+                var progress = new Progress(100);
+                OnProgressChanged(progress);
+                var ids = src.SelectIds(DatabaseTableId.Hash);
+                var idCount = ids.Rows.Count;
+                OnFoundData(DatabaseTableId.Hash, idCount);
+                for (var idIndex = 0; idIndex < idCount; idIndex++)
+                {
+                    if (Cancelled)
+                        break;
+                    var id = Convert.ToUInt32(ids.Rows[idIndex][0]);
+                    var hashRow = src.Select(DatabaseTableId.Hash, id).Rows[0];
+                    var hash = (string)hashRow.ItemArray[1];
+                    var info = Convert.ToString(hashRow.ItemArray[2]);
+                    if (Database.HashExist(hash) && !String.IsNullOrEmpty(info))
+                        Database.UpdateHash(hash, info);
+                    else
+                        Database.AppendNew(hash, info);
+                    // names
+                    var names = src.Select(DatabaseTableId.Name, id);
+                    OnFoundData(DatabaseTableId.Name, names.Rows.Count);
+                    for (var i = 0; i < names.Rows.Count; i++)
+                    {
+                        var nameRow = names.Rows[i];
+                        var name = (string)nameRow[1];
+                        Database.AppendName(hash, name, PcdbFile.InvalidDateTime);
+                    }
+                    // ips
+                    var ips = src.Select(DatabaseTableId.Ip, id);
+                    OnFoundData(DatabaseTableId.Ip, ips.Rows.Count);
+                    for (var i = 0; i < ips.Rows.Count; i++)
+                    {
+                        var ipRow = ips.Rows[i];
+                        var ip = (string)ipRow[1];
+                        Database.AppendIp(hash, ip, PcdbFile.InvalidDateTime);
+                    }
+                    // gsids
+                    if (srcGameVersion == PcdbGameVersion.COP)
+                    {
+                        var gsids = src.Select(DatabaseTableId.Gsid, id);
+                        OnFoundData(DatabaseTableId.Gsid, gsids.Rows.Count);
+                        for (var i = 0; i < gsids.Rows.Count; i++)
+                        {
+                            var gsidRow = gsids.Rows[i];
+                            var gsid = Convert.ToUInt32(gsidRow[1]);
+                            Database.AppendGsid(hash, gsid, PcdbFile.InvalidDateTime);
+                        }
+                    }
+                    var newProgress = (uint)Math.Round(100.0*idIndex/idCount);
+                    if (newProgress > progress.Current)
+                    {
+                        progress.Current = newProgress;
+                        OnProgressChanged(progress);
+                    }
+                }
+            }
+
+            private void ParseRev1(PcdbFile src)
+            {
+                var srcGameVersion = src.GetGameVersion();
+                var selfGameVersion = Database.GetGameVersion();
+                if (srcGameVersion != selfGameVersion)
+                    return;
+                var progress = new Progress(100);
+                OnProgressChanged(progress);
+                var ids = src.SelectIds(DatabaseTableId.Hash);
+                var idCount = ids.Rows.Count;
+                OnFoundData(DatabaseTableId.Hash, idCount);
+                for (var idIndex = 0; idIndex < idCount; idIndex++)
+                {
+                    if (Cancelled)
+                        break;
+                    var id = Convert.ToUInt32(ids.Rows[idIndex][0]);
+                    var hashRow = src.Select(DatabaseTableId.Hash, id).Rows[0];
+                    var hash = (string)hashRow.ItemArray[1];
+                    var info = Convert.ToString(hashRow.ItemArray[2]);
+                    if (Database.HashExist(hash) && !String.IsNullOrEmpty(info))
+                        Database.UpdateHash(hash, info);
+                    else
+                        Database.AppendNew(hash, info);
+                    // names
+                    var names = src.Select(DatabaseTableId.Name, id);
+                    OnFoundData(DatabaseTableId.Name, names.Rows.Count);
+                    for (var i = 0; i < names.Rows.Count; i++)
+                    {
+                        var nameRow = names.Rows[i];
+                        var name = (string)nameRow[1];
+                        Database.AppendName(hash, name, (DateTime)nameRow[2]);
+                    }
+                    // ips
+                    var ips = src.Select(DatabaseTableId.Ip, id);
+                    OnFoundData(DatabaseTableId.Ip, ips.Rows.Count);
+                    for (var i = 0; i < ips.Rows.Count; i++)
+                    {
+                        var ipRow = ips.Rows[i];
+                        var ip = (string)ipRow[1];
+                        Database.AppendIp(hash, ip, (DateTime)ipRow[2]);
+                    }
+                    // gsids
+                    if (srcGameVersion == PcdbGameVersion.COP)
+                    {
+                        var gsids = src.Select(DatabaseTableId.Gsid, id);
+                        OnFoundData(DatabaseTableId.Gsid, gsids.Rows.Count);
+                        for (var i = 0; i < gsids.Rows.Count; i++)
+                        {
+                            var gsidRow = gsids.Rows[i];
+                            var gsid = Convert.ToUInt32(gsidRow[1]);
+                            Database.AppendGsid(hash, gsid, (DateTime)gsidRow[2]);
+                        }
+                    }
+                    var newProgress = (uint)Math.Round(100.0*idIndex/idCount);
+                    if (newProgress > progress.Current)
+                    {
+                        progress.Current = newProgress;
+                        OnProgressChanged(progress);
+                    }
+                }
+            }
+
+            private void ParseRev2(PcdbFile src)
+            { ParseRev1(src); }
         }
 
         public ParserBase GetParser(HostParser host, PcdbFile database)
