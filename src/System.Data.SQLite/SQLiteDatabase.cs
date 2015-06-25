@@ -435,7 +435,7 @@ namespace System.Data.SQLite
         /// Выполняет запрос к базе данных.
         /// </summary>
         /// <param name="query">Строка запроса</param>
-        /// <returns>Код ошибки. Если 0, ошибки нет</returns>
+        /// <returns>В случае успешного завершения возвращается количество затронутых строк, иначе -1.</returns>
         public int ExecuteNonQuery(string query)
         {
             return ExecuteNonQuery(new string[] { query });
@@ -445,10 +445,11 @@ namespace System.Data.SQLite
         /// Выполняет запрос к базе данных.
         /// </summary>
         /// <param name="queries">Массив запросов</param>
-        /// <returns>Код ошибки. Если 0 - ошибки нет</returns>
+        /// <returns>В случае успешного завершения возвращается количество затронутых строк, иначе -1.</returns>
         public int ExecuteNonQuery(object[] queries)
         {
             ConnectionState previousConnectionState = ConnectionState.Closed;
+            int rowsAffected = 0;
             try
             {
                 //проверяем предыдущее состояние
@@ -463,13 +464,13 @@ namespace System.Data.SQLite
                 foreach (string query in queries)
                 {
                     lastQuery = command.CommandText = query;
-                    command.ExecuteNonQuery();
+                    rowsAffected += command.ExecuteNonQuery();
                 }
             }
             catch (Exception error)
             {
                 lastError = string.Format("Ошибка при выполнении запроса в методе ExecuteNonQuery!\nТекст запроса: {0}\n{1}", lastQuery, error.Message);
-                return 1;
+                return -1;
             }
             finally
             {
@@ -479,8 +480,7 @@ namespace System.Data.SQLite
                     connect.Close();
                 }
             }
-            //если нет ошибки возвращать 0
-            return 0;
+            return rowsAffected;
         }
         #endregion
 
