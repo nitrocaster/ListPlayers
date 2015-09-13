@@ -12,8 +12,8 @@
  * Версия 1.1.2
  * История версий:
  * [1.1.2] Добавлен метод GetTables, возвращающий массив таблиц из базы данных
- *		   Добавлен метод GetAllTables, возвращающий массив всех таблиц, включая временные (Temp)
- *		   Добавлен метод GetConnectionState, возвращающий текущее состояние подключения к базе данных
+ *         Добавлен метод GetAllTables, возвращающий массив всех таблиц, включая временные (Temp)
+ *         Добавлен метод GetConnectionState, возвращающий текущее состояние подключения к базе данных
  * [1.1.1] Переопределены встроенные функции upper и lower для использования с символами отличных от ASCII
  *         Добавлены функции date и now. date - возвращает текущую дату; now - возвращает текущую дату и время
  * [1.1]   Добавлены методы очистки поля последнего запроса и последней ошибки
@@ -140,7 +140,7 @@ namespace System.Data.SQLite
         private SQLiteConnection connect;
         private SQLiteTransaction transaction;
         private SQLiteConnectionStringBuilder csb = new SQLiteConnectionStringBuilder();
-        private SQLiteCommand command = new SQLiteCommand();
+        private SQLiteCommand command;
         #endregion
 
         #region Инициализация
@@ -244,10 +244,10 @@ namespace System.Data.SQLite
         {
             List<string> tables = new List<string>();
             DataTable dt = Execute(@"SELECT name FROM 
-					   (SELECT * FROM sqlite_master UNION ALL
-						SELECT * FROM sqlite_temp_master)
-					WHERE type='table'
-					ORDER BY name");
+                       (SELECT * FROM sqlite_master UNION ALL
+                        SELECT * FROM sqlite_temp_master)
+                    WHERE type='table'
+                    ORDER BY name");
             foreach (DataRow row in dt.Rows)
             {
                 tables.Add(row[0].ToString());
@@ -268,8 +268,10 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand("VACUUM;", connect);
-                command.ExecuteNonQuery();
+                using (command = new SQLiteCommand("VACUUM;", connect))
+                {
+                    command.ExecuteNonQuery();
+                }
             }
             catch (Exception error)
             {
@@ -460,11 +462,13 @@ namespace System.Data.SQLite
                     connect.Open();
                 }
                 //выполняем запросы
-                SQLiteCommand command = new SQLiteCommand(connect);
-                foreach (string query in queries)
+                using (SQLiteCommand command = new SQLiteCommand(connect))
                 {
-                    lastQuery = command.CommandText = query;
-                    rowsAffected += command.ExecuteNonQuery();
+                    foreach (string query in queries)
+                    {
+                        lastQuery = command.CommandText = query;
+                        rowsAffected += command.ExecuteNonQuery();
+                    }
                 }
             }
             catch (Exception error)
@@ -647,16 +651,21 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(query, connect);
-                foreach (Parameter iparam in parameters)
+                using (command = new SQLiteCommand(query, connect))
                 {
-                    //добавляем новый параметр
-                    command.Parameters.Add(iparam.ColumnName.StartsWith("@") ? iparam.ColumnName : "@" + iparam.ColumnName,
-                        iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                    foreach (Parameter iparam in parameters)
+                    {
+                        //добавляем новый параметр
+                        command.Parameters.Add(iparam.ColumnName.StartsWith("@") ? iparam.ColumnName : "@" + iparam.ColumnName,
+                            iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                    }
+                
+                    using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(command))
+                    {
+                        lastQuery = command.CommandText;
+                        adapter.Fill(dt);
+                    }
                 }
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-                lastQuery = command.CommandText;
-                adapter.Fill(dt);
             }
             catch (Exception error)
             {
@@ -689,10 +698,14 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(query, connect);
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-                lastQuery = command.CommandText;
-                adapter.Fill(dt);
+                using (command = new SQLiteCommand(query, connect))
+                {
+                    using (var adapter = new SQLiteDataAdapter(command))
+                    {
+                        lastQuery = command.CommandText;
+                        adapter.Fill(dt);
+                    }
+                }
             }
             catch (Exception error)
             {
@@ -833,22 +846,23 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(query, connect);
-                foreach (Parameter iparam in parameters)
+                using (command = new SQLiteCommand(query, connect))
                 {
-                    //добавляем новый параметр
-                    command.Parameters.Add(iparam.ColumnName.StartsWith("@") ? iparam.ColumnName : "@" + iparam.ColumnName,
-                        iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
-                }
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-                lastQuery = command.CommandText;
-                SQLiteDataReader reader = command.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    for (int i = 0; i < reader.FieldCount; i++)
+                    foreach (Parameter iparam in parameters)
                     {
-                        rowItem.Add(reader.GetName(i), reader[i]);
+                        //добавляем новый параметр
+                        command.Parameters.Add(iparam.ColumnName.StartsWith("@") ? iparam.ColumnName : "@" + iparam.ColumnName,
+                            iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                    }
+                    lastQuery = command.CommandText;
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            rowItem.Add(reader.GetName(i), reader[i]);
+                        }
                     }
                 }
             }
@@ -883,16 +897,17 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(query, connect);
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-                lastQuery = command.CommandText;
-                SQLiteDataReader reader = command.ExecuteReader();
-                if (reader.HasRows)
+                using (command = new SQLiteCommand(query, connect))
                 {
-                    reader.Read();
-                    for (int i = 0; i < reader.FieldCount; i++)
+                    lastQuery = command.CommandText;
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        rowItem.Add(reader.GetName(i), reader[i]);
+                        reader.Read();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            rowItem.Add(reader.GetName(i), reader[i]);
+                        }
                     }
                 }
             }
@@ -939,37 +954,42 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(connect);
-                bool ifFirst = true;
-                StringBuilder queryColumns = new StringBuilder("("); //список полей, в которые вставляются новые значения
-                StringBuilder queryValues = new StringBuilder("(");  //список значений для этих полей
-                foreach (Parameter iparam in parameters)
+                string sql;
+                using (command = new SQLiteCommand(connect))
                 {
-                    //добавляем новый параметр
-                    command.Parameters.Add("@" + iparam.ColumnName, iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
-                    //собираем колонки и значения в одну строку
-                    if (ifFirst)
+                    bool ifFirst = true;
+                    StringBuilder queryColumns = new StringBuilder("("); //список полей, в которые вставляются новые значения
+                    StringBuilder queryValues = new StringBuilder("("); //список значений для этих полей
+                    foreach (Parameter iparam in parameters)
                     {
-                        queryColumns.Append(iparam.ColumnName);
-                        queryValues.Append("@" + iparam.ColumnName);
-                        ifFirst = false;
-                    }
-                    else
-                    {
-                        queryColumns.Append("," + iparam.ColumnName);
-                        queryValues.Append(",@" + iparam.ColumnName);
-                    }
+                        //добавляем новый параметр
+                        command.Parameters.Add("@" + iparam.ColumnName, iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                        //собираем колонки и значения в одну строку
+                        if (ifFirst)
+                        {
+                            queryColumns.Append(iparam.ColumnName);
+                            queryValues.Append("@"+iparam.ColumnName);
+                            ifFirst = false;
+                        }
+                        else
+                        {
+                            queryColumns.Append(","+iparam.ColumnName);
+                            queryValues.Append(",@"+iparam.ColumnName);
+                        }
+                    }                
+                    queryColumns.Append(")");
+                    queryValues.Append(")");
+                    //создаем новый запрос
+                    sql = string.Format("INSERT INTO {0} {1} VALUES {2}", tablename, queryColumns, queryValues);
+                    lastQuery = command.CommandText = sql;
+                    command.ExecuteNonQuery();
                 }
-                queryColumns.Append(")");
-                queryValues.Append(")");
-                //создаем новый запрос
-                string sql = string.Format("INSERT INTO {0} {1} VALUES {2}", tablename, queryColumns, queryValues);
-                lastQuery = command.CommandText = sql;
-                command.ExecuteNonQuery();
                 //получение последнего ID
                 sql = "SELECT last_insert_rowid();";
-                command = new SQLiteCommand(sql, connect);
-                lastId = int.Parse(command.ExecuteScalar().ToString());
+                using (command = new SQLiteCommand(sql, connect))
+                {
+                    lastId = int.Parse(command.ExecuteScalar().ToString());
+                }
             }
             catch (Exception error)
             {
@@ -1009,35 +1029,37 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(connect);
-                foreach (ParametersCollection parameters in parametersCollection)
-                {
-                    bool ifFirst = true;
-                    StringBuilder queryColumns = new StringBuilder("("); //список полей, в которые вставляются новые значения
-                    StringBuilder queryValues = new StringBuilder("(");  //список значений для этих полей
-                    foreach (Parameter iparam in parameters)
+                using (command = new SQLiteCommand(connect))
+                { 
+                    foreach (ParametersCollection parameters in parametersCollection)
                     {
-                        //добавляем новый параметр
-                        command.Parameters.Add("@" + iparam.ColumnName, iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
-                        //собираем колонки и значения в одну строку
-                        if (ifFirst)
+                        bool ifFirst = true;
+                        StringBuilder queryColumns = new StringBuilder("("); //список полей, в которые вставляются новые значения
+                        StringBuilder queryValues = new StringBuilder("(");  //список значений для этих полей
+                        foreach (Parameter iparam in parameters)
                         {
-                            queryColumns.Append(iparam.ColumnName);
-                            queryValues.Append("@" + iparam.ColumnName);
-                            ifFirst = false;
+                            //добавляем новый параметр
+                            command.Parameters.Add("@" + iparam.ColumnName, iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                            //собираем колонки и значения в одну строку
+                            if (ifFirst)
+                            {
+                                queryColumns.Append(iparam.ColumnName);
+                                queryValues.Append("@" + iparam.ColumnName);
+                                ifFirst = false;
+                            }
+                            else
+                            {
+                                queryColumns.Append("," + iparam.ColumnName);
+                                queryValues.Append(",@" + iparam.ColumnName);
+                            }
                         }
-                        else
-                        {
-                            queryColumns.Append("," + iparam.ColumnName);
-                            queryValues.Append(",@" + iparam.ColumnName);
-                        }
+                        queryColumns.Append(")");
+                        queryValues.Append(")");
+                        //создаем новый запрос
+                        string sql = string.Format("INSERT INTO {0} {1} VALUES {2}", tablename, queryColumns, queryValues);
+                        lastQuery = command.CommandText = sql;
+                        command.ExecuteNonQuery();
                     }
-                    queryColumns.Append(")");
-                    queryValues.Append(")");
-                    //создаем новый запрос
-                    string sql = string.Format("INSERT INTO {0} {1} VALUES {2}", tablename, queryColumns, queryValues);
-                    lastQuery = command.CommandText = sql;
-                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception error)
@@ -1080,9 +1102,11 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(sql, connect);
-                lastQuery = command.CommandText;
-                command.ExecuteNonQuery();
+                using (command = new SQLiteCommand(sql, connect))
+                {
+                    lastQuery = command.CommandText;
+                    command.ExecuteNonQuery();
+                }
             }
             catch (Exception error)
             {
@@ -1129,15 +1153,17 @@ namespace System.Data.SQLite
                 {
                     connect.Open();
                 }
-                command = new SQLiteCommand(sql, connect);
-                foreach (Parameter iparam in parameters)
+                using (command = new SQLiteCommand(sql, connect))
                 {
-                    //добавляем новый параметр
-                    command.Parameters.Add(iparam.ColumnName.StartsWith("@") ? iparam.ColumnName : "@" + iparam.ColumnName,
-                        iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                    foreach (Parameter iparam in parameters)
+                    {
+                        //добавляем новый параметр
+                        command.Parameters.Add(iparam.ColumnName.StartsWith("@") ? iparam.ColumnName : "@" + iparam.ColumnName,
+                            iparam.DbType).Value = Convert.IsDBNull(iparam.Value) ? Convert.DBNull : iparam.Value;
+                    }
+                    lastQuery = command.CommandText;
+                    command.ExecuteNonQuery();
                 }
-                lastQuery = command.CommandText;
-                command.ExecuteNonQuery();
             }
             catch (Exception error)
             {
@@ -1183,9 +1209,11 @@ namespace System.Data.SQLite
                     connect.Open();
                 }
 
-                command = new SQLiteCommand(sql, connect);
-                lastQuery = command.CommandText;
-                command.ExecuteNonQuery();
+                using (command = new SQLiteCommand(sql, connect))
+                {
+                    lastQuery = command.CommandText;
+                    command.ExecuteNonQuery();
+                }
             }
             catch (Exception error)
             {
@@ -1244,9 +1272,11 @@ namespace System.Data.SQLite
                 #endregion
 
                 string sql = string.Format("DELETE FROM {0} {1}", tablename, where);
-                command = new SQLiteCommand(sql, connect);
-                lastQuery = command.CommandText;
-                command.ExecuteNonQuery();
+                using (command = new SQLiteCommand(sql, connect))
+                {
+                    lastQuery = command.CommandText;
+                    command.ExecuteNonQuery();
+                }
             }
             catch (Exception error)
             {
@@ -1313,45 +1343,47 @@ namespace System.Data.SQLite
                 //готовим переменную для сбора полей и их значений
                 StringBuilder sql_params = new StringBuilder();
                 bool ifFirst = true;
-                command = new SQLiteCommand(connect);
-                //в цикле создаем строку запроса
-                foreach (Parameter param in collection)
+                using (command = new SQLiteCommand(connect))
                 {
-                    if (ifFirst)
+                    //в цикле создаем строку запроса
+                    foreach (Parameter param in collection)
                     {
-                        sql_params.Append(param.ColumnName + " = @param" + i);
-                        ifFirst = false;
+                        if (ifFirst)
+                        {
+                            sql_params.Append(param.ColumnName + " = @param" + i);
+                            ifFirst = false;
+                        }
+                        else
+                        {
+                            sql_params.Append("," + param.ColumnName + " = @param" + i);
+                        }
+                        //и добавляем параметры с таким же названием
+                        command.Parameters.Add("@param" + i, param.DbType).Value = Convert.IsDBNull(param.Value) ? Convert.DBNull : param.Value;
+                        i++;
                     }
-                    else
-                    {
-                        sql_params.Append("," + param.ColumnName + " = @param" + i);
-                    }
-                    //и добавляем параметры с таким же названием
-                    command.Parameters.Add("@param" + i, param.DbType).Value = Convert.IsDBNull(param.Value) ? Convert.DBNull : param.Value;
-                    i++;
-                }
 
-                //условия для запроса
-                StringBuilder sql_where = new StringBuilder();
-                ifFirst = true;
-                //собираем строку с условиями
-                foreach (object item in whereparams)
-                {
-                    if (ifFirst)
+                    //условия для запроса
+                    StringBuilder sql_where = new StringBuilder();
+                    ifFirst = true;
+                    //собираем строку с условиями
+                    foreach (object item in whereparams)
                     {
-                        sql_where.Append(item.ToString());
-                        ifFirst = false;
+                        if (ifFirst)
+                        {
+                            sql_where.Append(item.ToString());
+                            ifFirst = false;
+                        }
+                        else
+                        {
+                            sql_where.Append(" " + whereseparator + " " + item);
+                        }
                     }
-                    else
-                    {
-                        sql_where.Append(" " + whereseparator + " " + item);
-                    }
-                }
 
-                //собираем запрос воедино
-                lastQuery = command.CommandText = string.Format("UPDATE {0} SET {1} {2}", tablename, sql_params, "WHERE " + sql_where.ToString());
-                //выполняем запрос
-                command.ExecuteNonQuery();
+                    //собираем запрос воедино
+                    lastQuery = command.CommandText = string.Format("UPDATE {0} SET {1} {2}", tablename, sql_params, "WHERE " + sql_where.ToString());
+                    //выполняем запрос
+                    command.ExecuteNonQuery();
+                }
             }
             catch (ExceptionWarning message)
             {
