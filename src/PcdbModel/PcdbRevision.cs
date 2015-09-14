@@ -27,6 +27,10 @@ namespace ListPlayers.PcdbModel
         /// <summary>
         /// 102 : added version info (DBVERSION)
         /// </summary>
-        Rev2 = 102
+        Rev2 = 102,
+        /// <summary>
+        /// 103 : switched to natural key (hash)
+        /// </summary>
+        Rev3 = 103
     }
 }

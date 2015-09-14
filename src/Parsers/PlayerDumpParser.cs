@@ -63,7 +63,7 @@ namespace ListPlayers.Parsers
                         if (name != "" & digest != "")
                         {
                             OnFoundData(DatabaseTableId.Name);
-                            Database.AppendName(digest, name, timeStamp);
+                            Database.InsertName(digest, name, timeStamp);
                         }
                         return;
                     }

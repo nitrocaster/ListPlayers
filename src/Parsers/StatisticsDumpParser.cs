@@ -142,13 +142,13 @@ namespace ListPlayers.Parsers
                                 if (digest != "")
                                 {
                                     OnFoundData(DatabaseTableId.Hash);
-                                    if (gsid == "") // player_unique_digest is the last entry
-                                        Database.Append(digest, name, ip, onlineDump ? dumpTime : endTime);
-                                    else
-                                    {
-                                        Database.Append(digest, name, ip,
-                                            Convert.ToUInt32(gsid), onlineDump ? dumpTime : endTime);
-                                    }
+                                    // player_unique_digest is the last entry
+                                    DateTime ts = onlineDump ? dumpTime : endTime;
+                                    Database.InsertHash(digest);
+                                    Database.InsertName(digest, name, ts);
+                                    Database.InsertIp(digest, ip, ts);
+                                    if (gsid != "")
+                                        Database.InsertGsid(digest, Convert.ToUInt32(gsid), ts);
                                 }
                                 break;
                             }

@@ -62,6 +62,8 @@ namespace ListPlayers.Parsers
                             {
                                 OnFoundData(DatabaseTableId.Hash);
                                 digest = buf.Trim(hexDigestTrimChars);
+                                if (digest != "")
+                                    Database.InsertHash(digest);
                                 continue;
                             }
                             if (buf == "" || buf == "\t{" || buf.Trim() == "")
@@ -88,7 +90,7 @@ namespace ListPlayers.Parsers
                                 OnFoundData(DatabaseTableId.Name);
                                 var name = buf.Trim();
                                 if (name != "" && digest != "")
-                                    Database.AppendName(digest, name, PcdbFile.InvalidDateTime);
+                                    Database.InsertName(digest, name, PcdbFile.InvalidDateTime);
                                 continue;
                             }
                             if (insideIp)
@@ -96,7 +98,7 @@ namespace ListPlayers.Parsers
                                 OnFoundData(DatabaseTableId.Ip);
                                 var ip = buf.Trim();
                                 if (ip != "" & digest != "")
-                                    Database.AppendIp(digest, ip, PcdbFile.InvalidDateTime);
+                                    Database.InsertIp(digest, ip, PcdbFile.InvalidDateTime);
                                 continue;
                             }
                             if (insideGsid)
@@ -105,7 +107,7 @@ namespace ListPlayers.Parsers
                                 var profileID = buf.Trim();
                                 if (profileID != "" & digest != "")
                                 {
-                                    Database.AppendGsid(digest,
+                                    Database.InsertGsid(digest,
                                         Convert.ToUInt32(profileID), PcdbFile.InvalidDateTime);
                                 }
                                 continue;

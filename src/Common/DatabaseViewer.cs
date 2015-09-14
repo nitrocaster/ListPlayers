@@ -181,11 +181,10 @@ namespace ListPlayers.Common
                     {
                         if (cancel || shutdown)
                             break;
-                        var entry = new PcdbEntry(hashRow[1].ToString());
-                        var currentId = Convert.ToInt32(hashRow[0]);
+                        var entry = new PcdbEntry(hashRow[0].ToString());
                         foreach (DataRow row in chunk.Names.Rows)
                         {
-                            if (Convert.ToInt32(row[0]) == currentId)
+                            if (row[0].ToString() == entry.Hash)
                             {
                                 var name = new PcdbName();
                                 name.Name = row[1].ToString();
@@ -198,7 +197,7 @@ namespace ListPlayers.Common
                             break;
                         foreach (DataRow row in chunk.Ips.Rows)
                         {
-                            if (Convert.ToInt32(row[0]) == currentId)
+                            if (row[0].ToString() == entry.Hash)
                             {
                                 var ip = new PcdbIp();
                                 ip.Ip = row[1].ToString();
@@ -213,7 +212,7 @@ namespace ListPlayers.Common
                         {
                             foreach (DataRow row in chunk.Gsids.Rows)
                             {
-                                if (Convert.ToInt32(row[0]) == currentId)
+                                if (row[0].ToString() == entry.Hash)
                                 {
                                     var gsid = new PcdbGsid();
                                     gsid.Gsid = (uint)row[1];
@@ -223,7 +222,7 @@ namespace ListPlayers.Common
                                 }
                             }
                         }
-                        entry.Info.Item = hashRow[2].ToString();
+                        entry.Info.Item = hashRow[1].ToString();
                         sample.Add(entry);
                     }
                 }
@@ -244,26 +243,27 @@ namespace ListPlayers.Common
             do
             {
                 var chunk = new PcdbChunk();
-                uint[] ids;
+                string[] hashes;
                 if (filter.Hashes.Length > 0)
                 {
-                    chunk.Hashes = database.SelectIds(DatabaseTableId.Hash, filter.Hashes, filter.UseHashPattern);
-                    ids = PcdbFile.ExtractIds(chunk.Hashes);
+                    // XXX: could be optimized
+                    chunk.Hashes = database.SelectHashes(DatabaseTableId.Hash, filter.Hashes, filter.UseHashPattern);
+                    hashes = PcdbFile.ExtractHashes(chunk.Hashes);
                 }
                 else if (filter.Names.Length > 0)
                 {
-                    chunk.Names = database.SelectIds(DatabaseTableId.Name, filter.Names, filter.UseNamePattern);
-                    ids = PcdbFile.ExtractIds(chunk.Names);
+                    chunk.Names = database.SelectHashes(DatabaseTableId.Name, filter.Names, filter.UseNamePattern);
+                    hashes = PcdbFile.ExtractHashes(chunk.Names);
                 }
                 else if (filter.Ips.Length > 0)
                 {
-                    chunk.Ips = database.SelectIds(DatabaseTableId.Ip, filter.Ips, filter.UseIpPattern);
-                    ids = PcdbFile.ExtractIds(chunk.Ips);
+                    chunk.Ips = database.SelectHashes(DatabaseTableId.Ip, filter.Ips, filter.UseIpPattern);
+                    hashes = PcdbFile.ExtractHashes(chunk.Ips);
                 }
                 else if (dbGameVersion == PcdbGameVersion.COP && filter.Gsids.Length > 0)
                 {
-                    chunk.Gsids = database.SelectIds(DatabaseTableId.Gsid, filter.Gsids);
-                    ids = PcdbFile.ExtractIds(chunk.Gsids);
+                    chunk.Gsids = database.SelectHashes(DatabaseTableId.Gsid, filter.Gsids);
+                    hashes = PcdbFile.ExtractHashes(chunk.Gsids);
                 }
                 else
                     break;
@@ -275,18 +275,18 @@ namespace ListPlayers.Common
                     if (dbGameVersion == PcdbGameVersion.COP)
                         filter.Gsids = new string[] { };
                 }
-                chunk.Hashes = database.Select(DatabaseTableId.Hash, ids, filter.Hashes, filter.UseHashPattern);
+                chunk.Hashes = database.Select(DatabaseTableId.Hash, hashes, filter.Hashes, filter.UseHashPattern);
                 if (chunk.Hashes.Rows.Count == 0 && filter.Hashes.Length > 0)
                     break;
-                chunk.Names = database.Select(DatabaseTableId.Name, ids, filter.Names, filter.UseNamePattern);
+                chunk.Names = database.Select(DatabaseTableId.Name, hashes, filter.Names, filter.UseNamePattern);
                 if (chunk.Names.Rows.Count == 0 && filter.Names.Length > 0)
                     break;
-                chunk.Ips = database.Select(DatabaseTableId.Ip, ids, filter.Ips, filter.UseIpPattern);
+                chunk.Ips = database.Select(DatabaseTableId.Ip, hashes, filter.Ips, filter.UseIpPattern);
                 if (chunk.Ips.Rows.Count == 0 && filter.Ips.Length > 0)
                     break;
                 if (dbGameVersion == PcdbGameVersion.COP)
                 {
-                    chunk.Gsids = database.Select(DatabaseTableId.Gsid, ids, filter.Gsids);
+                    chunk.Gsids = database.Select(DatabaseTableId.Gsid, hashes, filter.Gsids);
                     if (chunk.Gsids.Rows.Count == 0 && filter.Gsids.Length > 0)
                         break;
                 }
