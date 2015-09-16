@@ -23,6 +23,7 @@ namespace System.Windows.Forms
     {
         private readonly ConcurrentQueue<Action> messageQueue;
         private IntPtr handle;
+        private bool mqCaptured = false;
 
         public FormEx() { messageQueue = new ConcurrentQueue<Action>(); }
 
@@ -49,9 +50,16 @@ namespace System.Windows.Forms
                 IsActive = (m.WParam != IntPtr.Zero);
                 break;
             }
-            Action callback;
-            while (messageQueue.Count > 0 && messageQueue.TryDequeue(out callback))
-                callback();
+            // check if queue is already captured because callback code may cause
+            // this method to be called again, breaking the callback execution order
+            if (!mqCaptured)
+            {
+                mqCaptured = true;
+                Action callback;
+                while (messageQueue.Count > 0 && messageQueue.TryDequeue(out callback))
+                    callback();
+                mqCaptured = false;
+            }
             base.WndProc(ref m);
         }
 
