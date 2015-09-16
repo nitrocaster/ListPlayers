@@ -33,14 +33,14 @@ namespace ListPlayers.PcdbExport
                 {
                     if (Dialog.Cancelled)
                         break;
-                    var currentId = Convert.ToInt32(hashes[i][0]);
-                    Writer.WriteLine(hashes[i][1].ToString());
+                    var currentHash = hashes[i][0].ToString();
+                    Writer.WriteLine(currentHash);
                     Writer.WriteLine("\r\n; names\r\n");
                     for (var j = 0; j < nameCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
-                        if (Convert.ToInt32(names[j][0]) != currentId)
+                        if (names[j][0].ToString() != currentHash)
                             continue;
                         Writer.WriteLine("    {0,-32} | {1}",
                             names[j][1], ((DateTime)names[j][2]).ToString(Utils.DateTimePatternLong));
@@ -51,7 +51,7 @@ namespace ListPlayers.PcdbExport
                     {
                         if (Dialog.Cancelled)
                             break;
-                        if (Convert.ToInt32(ips[j][0]) != currentId)
+                        if (ips[j][0].ToString() != currentHash)
                             continue;
                         Writer.WriteLine("    {0,-32} | {1}",
                             ips[j][1], ((DateTime)ips[j][2]).ToString(Utils.DateTimePatternLong));
@@ -66,14 +66,14 @@ namespace ListPlayers.PcdbExport
                         {
                             if (Dialog.Cancelled)
                                 break;
-                            if (Convert.ToInt32(gsids[j][0]) != currentId)
+                            if (gsids[j][0].ToString() != currentHash)
                                 continue;
                             Writer.WriteLine("    {0,-32} | {1}",
                                 gsids[j][1], ((DateTime)gsids[j][2]).ToString(Utils.DateTimePatternLong));
                         }
                     }
                     Writer.WriteLine("\r\n; comments\r\n");
-                    Writer.WriteLine(hashes[i][2]);
+                    Writer.WriteLine(hashes[i][1]);
                     Writer.WriteLine("\r\n; ----\r\n");
                     CurrentProgress++;
                     Worker.ReportProgress(0);

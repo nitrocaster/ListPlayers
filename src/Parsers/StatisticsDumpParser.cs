@@ -145,8 +145,10 @@ namespace ListPlayers.Parsers
                                     // player_unique_digest is the last entry
                                     DateTime ts = onlineDump ? dumpTime : endTime;
                                     Database.InsertHash(digest);
-                                    Database.InsertName(digest, name, ts);
-                                    Database.InsertIp(digest, ip, ts);
+                                    if (name != "")
+                                        Database.InsertName(digest, name, ts);
+                                    if (ip != "")
+                                        Database.InsertIp(digest, ip, ts);
                                     if (gsid != "")
                                         Database.InsertGsid(digest, Convert.ToUInt32(gsid), ts);
                                 }

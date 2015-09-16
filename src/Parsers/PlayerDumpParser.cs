@@ -60,10 +60,13 @@ namespace ListPlayers.Parsers
                     case "player_name":
                     {
                         var name = entry.Value;
-                        if (name != "" & digest != "")
+                        if (digest != "")
                         {
+                            if (!Database.HashExists(digest))
+                                Database.InsertHash(digest);
                             OnFoundData(DatabaseTableId.Name);
-                            Database.InsertName(digest, name, timeStamp);
+                            if (name != "")
+                                Database.InsertName(digest, name, timeStamp);
                         }
                         return;
                     }

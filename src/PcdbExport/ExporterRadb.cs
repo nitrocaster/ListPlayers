@@ -35,14 +35,14 @@ namespace ListPlayers.PcdbExport
                 {
                     if (Dialog.Cancelled)
                         break;
-                    var currentId = Convert.ToInt32(hashes[i][0]);
+                    var currentHash = hashes[i][0].ToString();
                     Writer.WriteLine();
-                    Writer.WriteLine(hashes[i][1].ToString());
+                    Writer.WriteLine(currentHash);
                     for (var j = 0; j < nameCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
-                        if (Convert.ToInt32(names[j][0]) != currentId)
+                        if (names[j][0].ToString() != currentHash)
                             continue;
                         Writer.Write(names[j][1]);
                         Writer.Write(delimiter);
@@ -53,7 +53,7 @@ namespace ListPlayers.PcdbExport
                     {
                         if (Dialog.Cancelled)
                             break;
-                        if (Convert.ToInt32(ips[j][0]) != currentId)
+                        if (ips[j][0].ToString() != currentHash)
                             continue;
                         Writer.Write(ips[j][1]);
                         Writer.Write(delimiter);
@@ -68,7 +68,7 @@ namespace ListPlayers.PcdbExport
                         {
                             if (Dialog.Cancelled)
                                 break;
-                            if (Convert.ToInt32(gsids[j][0]) != currentId)
+                            if (gsids[j][0].ToString() != currentHash)
                                 continue;
                             Writer.Write(gsids[j][1]);
                             Writer.Write(delimiter);
