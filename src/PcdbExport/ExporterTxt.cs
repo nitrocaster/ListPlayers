@@ -24,19 +24,19 @@ namespace ListPlayers.PcdbExport
             var hashes = Chunk.Hashes.Rows;
             var names = Chunk.Names.Rows;
             var ips = Chunk.Ips.Rows;            
-            var hashesCount = hashes.Count;
-            var namesCount = names.Count;
-            var ipsCount = ips.Count;            
+            var hashCount = hashes.Count;
+            var nameCount = names.Count;
+            var ipCount = ips.Count;            
             try
             {
-                for (var i = 0; i < hashesCount; i++)
+                for (var i = 0; i < hashCount; i++)
                 {
                     if (Dialog.Cancelled)
                         break;
                     var currentId = Convert.ToInt32(hashes[i][0]);
                     Writer.WriteLine(hashes[i][1].ToString());
                     Writer.WriteLine("\r\n; names\r\n");
-                    for (var j = 0; j < namesCount; j++)
+                    for (var j = 0; j < nameCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
@@ -47,7 +47,7 @@ namespace ListPlayers.PcdbExport
                     }
 
                     Writer.WriteLine("\r\n; ip addresses\r\n");
-                    for (var j = 0; j < ipsCount; j++)
+                    for (var j = 0; j < ipCount; j++)
                     {
                         if (Dialog.Cancelled)
                             break;
