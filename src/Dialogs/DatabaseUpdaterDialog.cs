@@ -108,8 +108,7 @@ namespace ListPlayers.Dialogs
                 lCurrentFile.Text = fileName;
                 tbCounter.Text = counter;
                 pbProgress.Value = (int)info.Progress.Current;
-                Text = String.Format("{0} ({1}%)",
-                    StringTable.UpdatingDatabase, Math.Round(info.Progress.Percentage));
+                Text = String.Format("{0} ({1}%)", StringTable.UpdatingDatabase, info.Progress.Percentage);
             });
         }
 

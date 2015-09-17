@@ -12,6 +12,8 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 ====================================================================================
 */
 
+using System;
+
 namespace ListPlayers
 {
     public struct Progress
@@ -47,6 +49,6 @@ namespace ListPlayers
             }
         }
 
-        public double Percentage { get { return 1.0 * current / maximum; } }
+        public uint Percentage { get { return (uint)Math.Floor(100.0 * current / maximum); } }
     }
 }
