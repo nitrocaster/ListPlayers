@@ -184,7 +184,7 @@ namespace ListPlayers.Parsers
                 var builder = new StringBuilder(64);
                 for (var i = 0; i < dateparts.Length; i++)
                     builder.Append(dateparts[i]);
-                var result = DateTime.ParseExact(src, "MMddyyHHmmss", CultureInfo.InvariantCulture);
+                var result = DateTime.ParseExact(builder.ToString(), "MMddyyHHmmss", CultureInfo.InvariantCulture);
                 return result;
             }
         }
