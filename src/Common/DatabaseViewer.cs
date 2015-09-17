@@ -246,8 +246,7 @@ namespace ListPlayers.Common
                 string[] hashes;
                 if (filter.Hashes.Length > 0)
                 {
-                    // XXX: could be optimized
-                    chunk.Hashes = database.SelectHashes(DatabaseTableId.Hash, filter.Hashes, filter.UseHashPattern);
+                    chunk.Hashes = database.SelectHashes(DatabaseTableId.Hash, filter.Hashes);
                     hashes = PcdbFile.ExtractHashes(chunk.Hashes);
                 }
                 else if (filter.Names.Length > 0)
@@ -275,7 +274,7 @@ namespace ListPlayers.Common
                     if (dbGameVersion == PcdbGameVersion.COP)
                         filter.Gsids = new string[] { };
                 }
-                chunk.Hashes = database.Select(DatabaseTableId.Hash, hashes, filter.Hashes, filter.UseHashPattern);
+                chunk.Hashes = database.Select(DatabaseTableId.Hash, hashes, filter.Hashes);
                 if (chunk.Hashes.Rows.Count == 0 && filter.Hashes.Length > 0)
                     break;
                 chunk.Names = database.Select(DatabaseTableId.Name, hashes, filter.Names, filter.UseNamePattern);

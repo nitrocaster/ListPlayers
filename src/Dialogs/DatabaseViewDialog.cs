@@ -36,7 +36,6 @@ namespace ListPlayers.Dialogs
             tbDbPath.Items.AddRange(Settings.RecentDatabases);
             tbDbPath.ResumeLayout();
             chkAllRelatedData.Checked = Settings.ShowAllRelatedData;
-            chkHashPattern.Checked = Settings.HashPattern;
             chkNamePattern.Checked = Settings.NamePattern;
             chkIpPattern.Checked = Settings.IpPattern;
             this.databaseViewer = databaseViewer;
@@ -221,7 +220,6 @@ namespace ListPlayers.Dialogs
             var filter = new SearchFilter
             {
                 IncludeRelatedData = chkAllRelatedData.Checked,
-                UseHashPattern     = chkHashPattern.Checked,
                 UseNamePattern     = chkNamePattern.Checked,
                 UseIpPattern       = chkIpPattern.Checked,
                 Hashes             = tbSearchHash.Lines,
@@ -301,7 +299,6 @@ namespace ListPlayers.Dialogs
         {
             databaseViewer.CloseDatabase();
             Settings.ShowAllRelatedData = chkAllRelatedData.Checked;
-            Settings.HashPattern = chkHashPattern.Checked;
             Settings.NamePattern = chkNamePattern.Checked;
             Settings.IpPattern = chkIpPattern.Checked;
         }

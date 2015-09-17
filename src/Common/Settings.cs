@@ -29,7 +29,6 @@ namespace ListPlayers.Common
         private static readonly List<string> recentSources = new List<string>(LastPathesCapacity + 1);
         public static bool SearchSubfolders = true;
         public static bool ShowAllRelatedData = false;
-        public static bool HashPattern = false;
         public static bool NamePattern = false;
         public static bool IpPattern = false;
 
@@ -68,7 +67,6 @@ namespace ListPlayers.Common
             {
                 cfg.TryGetBool("global", "search_subfolders", ref SearchSubfolders);
                 cfg.TryGetBool("global", "show_all_related_data", ref ShowAllRelatedData);
-                cfg.TryGetBool("global", "hashes_pattern", ref HashPattern);
                 cfg.TryGetBool("global", "names_pattern", ref NamePattern);
                 cfg.TryGetBool("global", "ips_pattern", ref IpPattern);
             }
@@ -103,7 +101,6 @@ namespace ListPlayers.Common
                     writer.WriteLine("[global]");
                     writer.WriteLine("search_subfolders     =   {0}", Utils.BoolToString(SearchSubfolders));
                     writer.WriteLine("show_all_related_data =   {0}", Utils.BoolToString(ShowAllRelatedData));
-                    writer.WriteLine("hashes_pattern        =   {0}", Utils.BoolToString(HashPattern));
                     writer.WriteLine("names_pattern         =   {0}", Utils.BoolToString(NamePattern));
                     writer.WriteLine("ips_pattern           =   {0}", Utils.BoolToString(IpPattern));
                     writer.WriteLine("\r\n[last_databases]");

@@ -21,7 +21,6 @@ namespace ListPlayers.Common
         public string[] Ips;
         public string[] Gsids;
 
-        public bool UseHashPattern;
         public bool UseNamePattern;
         public bool UseIpPattern;
         public bool IncludeRelatedData;

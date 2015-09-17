@@ -61,7 +61,6 @@
             this.cmiCollapseAll = new System.Windows.Forms.MenuItem();
             this.cmiDivider2 = new System.Windows.Forms.MenuItem();
             this.cmiCopy = new System.Windows.Forms.MenuItem();
-            this.chkHashPattern = new System.Windows.Forms.CheckBox();
             this.tvResult = new System.Windows.Forms.TreeViewEx();
             this.pnNameInfo = new System.Windows.Forms.Panel();
             this.ttNameFilter = new System.Windows.Forms.ToolTip(this.components);
@@ -263,12 +262,6 @@
             resources.ApplyResources(this.cmiCopy, "cmiCopy");
             this.cmiCopy.Click += new System.EventHandler(this.cmiCopy_Click);
             // 
-            // chkHashPattern
-            // 
-            resources.ApplyResources(this.chkHashPattern, "chkHashPattern");
-            this.chkHashPattern.Name = "chkHashPattern";
-            this.chkHashPattern.UseVisualStyleBackColor = true;
-            // 
             // tvResult
             // 
             this.tvResult.ContextMenu = this.cmResults;
@@ -292,7 +285,6 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnNameInfo);
-            this.Controls.Add(this.chkHashPattern);
             this.Controls.Add(this.pnlSearchProgress);
             this.Controls.Add(this.dtpTimestamp);
             this.Controls.Add(this.btnApply);
@@ -349,7 +341,6 @@
         private System.Windows.Forms.CheckBox chkNamePattern;
         private System.Windows.Forms.CheckBox chkIpPattern;
         private System.Windows.Forms.CheckBox chkAllRelatedData;
-        private System.Windows.Forms.CheckBox chkHashPattern;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.DateTimePicker dtpTimestamp;
         private System.Windows.Forms.Panel pnlSearchProgress;
