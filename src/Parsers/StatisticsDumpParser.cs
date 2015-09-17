@@ -13,7 +13,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 */
 
 using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using FileSystem;
@@ -38,14 +37,7 @@ namespace ListPlayers.Parsers
                 var ip = "";
                 var name = "";
                 var gsid = "";
-                DateTime dumpTime = PcdbFile.InvalidDateTime,
-                    //startTime = PcdbFile.InvalidDateTime,
-                         endTime = PcdbFile.InvalidDateTime;
-#pragma warning disable 219
-                var dumpTimeFound = false;
-                var startTimeFound = false;
-                var endTimeFound = false;
-#pragma warning restore 219
+                DateTime dumpTime = PcdbFile.InvalidDateTime, endTime = PcdbFile.InvalidDateTime;
                 var timestampsFound = false;
                 var onlineDump = false;
                 var selfGameVersion = Database.GetGameVersion();
@@ -84,18 +76,14 @@ namespace ListPlayers.Parsers
                             // online dump
                             dumpTime = Utils.StrToDateTime(pair.Value, Utils.DateTimePatternStats);
                             onlineDump = true;
-                            dumpTimeFound = true;
                             timestampsFound = true;
                             break;
                         case "end_time":
                             // extended dump
                             endTime = Utils.StrToDateTime(pair.Value, Utils.DateTimePatternStats);
-                            endTimeFound = true;
                             continue;
                         case "start_time":
                             // extended dump
-                            //startTime = StrToDateTime(INIFile.ExtractKeyValuePair(buf, true).Value, false);
-                            startTimeFound = true;
                             timestampsFound = true;
                             break;
                         }
@@ -136,8 +124,6 @@ namespace ListPlayers.Parsers
                                 break;
                             case "player_unique_digest":
                             {
-                                // dump_time   = 12-26-10_18-32-24 // online_dump.ltx
-                                // end_time    = 12-26-10_18-32-24 // dmp12-26-10_18-26-48.ltx
                                 var digest = pair.Value;
                                 if (digest != "")
                                 {

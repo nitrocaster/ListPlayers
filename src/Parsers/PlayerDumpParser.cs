@@ -12,8 +12,6 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 ====================================================================================
 */
 
-using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using FileSystem;
