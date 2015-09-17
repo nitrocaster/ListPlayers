@@ -60,8 +60,7 @@ namespace ListPlayers.Parsers
                         var name = entry.Value;
                         if (digest != "")
                         {
-                            if (!Database.HashExists(digest))
-                                Database.InsertHash(digest);
+                            Database.InsertHash(digest);
                             OnFoundData(DatabaseTableId.Name);
                             if (name != "")
                                 Database.InsertName(digest, name, timeStamp);
