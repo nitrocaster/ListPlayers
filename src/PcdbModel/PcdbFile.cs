@@ -353,55 +353,9 @@ namespace ListPlayers.PcdbModel
             return hashes;
         }
         
-        // deprecated
-        public bool HashExists(string hash)
-        {
-            var query = new StringBuilder("SELECT HASH FROM HASHES WHERE HASH = '", 100);
-            query.Append(hash);
-            query.Append('\'');
-            var table = database.Execute(query.ToString());
-            return table.Rows.Count!=0;
-        }
-
-        public bool NameExist(string hash, string escapedName)
-        {
-            var query = new StringBuilder("SELECT COUNT(*) FROM NAMES WHERE HASH = '", 100);
-            query.Append(hash);
-            query.Append("' AND NAME = '");
-            query.Append(escapedName);
-            query.Append('\'');
-            return (long)database.Execute(query.ToString()).Rows[0][0] > 0;
-        }
-
-        public bool IpExist(string hash, string ip)
-        {
-            var query = new StringBuilder("SELECT COUNT(*) FROM IPS WHERE HASH = '", 100);
-            query.Append(hash);
-            query.Append("' AND IP = '");
-            query.Append(ip);
-            query.Append('\'');
-            return (long)database.Execute(query.ToString()).Rows[0][0] > 0;
-        }
-
-        public bool GsidExist(string hash, uint gsid)
-        {
-            var query = new StringBuilder("SELECT COUNT(*) FROM GSIDS WHERE HASH = '", 100);
-            query.Append(hash);
-            query.Append("' AND GSID = '");
-            query.Append(gsid);
-            query.Append('\'');
-            return (long)database.Execute(query.ToString()).Rows[0][0] > 0;
-        }
-        // ~deprecated
-
         public void InsertHash(string hash, string unescapedInfo)
         {
-            var query = new StringBuilder("INSERT OR IGNORE INTO HASHES(HASH, INFO) VALUES ('", 512);
-            query.Append(hash);
-            query.Append("', '");
-            query.Append(EscapeString(unescapedInfo));
-            query.Append("')");
-            var inserted = database.ExecuteNonQuery(query.ToString());
+            var inserted = PrivateInsertHash(hash, unescapedInfo);
             if (inserted > 0)
                 OnAppendedData(DatabaseTableId.Hash, inserted);
         }
@@ -424,6 +378,22 @@ namespace ListPlayers.PcdbModel
             query.Append(hash);
             query.Append("'");
             database.ExecuteNonQuery(query.ToString());
+        }
+
+        public void InsertUpdateHash(string hash, string unescapedInfo)
+        {
+            if (PrivateInsertHash(hash, unescapedInfo) == 0)
+                UpdateHash(hash, unescapedInfo);
+        }
+        
+        private int PrivateInsertHash(string hash, string unescapedInfo)
+        {
+            var query = new StringBuilder("INSERT OR IGNORE INTO HASHES(HASH, INFO) VALUES ('", 512);
+            query.Append(hash);
+            query.Append("', '");
+            query.Append(EscapeString(unescapedInfo));
+            query.Append("')");
+            return database.ExecuteNonQuery(query.ToString());
         }
 
         public void InsertName(string hash, string escapedName, DateTime date)

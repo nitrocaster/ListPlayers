@@ -396,10 +396,10 @@ namespace ListPlayers.Parsers
                     var hashRow = src.Select(DatabaseTableId.Hash, id).Rows[0];
                     var hash = (string)hashRow.ItemArray[1];
                     var info = Convert.ToString(hashRow.ItemArray[2]);
-                    if (Database.HashExists(hash) && !String.IsNullOrEmpty(info))
-                        Database.UpdateHash(hash, info);
+                    if (String.IsNullOrEmpty(info))
+                        Database.InsertHash(hash);
                     else
-                        Database.InsertHash(hash, info);
+                        Database.InsertUpdateHash(hash, info);
                     // names
                     var names = src.Select(DatabaseTableId.Name, id);
                     OnFoundData(DatabaseTableId.Name, names.Rows.Count);
@@ -458,10 +458,10 @@ namespace ListPlayers.Parsers
                     var hashRow = src.Select(DatabaseTableId.Hash, id).Rows[0];
                     var hash = (string)hashRow.ItemArray[1];
                     var info = Convert.ToString(hashRow.ItemArray[2]);
-                    if (Database.HashExists(hash) && !String.IsNullOrEmpty(info))
-                        Database.UpdateHash(hash, info);
+                    if (String.IsNullOrEmpty(info))
+                        Database.InsertHash(hash);
                     else
-                        Database.InsertHash(hash, info);
+                        Database.InsertUpdateHash(hash, info);
                     // names
                     var names = src.Select(DatabaseTableId.Name, id);
                     OnFoundData(DatabaseTableId.Name, names.Rows.Count);
@@ -522,10 +522,10 @@ namespace ListPlayers.Parsers
                     var hash = (string)hashes.Rows[hashIndex][0];
                     var hashRow = src.Select(DatabaseTableId.Hash, hash).Rows[0];
                     var info = (string)hashRow.ItemArray[1];
-                    if (Database.HashExists(hash) && !String.IsNullOrEmpty(info))
-                        Database.UpdateHash(hash, info);
+                    if (String.IsNullOrEmpty(info))
+                        Database.InsertHash(hash);
                     else
-                        Database.InsertHash(hash, info);
+                        Database.InsertUpdateHash(hash, info);
                     // names
                     var names = src.Select(DatabaseTableId.Name, hash);
                     OnFoundData(DatabaseTableId.Name, names.Rows.Count);
