@@ -13,6 +13,7 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 */
 
 using System.IO;
+using System.Text;
 using ListPlayers.PcdbModel;
 
 namespace ListPlayers.Parsers
@@ -37,7 +38,14 @@ namespace ListPlayers.Parsers
         }
 
         public bool CheckFormat(string path)
-        { return (Path.GetExtension(path).ToLowerInvariant() == AcceptedFileExtension); }
+        {
+            if (Path.GetExtension(path).ToLowerInvariant() != AcceptedFileExtension)
+                return false;
+            using (var reader = new StreamReader(path, Encoding.Default))
+            {
+                return reader.ReadLine() != "[global]";
+            }
+        }
 
         #region Singleton implementation
 
