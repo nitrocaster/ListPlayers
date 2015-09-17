@@ -82,14 +82,14 @@ namespace ListPlayers.Parsers
                         {
                         case "dump_time":
                             // online dump
-                            dumpTime = StrToDateTime(pair.Value);
+                            dumpTime = Utils.StrToDateTime(pair.Value, Utils.DateTimePatternStats);
                             onlineDump = true;
                             dumpTimeFound = true;
                             timestampsFound = true;
                             break;
                         case "end_time":
                             // extended dump
-                            endTime = StrToDateTime(pair.Value);
+                            endTime = Utils.StrToDateTime(pair.Value, Utils.DateTimePatternStats);
                             endTimeFound = true;
                             continue;
                         case "start_time":
@@ -168,24 +168,6 @@ namespace ListPlayers.Parsers
                         gsid = "";
                     }
                 }
-            }
-
-            private static readonly char[] dateTimeSplitChars = new[] { '.', ' ', '_', ':', '-' };
-
-            /// <summary>
-            ///     Extracts DateTime from it's special string representation (used in config dumps and screenshots).
-            /// </summary>
-            private static DateTime StrToDateTime(string src)
-            {
-                // "MM-DD-YY_hh-mm-ss"
-                // dateString = "14 11 11 08 30 48";
-                // format =     "dd.MM.yyyy_HH:mm:ss";
-                var dateparts = src.Split(dateTimeSplitChars);
-                var builder = new StringBuilder(64);
-                for (var i = 0; i < dateparts.Length; i++)
-                    builder.Append(dateparts[i]);
-                var result = DateTime.ParseExact(builder.ToString(), "MMddyyHHmmss", CultureInfo.InvariantCulture);
-                return result;
             }
         }
 

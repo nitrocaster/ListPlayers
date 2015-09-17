@@ -13,9 +13,7 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading;
 
 public static partial class Utils
@@ -29,6 +27,14 @@ public static partial class Utils
     /// "dd.MM.yyyy HH:mm:ss"
     /// </summary>
     public const string DateTimePatternLong  = "dd.MM.yyyy HH:mm:ss";
+    /// <summary>
+    /// Pattern used in MP statistics dumps (start_time/end_time/dump_time).
+    /// </summary>
+    public const string DateTimePatternStats = "MM-dd-yy_HH-mm-ss";
+    /// <summary>
+    /// Pattern used in config-dumps/screenshots (creation_date).
+    /// </summary>
+    public const string DateTimePatternCfg = "dd.MM.yyyy_HH:mm:ss";
     
     public static Thread CreateThread(ThreadStart target, string name, bool background = true, bool suspended = false)
     {
@@ -122,4 +128,7 @@ public static partial class Utils
     
     public static string GetCurrentDateTime()
     { return DateTime.Now.ToString(DateTimePatternShort, CultureInfo.InvariantCulture); }
+
+    public static DateTime StrToDateTime(string s, string pattern)
+    { return DateTime.ParseExact(s, pattern, CultureInfo.InvariantCulture); }
 }

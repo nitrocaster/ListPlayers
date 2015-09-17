@@ -49,7 +49,7 @@ namespace ListPlayers.Parsers
                     switch (entry.Key)
                     {
                     case "creation_date":
-                        timeStamp = StrToDateTime(entry.Value);
+                        timeStamp = Utils.StrToDateTime(entry.Value, Utils.DateTimePatternCfg);
                         continue;
                     case "player_digest":
                         digest = entry.Value;
@@ -73,25 +73,6 @@ namespace ListPlayers.Parsers
                     }
                 }
             }
-        }
-
-        private static readonly char[] DateTimeSplitChars = {'.', ' ', '_', ':', '-'};
-
-        /// <summary>
-        ///     Extracts DateTime from it's special string representation (used in config dumps and screenshots).
-        /// </summary>
-        private static DateTime StrToDateTime(string src)
-        {
-            // "MM-DD-YY_hh-mm-ss"
-            // dateString = "14 11 11 08 30 48";
-            // format =     "dd.MM.yyyy_HH:mm:ss";
-            var dateparts = src.Split(DateTimeSplitChars);
-            var builder = new StringBuilder(64);
-            for (var i = 0; i < dateparts.Length; i++)
-                builder.Append(dateparts[i]);
-            // bug: StrToDateTime
-            var result = DateTime.ParseExact(builder.ToString(), "ddMMyyyyHHmmss", CultureInfo.InvariantCulture);
-            return result;
         }
     }
 }
