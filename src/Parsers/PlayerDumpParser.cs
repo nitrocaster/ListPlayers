@@ -51,18 +51,18 @@ namespace ListPlayers.Parsers
                         continue;
                     case "player_digest":
                         digest = entry.Value;
-                        if (digest == "")
+                        if (string.IsNullOrEmpty(digest))
                             return;
                         OnFoundData(DatabaseTableId.Hash);
                         continue;
                     case "player_name":
                     {
                         var name = entry.Value;
-                        if (digest != "")
+                        if (!string.IsNullOrEmpty(digest))
                         {
                             Database.InsertHash(digest);
                             OnFoundData(DatabaseTableId.Name);
-                            if (name != "")
+                            if (!string.IsNullOrEmpty(name))
                                 Database.InsertName(digest, name, timeStamp);
                         }
                         return;

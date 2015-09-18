@@ -62,7 +62,7 @@ namespace ListPlayers.Parsers
                             {
                                 OnFoundData(DatabaseTableId.Hash);
                                 digest = buf.Trim(hexDigestTrimChars);
-                                if (digest != "")
+                                if (!string.IsNullOrEmpty(digest))
                                     Database.InsertHash(digest);
                                 continue;
                             }
@@ -89,7 +89,7 @@ namespace ListPlayers.Parsers
                             {
                                 OnFoundData(DatabaseTableId.Name);
                                 var name = buf.Trim();
-                                if (name != "" && digest != "")
+                                if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(digest))
                                     Database.InsertName(digest, name, PcdbFile.InvalidDateTime);
                                 continue;
                             }
@@ -97,19 +97,16 @@ namespace ListPlayers.Parsers
                             {
                                 OnFoundData(DatabaseTableId.Ip);
                                 var ip = buf.Trim();
-                                if (ip != "" & digest != "")
+                                if (!string.IsNullOrEmpty(ip) && !string.IsNullOrEmpty(digest))
                                     Database.InsertIp(digest, ip, PcdbFile.InvalidDateTime);
                                 continue;
                             }
                             if (insideGsid)
                             {
                                 OnFoundData(DatabaseTableId.Gsid);
-                                var profileID = buf.Trim();
-                                if (profileID != "" & digest != "")
-                                {
-                                    Database.InsertGsid(digest,
-                                        Convert.ToUInt32(profileID), PcdbFile.InvalidDateTime);
-                                }
+                                var gsid = buf.Trim();
+                                if (!string.IsNullOrEmpty(gsid) && !string.IsNullOrEmpty(digest))
+                                    Database.InsertGsid(digest, Convert.ToUInt32(gsid), PcdbFile.InvalidDateTime);
                                 continue;
                             }
                         }

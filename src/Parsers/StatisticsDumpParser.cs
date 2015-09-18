@@ -108,34 +108,34 @@ namespace ListPlayers.Parsers
                             {
                             case "player_ip":
                                 ip = pair.Value;
-                                if (ip.Length > 0)
+                                if (!string.IsNullOrEmpty(ip))
                                     OnFoundData(DatabaseTableId.Ip);
                                 break;
                             case "player_name":
                             case "name":
                                 name = pair.Value;
-                                if (name != "")
+                                if (!string.IsNullOrEmpty(name))
                                     OnFoundData(DatabaseTableId.Name);
                                 break;
                             case "player_profile_id":
                                 gsid = pair.Value;
-                                if (gsid != "")
+                                if (!string.IsNullOrEmpty(gsid))
                                     OnFoundData(DatabaseTableId.Gsid);
                                 break;
                             case "player_unique_digest":
                             {
                                 var digest = pair.Value;
-                                if (digest != "")
+                                if (!string.IsNullOrEmpty(digest))
                                 {
                                     OnFoundData(DatabaseTableId.Hash);
                                     // player_unique_digest is the last entry
                                     DateTime ts = onlineDump ? dumpTime : endTime;
                                     Database.InsertHash(digest);
-                                    if (name != "")
+                                    if (!string.IsNullOrEmpty(name))
                                         Database.InsertName(digest, name, ts);
-                                    if (ip != "")
+                                    if (!string.IsNullOrEmpty(ip))
                                         Database.InsertIp(digest, ip, ts);
-                                    if (gsid != "")
+                                    if (!string.IsNullOrEmpty(gsid))
                                         Database.InsertGsid(digest, Convert.ToUInt32(gsid), ts);
                                 }
                                 break;
