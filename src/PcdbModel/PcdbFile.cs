@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.IO;
+using ListPlayers.Common;
 using ListPlayers.Parsers;
 
 namespace ListPlayers.PcdbModel
@@ -297,47 +298,135 @@ namespace ListPlayers.PcdbModel
             query.Append('\'');
             return database.Execute(query.ToString());
         }
-
-        public DataTable SelectHashes(DatabaseTableId table, string[] filter, bool asPattern = false)
+        // field like ... / field in (...)
+        private void AppendFilter(StringBuilder query, string field, string[] filter, bool asPattern)
         {
-            var len = filter.Length;
-            if (len == 0)
-                return null;
-            var tableName = GetTableName(table);
-            var fieldName = GetFieldName(table);
-            var query = new StringBuilder("SELECT DISTINCT HASH FROM ");
-            query.Append(tableName);
+            query.Append(field);
             if (asPattern)
             {
-                query.Append(" WHERE ");
-                query.Append(fieldName);
-                query.Append(" LIKE '");
+                query.Append(" like '");
                 query.Append(EscapeString(filter[0]));
                 query.Append('\'');
-                for (var j = 1; j < len; j++)
+                for (var i = 1; i < filter.Length; i++)
                 {
-                    query.Append(" OR ");
-                    query.Append(fieldName);
-                    query.Append(" LIKE '");
-                    query.Append(EscapeString(filter[j]));
+                    query.Append(" or ");
+                    query.Append(field);
+                    query.Append(" like '");
+                    query.Append(EscapeString(filter[i]));
                     query.Append('\'');
                 }
             }
             else
             {
-                query.Append(" WHERE ");
-                query.Append(fieldName);
-                query.Append(" IN ('");
+                query.Append(" in ('");
                 query.Append(EscapeString(filter[0]));
                 query.Append('\'');
-                for (var j = 1; j < len; j++)
+                for (var i = 1; i < filter.Length; i++)
                 {
                     query.Append(",'");
-                    query.Append(EscapeString(filter[j]));
+                    query.Append(EscapeString(filter[i]));
                     query.Append('\'');
                 }
                 query.Append(')');
             }
+        }
+
+        private void CompleteJoinQuery(StringBuilder query, SearchFilter filter, PcdbGameVersion ver)
+        {
+            var cop = ver == PcdbGameVersion.COP;
+            query.AppendLine(" from hashes");
+            query.AppendLine("join names on hashes.hash = names.hash");
+            query.AppendLine("join ips on hashes.hash = ips.hash");
+            if (cop)
+                query.AppendLine("join gsids on hashes.hash = gsids.hash");
+            query.AppendLine("where");
+            var andRequired = false;
+            if (filter.Hashes.Length > 0)
+            {
+                andRequired = true;
+                AppendFilter(query, "hashes.hash", filter.Hashes, false);
+            }
+            if (filter.Names.Length > 0)
+            {
+                if (andRequired)
+                    query.AppendLine("and");
+                andRequired = true;
+                AppendFilter(query, "name", filter.Names, filter.UseNamePattern);
+            }
+            if (filter.Ips.Length > 0)
+            {
+                if (andRequired)
+                    query.AppendLine("and");
+                andRequired = true;
+                AppendFilter(query, "ip", filter.Ips, filter.UseIpPattern);
+            }
+            if (cop && filter.Gsids.Length > 0)
+            {
+                if (andRequired)
+                    query.AppendLine("and");
+                AppendFilter(query, "gsid", filter.Gsids, false);
+            }
+        }
+        
+        public void Select(SearchFilter filter, PcdbChunk chunk)
+        {
+            if (filter.Empty)
+                return;
+            var ver = GetGameVersion();
+            var query = new StringBuilder("select distinct hashes.hash, info");
+            var tailBuilder = new StringBuilder();
+            CompleteJoinQuery(tailBuilder, filter, ver);
+            var tail = tailBuilder.ToString();
+            query.Append(tail);
+            chunk.Hashes = database.Execute(query.ToString());
+            string[] hashes = null;
+            if (filter.IncludeRelatedData)
+            {
+                hashes = ExtractHashes(chunk.Hashes);
+                if (hashes.Length == 0)
+                    return;
+                query.Clear().Append("select distinct hash, name, dateinfo from names where ");
+                AppendFilter(query, "hash", hashes, false);
+            }
+            else
+            {
+                query.Clear().Append("select distinct hashes.hash, name, names.dateinfo");
+                query.Append(tail);
+            }
+            chunk.Names = database.Execute(query.ToString());
+            if (filter.IncludeRelatedData)
+            {
+                query.Clear().Append("select distinct hash, ip, dateinfo from ips where ");
+                AppendFilter(query, "hash", hashes, false);
+            }
+            else
+            {
+                query.Clear().Append("select distinct hashes.hash, ip, ips.dateinfo");
+                query.Append(tail);
+            }
+            chunk.Ips = database.Execute(query.ToString());
+            if (ver == PcdbGameVersion.COP)
+            {
+                if (filter.IncludeRelatedData)
+                {
+                    query.Clear().Append("select distinct hash, gsid, dateinfo from gsids where ");
+                    AppendFilter(query, "hash", hashes, false);
+                }
+                else
+                {
+                    query.Clear().Append("select distinct hashes.hash, gsid, gsid.dateinfo");
+                    query.Append(tail);
+                }
+                chunk.Gsids = database.Execute(query.ToString());
+            }
+        }
+        
+        public DataTable SelectHashes(SearchFilter filter)
+        {
+            if (filter.Empty)
+                return null;
+            var query = new StringBuilder("select distinct hashes.hash");
+            CompleteJoinQuery(query, filter, GetGameVersion());
             return database.Execute(query.ToString());
         }
 

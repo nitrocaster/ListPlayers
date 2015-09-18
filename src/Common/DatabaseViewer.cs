@@ -237,62 +237,11 @@ namespace ListPlayers.Common
 
         private PcdbChunk CollectData()
         {
-            var filter = Filter;
-            PcdbChunk result = null;            
             database.BeginTransaction();
-            do
-            {
-                var chunk = new PcdbChunk();
-                string[] hashes;
-                if (filter.Hashes.Length > 0)
-                {
-                    chunk.Hashes = database.SelectHashes(DatabaseTableId.Hash, filter.Hashes);
-                    hashes = PcdbFile.ExtractHashes(chunk.Hashes);
-                }
-                else if (filter.Names.Length > 0)
-                {
-                    chunk.Names = database.SelectHashes(DatabaseTableId.Name, filter.Names, filter.UseNamePattern);
-                    hashes = PcdbFile.ExtractHashes(chunk.Names);
-                }
-                else if (filter.Ips.Length > 0)
-                {
-                    chunk.Ips = database.SelectHashes(DatabaseTableId.Ip, filter.Ips, filter.UseIpPattern);
-                    hashes = PcdbFile.ExtractHashes(chunk.Ips);
-                }
-                else if (dbGameVersion == PcdbGameVersion.COP && filter.Gsids.Length > 0)
-                {
-                    chunk.Gsids = database.SelectHashes(DatabaseTableId.Gsid, filter.Gsids);
-                    hashes = PcdbFile.ExtractHashes(chunk.Gsids);
-                }
-                else
-                    break;
-                if (filter.IncludeRelatedData)
-                {
-                    filter.Hashes = new string[] { };
-                    filter.Names = new string[] { };
-                    filter.Ips = new string[] { };
-                    if (dbGameVersion == PcdbGameVersion.COP)
-                        filter.Gsids = new string[] { };
-                }
-                chunk.Hashes = database.Select(DatabaseTableId.Hash, hashes, filter.Hashes);
-                if (chunk.Hashes.Rows.Count == 0 && filter.Hashes.Length > 0)
-                    break;
-                chunk.Names = database.Select(DatabaseTableId.Name, hashes, filter.Names, filter.UseNamePattern);
-                if (chunk.Names.Rows.Count == 0 && filter.Names.Length > 0)
-                    break;
-                chunk.Ips = database.Select(DatabaseTableId.Ip, hashes, filter.Ips, filter.UseIpPattern);
-                if (chunk.Ips.Rows.Count == 0 && filter.Ips.Length > 0)
-                    break;
-                if (dbGameVersion == PcdbGameVersion.COP)
-                {
-                    chunk.Gsids = database.Select(DatabaseTableId.Gsid, hashes, filter.Gsids);
-                    if (chunk.Gsids.Rows.Count == 0 && filter.Gsids.Length > 0)
-                        break;
-                }
-                result = chunk;
-            } while (false);
+            var chunk = new PcdbChunk();
+            database.Select(Filter, chunk);
             database.CommitTransaction();
-            return result;
+            return chunk;
         }
 
         public void ExportCurrentSample()

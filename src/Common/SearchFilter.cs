@@ -24,5 +24,14 @@ namespace ListPlayers.Common
         public bool UseNamePattern;
         public bool UseIpPattern;
         public bool IncludeRelatedData;
+
+        public bool Empty
+        {
+            get
+            {
+                return Hashes.Length == 0 && Names.Length == 0 &&
+                    Ips.Length == 0 && Gsids.Length == 0;
+            }
+        }
     }
 }
