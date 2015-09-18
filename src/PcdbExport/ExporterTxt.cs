@@ -14,11 +14,14 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 
 using System;
 using System.ComponentModel;
+using System.Threading;
 
 namespace ListPlayers.PcdbExport
 {
     public sealed class ExporterTxt : ExporterBase
     {
+        public ExporterTxt(ITextExporterView view) : base(view) {}
+
         protected override void ExportProc(object sender, DoWorkEventArgs e)
         {
             var hashes = Chunk.Hashes.Rows;
@@ -31,14 +34,14 @@ namespace ListPlayers.PcdbExport
             {
                 for (var i = 0; i < hashCount; i++)
                 {
-                    if (Dialog.Cancelled)
+                    if (View.Cancelled)
                         break;
                     var currentHash = hashes[i][0].ToString();
                     Writer.WriteLine(currentHash);
                     Writer.WriteLine("\r\n; names\r\n");
                     for (var j = 0; j < nameCount; j++)
                     {
-                        if (Dialog.Cancelled)
+                        if (View.Cancelled)
                             break;
                         if (names[j][0].ToString() != currentHash)
                             continue;
@@ -49,7 +52,7 @@ namespace ListPlayers.PcdbExport
                     Writer.WriteLine("\r\n; ip addresses\r\n");
                     for (var j = 0; j < ipCount; j++)
                     {
-                        if (Dialog.Cancelled)
+                        if (View.Cancelled)
                             break;
                         if (ips[j][0].ToString() != currentHash)
                             continue;
@@ -64,7 +67,7 @@ namespace ListPlayers.PcdbExport
                         Writer.WriteLine("\r\n; gamespy id's\r\n");
                         for (var j = 0; j < gsidsCount; j++)
                         {
-                            if (Dialog.Cancelled)
+                            if (View.Cancelled)
                                 break;
                             if (gsids[j][0].ToString() != currentHash)
                                 continue;
@@ -84,5 +87,7 @@ namespace ListPlayers.PcdbExport
                 Writer.Close();
             }
         }
+
+        public override ExportFormat Format { get { return ExportFormat.Txt; } }
     }
 }

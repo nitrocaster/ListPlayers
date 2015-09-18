@@ -19,7 +19,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Data;
-using ListPlayers.Parsers;
 using ListPlayers.PcdbExport;
 using ListPlayers.PcdbModel;
 using ListPlayers.Properties;
@@ -255,23 +254,11 @@ namespace ListPlayers.Common
                 if (saver.ShowDialog() != DialogResult.OK)
                     return;
                 var ext = Path.GetExtension(saver.FileName);
-                switch (ext)
+                var fmt = ExportManager.GetFormat(ext);
+                using (var exporter = ExportManager.GetExporter(fmt))
                 {
-                // todo: GetExporter(...)
-                case ".txt":
-                {
-                    var exporter = new TextExporterDialog();
-                    exporter.Destination = saver.FileName;
-                    exporter.Export(lastChunk, ExportFormat.Txt);
-                    break;
-                }
-                case ".radb":
-                {
-                    var exporter = new TextExporterDialog();
-                    exporter.Destination = saver.FileName;
-                    exporter.Export(lastChunk, ExportFormat.Radb);
-                    break;
-                }
+                    exporter.Export(lastChunk, saver.FileName);
+                    exporter.View.ShowDialog();
                 }
             }
         }

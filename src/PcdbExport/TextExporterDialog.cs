@@ -13,53 +13,19 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 */
 
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
-using ListPlayers.PcdbModel;
 
 namespace ListPlayers.PcdbExport
 {
     public sealed partial class TextExporterDialog : FormEx, ITextExporterView
     {
         private bool cancelled;
-        private Action startExport;
         private bool isBusy = false;
         private bool userclose = false;
 
         public TextExporterDialog() { InitializeComponent(); }
-
-        public string Destination
-        {
-            get;
-            set;
-        }
-
-        public DialogResult Export(PcdbChunk chunk, ExportFormat format)
-        {
-            if (isBusy)
-                throw new InvalidOperationException("Export has been already started.");
-            switch (format)
-            {
-            case ExportFormat.Txt:
-            {
-                var exporter = new ExporterTxt();
-                startExport = () => exporter.RunExport(this, Destination, chunk);
-                var result = ShowDialog();
-                exporter.Dispose();
-                return result;
-            }
-            case ExportFormat.Radb:
-            {
-                var exporter = new ExporterRadb();
-                startExport = () => exporter.RunExport(this, Destination, chunk);
-                var result = ShowDialog();
-                exporter.Dispose();
-                return result;
-            }
-            default:
-                throw new InvalidEnumArgumentException("Format not supported: " + format);
-            }
-        }
+        
+        DialogResult ITextExporterView.ShowDialog() { return base.ShowDialog(); }
         
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -79,15 +45,7 @@ namespace ListPlayers.PcdbExport
             userclose = true;
             e.Cancel = true;
         }
-
-        private void TextExporterDialog_VisibleChanged(object sender, EventArgs e)
-        {
-            if (isBusy)
-                return;
-            isBusy = true;
-            startExport();
-        }
-
+        
         #region ITextExporterView Members
 
         public string StatusText

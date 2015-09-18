@@ -155,6 +155,8 @@
     <Compile Include="PcdbExport\ExporterBase.cs" />
     <Compile Include="PcdbExport\ExporterRadb.cs" />
     <Compile Include="PcdbExport\ExporterTxt.cs" />
+    <Compile Include="PcdbExport\ExportManager.cs" />
+    <Compile Include="PcdbExport\IExporter.cs" />
     <Compile Include="Dialogs\PcdbFileDialog.cs" />
     <Compile Include="System.Data.SQLite\SQLiteDatabase.cs" />
     <Compile Include="PcdbModel\PcdbChunk.cs" />

@@ -13,32 +13,13 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 */
 
 using System;
-using System.Windows.Forms;
 
 namespace ListPlayers.PcdbExport
 {
-    public interface ITextExporterView
+    public interface IExporter : IDisposable
     {
-        string StatusText { set; }
-
-        string CounterText { set; }
-
-        string CancelButtonText { set; }
-
-        bool Cancelled { get; }
-
-        bool IsBusy { set; }
-
-        bool UserClose { get; }
-
-        int ProgressValue { set; }
-
-        int ProgressMin { set; }
-
-        int ProgressMax { set; }
-
-        void InvokeAsync(Action callback);
-        DialogResult ShowDialog();
-        void Close();
+        ExportFormat Format { get; }
+        ITextExporterView View { get; }
+        void Export(PcdbModel.PcdbChunk data, string path);
     }
 }

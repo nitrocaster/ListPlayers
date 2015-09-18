@@ -21,17 +21,17 @@ using ListPlayers.Properties;
 
 namespace ListPlayers.PcdbExport
 {
-    public abstract class ExporterBase : IDisposable
+    public abstract class ExporterBase : IExporter
     {
         protected readonly BackgroundWorker Worker;
         protected PcdbChunk Chunk;
         protected volatile int CurrentProgress;
-        protected ITextExporterView Dialog;
         protected int MaximumProgress;
         protected StreamWriter Writer;
-        
-        protected ExporterBase()
+
+        protected ExporterBase(ITextExporterView view)
         {
+            View = view;
             Worker = new BackgroundWorker
             {
                 WorkerSupportsCancellation = true,
@@ -41,48 +41,52 @@ namespace ListPlayers.PcdbExport
             Worker.ProgressChanged += OnProgressChanged;
             Worker.RunWorkerCompleted += OnExportCompleted;
         }
+        
+        public abstract ExportFormat Format { get; }
 
-        public virtual void Dispose() { Worker.Dispose(); }
+        public ITextExporterView View { get; private set; }
 
-        public void RunExport(ITextExporterView dialog, string destination, PcdbChunk chunk)
+        public void Export(PcdbChunk chunk, string path)
         {
             if (Worker.IsBusy)
                 throw new InvalidOperationException("Export has been already started.");
-            Dialog = dialog;
             Chunk = chunk;
-            Writer = new StreamWriter(destination, false, Encoding.Default);
-            Dialog.InvokeAsync(() =>
+            Writer = new StreamWriter(path, false, Encoding.Default);
+            View.IsBusy = true;
+            View.InvokeAsync(() =>
             {
                 MaximumProgress = Chunk.Hashes.Rows.Count;
                 CurrentProgress = 0;
-                Dialog.ProgressMin = 0;
-                Dialog.ProgressMax = MaximumProgress;
-                Dialog.ProgressValue = 0;
-                Dialog.StatusText = StringTable.ExportEtc;
+                View.ProgressMin = 0;
+                View.ProgressMax = MaximumProgress;
+                View.ProgressValue = 0;
+                View.StatusText = StringTable.ExportEtc;
             });
             Worker.RunWorkerAsync();
         }
+
+        public virtual void Dispose() { Worker.Dispose(); }
 
         protected abstract void ExportProc(object sender, DoWorkEventArgs e);
 
         private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Dialog.InvokeAsync(() =>
+            View.InvokeAsync(() =>
             {
-                Dialog.ProgressValue = CurrentProgress;
-                Dialog.CounterText = Math.Round(100.0 * CurrentProgress / MaximumProgress) + "%";
+                View.ProgressValue = CurrentProgress;
+                View.CounterText = Math.Round(100.0 * CurrentProgress / MaximumProgress) + "%";
             });
         }
 
         private void OnExportCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Dialog.InvokeAsync(() =>
+            View.InvokeAsync(() =>
             {
-                Dialog.IsBusy = false;
-                Dialog.StatusText = Dialog.Cancelled ? StringTable.OperationCancelled : StringTable.ExportCompleted;
-                Dialog.CancelButtonText = StringTable.Close;
-                if (Dialog.Cancelled && Dialog.UserClose)
-                    Dialog.Close();
+                View.IsBusy = false;
+                View.StatusText = View.Cancelled ? StringTable.OperationCancelled : StringTable.ExportCompleted;
+                View.CancelButtonText = StringTable.Close;
+                if (View.Cancelled && View.UserClose)
+                    View.Close();
             });
         }
     }

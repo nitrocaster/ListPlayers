@@ -21,6 +21,8 @@ namespace ListPlayers.PcdbExport
     {
         private const char delimiter = '|';
 
+        public ExporterRadb(ITextExporterView view) : base(view) {}
+
         protected override void ExportProc(object sender, DoWorkEventArgs e)
         {
             var hashes = Chunk.Hashes.Rows;
@@ -33,14 +35,14 @@ namespace ListPlayers.PcdbExport
             {
                 for (var i = 0; i < hashCount; i++)
                 {
-                    if (Dialog.Cancelled)
+                    if (View.Cancelled)
                         break;
                     var currentHash = hashes[i][0].ToString();
                     Writer.WriteLine();
                     Writer.WriteLine(currentHash);
                     for (var j = 0; j < nameCount; j++)
                     {
-                        if (Dialog.Cancelled)
+                        if (View.Cancelled)
                             break;
                         if (names[j][0].ToString() != currentHash)
                             continue;
@@ -51,7 +53,7 @@ namespace ListPlayers.PcdbExport
                     Writer.WriteLine();
                     for (var j = 0; j < ipCount; j++)
                     {
-                        if (Dialog.Cancelled)
+                        if (View.Cancelled)
                             break;
                         if (ips[j][0].ToString() != currentHash)
                             continue;
@@ -66,7 +68,7 @@ namespace ListPlayers.PcdbExport
                         Writer.WriteLine();
                         for (var j = 0; j < gsidsCount; j++)
                         {
-                            if (Dialog.Cancelled)
+                            if (View.Cancelled)
                                 break;
                             if (gsids[j][0].ToString() != currentHash)
                                 continue;
@@ -84,5 +86,7 @@ namespace ListPlayers.PcdbExport
                 Writer.Close();
             }
         }
+
+        public override ExportFormat Format { get { return ExportFormat.Radb; } }
     }
 }

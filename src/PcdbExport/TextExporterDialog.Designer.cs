@@ -82,7 +82,6 @@
             this.MaximizeBox = false;
             this.Name = "TextExporterDialog";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextExporterDialog_FormClosing);
-            this.VisibleChanged += new System.EventHandler(this.TextExporterDialog_VisibleChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 
