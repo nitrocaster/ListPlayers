@@ -18,7 +18,7 @@ namespace ListPlayers.Common
 {
     public static class ApplicationPersistent
     {
-        public static readonly ISpecificParser[] ParserProviders = new ISpecificParser[]
+        public static readonly ISpecificParser[] ParserProviders =
         {
             PcdbParser.Instance, 
             OldPcdbParser.Instance, 

@@ -9,7 +9,7 @@ using System.Security;
 using System.Text;
 
 [SuppressUnmanagedCodeSecurity]
-public static unsafe partial class WinAPI
+public static partial class WinAPI
 {
     public const int IDC_HAND = 0x7F89;
 

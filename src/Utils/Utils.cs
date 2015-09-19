@@ -16,7 +16,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 
-public static partial class Utils
+public static class Utils
 {
     /// <summary>
     /// "dd.MM.yy HH:mm:ss"
