@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MPNetworks.ru")]
 [assembly: AssemblyProduct("ListPlayers")]
-[assembly: AssemblyCopyright("Copyright © 2008-2013 Pavel Kovalenko")]
+[assembly: AssemblyCopyright("Copyright © 2008-2015 Pavel Kovalenko")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.6.3")]
-[assembly: AssemblyFileVersion("2.0.6.3")]
+[assembly: AssemblyVersion("2.0.7.0")]
+[assembly: AssemblyFileVersion("2.0.7.0")]
