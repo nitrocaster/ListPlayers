@@ -124,6 +124,8 @@
     <Compile Include="PcdbModel\PcdbIp.cs" />
     <Compile Include="PcdbModel\PcdbGsid.cs" />
     <Compile Include="PcdbModel\PcdbEntry.cs" />
+    <Compile Include="PcdbModel\PcdbFileInfo.cs" />
+    <Compile Include="PcdbModel\PcdbUtil.cs" />
     <Compile Include="Common\SearchFilter.cs" />
     <Compile Include="PcdbModel\PcdbFieldId.cs" />
     <Compile Include="PcdbModel\IPcdbField.cs" />

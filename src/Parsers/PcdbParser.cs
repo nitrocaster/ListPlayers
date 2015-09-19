@@ -15,46 +15,12 @@ visit <http://mpnetworks.ru> or <https://github.com/nitrocaster/ListPlayers>
 using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using ListPlayers.PcdbModel;
 
 namespace ListPlayers.Parsers
 {
-    // XXX: move to separate file
-
-    internal static class PcdbUtil
-    {
-        public static int GetRevision(SQLiteDatabase db)
-        {
-            if (db.Execute("SELECT DATEINFO FROM NAMES WHERE 0") == null)
-                return (int)PcdbRevision.Rev0;
-            if (db.Execute("SELECT 1 FROM DBVERSION WHERE 0") == null)
-                return (int)PcdbRevision.Rev1;
-            return Convert.ToInt32(db.Execute("SELECT VERSION FROM DBVERSION").Rows[0][0]);
-        }
-
-        public static PcdbGameVersion GetGameVersion(SQLiteDatabase db)
-        { return (PcdbGameVersion)Convert.ToInt32(db.Execute("SELECT TYPEID FROM DBTYPE").Rows[0][0]); }
-    }
-    
-    internal sealed class PcdbFileInfo
-    {
-        public readonly int Revision;
-        public readonly PcdbGameVersion GameVersion;
-
-        public PcdbFileInfo(string path)
-        {
-            var db = new SQLiteDatabase(path);
-            db.Open();
-            Revision = PcdbUtil.GetRevision(db);
-            GameVersion = PcdbUtil.GetGameVersion(db);
-            db.Close();
-        }
-    }
-
     public sealed class PcdbParser : ISpecificParser
     {
         // rev0-rev2 (102)
